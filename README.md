@@ -15,9 +15,9 @@ The api and the web will communicate with each other through GraphQL.
  
 ## Our Tech Stack 
 - Frontend Framework and Language - **React**
-- Component Library -
+- Component Library - **Tailwind**
 - API - **GraphQL**
-- Backend Language - **Node.js** ?
--  Database -
+- Backend Language - **Node.js**
+-  Database - **SQLite**
 -  Authentication Model - **dbAuth** (included in Redwood)
 - Unit Test Frameworks - **Jest**
