@@ -25,4 +25,17 @@ model User {
   salt                String
   resetToken          String?
   resetTokenExpiresAt DateTime?
+  //0 = Normal User, 1 = Admin
+  roles               String       @default("user")
+  webAuthnChallenge   String? @unique
+  credentials         UserCredential[]
+}
+
+model UserCredential {
+  id         String @id
+  userId     Int
+  user       User   @relation(fields: [userId], references: [id])
+  publicKey  Bytes
+  transports String?
+  counter    BigInt
 }
