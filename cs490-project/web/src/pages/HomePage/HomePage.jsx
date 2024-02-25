@@ -8,14 +8,20 @@ const HomePage = () => {
 
       <header>
         <h1>HomePage</h1>
-        <nav></nav>
+        <nav>
+        <ul>
+            <li>
+              <Link to={routes.getStarted()}>Get Started</Link>
+            </li>
+          </ul>
+        </nav>
       </header>
 
-      
-      {/* <p>
+
+      { <p>
         My default route is named <code>home</code>, link to me with `
         <Link to={routes.home()}>Home</Link>`
-      </p> */}
+      </p> }
     </>
   )
 }
