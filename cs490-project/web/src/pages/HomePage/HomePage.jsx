@@ -1,12 +1,13 @@
 import { Link, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
+import Navbar from 'src/components/Navbar/Navbar'
 
 const HomePage = () => {
   return (
     <>
       <Metadata title="Home" description="Home page" />
       <header>
-        <h1>CodeHarbor</h1>
+        <Navbar/>
       </header>
       <div id="welcome">
         <h1>Welcome To Code Harbor!</h1>
