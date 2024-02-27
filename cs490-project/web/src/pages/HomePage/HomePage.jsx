@@ -7,7 +7,7 @@ const HomePage = () => {
     <>
       <Metadata title="Home" description="Home page" />
       <header>
-        <h1>CodeHarbor</h1>
+        <Navbar/>
       </header>
       <div id="welcome">
         <h1>Welcome To Code Harbor!</h1>
