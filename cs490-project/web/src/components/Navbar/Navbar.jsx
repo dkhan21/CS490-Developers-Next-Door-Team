@@ -1,4 +1,3 @@
-// Import necessary packages
 import * as React from 'react'; 
 import { Link, routes } from '@redwoodjs/router'
 import { styled } from '@mui/material/styles';
@@ -12,13 +11,13 @@ import Typography from '@mui/material/Typography';
 const Navbar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" component="nav">
         <Toolbar>
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={Link}
+            to={routes.home()}
             sx={{
               mr: 2,
               fontFamily: 'monospace',
@@ -27,6 +26,7 @@ const Navbar = () => {
               color: 'black',
               textDecoration: 'none',
             }}
+            aria-label='Code Harbor'
           >
             Code Harbor
           </Typography>
@@ -51,7 +51,9 @@ const Navbar = () => {
                 '&:hover:after': {
                   transform: 'scaleX(1)',
                 },
-              }}>About</Button>
+              }}
+              aria-label='About'
+              >About</Button>
             {/* </Link> */}
 
             {/* <Link to={routes.}> */}
@@ -73,7 +75,9 @@ const Navbar = () => {
                 '&:hover:after': {
                   transform: 'scaleX(1)',
                 },
-              }}>Get Started</Button>
+              }}
+              aria-label="Get Started"
+              >Get Started</Button>
             {/* </Link> */}
 
             {/* <Link to={routes.}> */}
@@ -95,7 +99,9 @@ const Navbar = () => {
                 '&:hover:after': {
                   transform: 'scaleX(1)',
                 },
-              }}>Login</Button>
+              }}
+              aria-label="Login"
+              >Login</Button>
             {/* </Link> */}
 
         </Toolbar>
