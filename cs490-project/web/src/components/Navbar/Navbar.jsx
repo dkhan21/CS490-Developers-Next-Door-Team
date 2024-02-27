@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 const Navbar = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" component="nav">
+      <AppBar position="fixed" component="nav" sx={{backgroundColor: '#393E41'}}>
         <Toolbar>
           <Typography
             variant="h6"
@@ -23,7 +23,7 @@ const Navbar = () => {
               fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
-              color: 'black',
+              color: '#E7E5DF',
               textDecoration: 'none',
             }}
             aria-label='Code Harbor'
@@ -34,7 +34,7 @@ const Navbar = () => {
           <Box sx={{ flexGrow: 1 }} />
             {/* <Link to={routes.}> */}
               <Button color="inherit" sx={{ 
-                color: 'black',
+                color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
                   content: '""',
@@ -50,7 +50,11 @@ const Navbar = () => {
                 },
                 '&:hover:after': {
                   transform: 'scaleX(1)',
+                  color: '#E7BB41',
                 },
+                '&:hover':{
+                  color:'#E7BB41',
+                }
               }}
               aria-label='About'
               >About</Button>
@@ -58,7 +62,7 @@ const Navbar = () => {
 
             {/* <Link to={routes.}> */}
               <Button color="inherit" sx={{ 
-                color: 'black',
+                color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
                   content: '""',
@@ -74,7 +78,11 @@ const Navbar = () => {
                 },
                 '&:hover:after': {
                   transform: 'scaleX(1)',
+                  color: '#E7BB41',
                 },
+                '&:hover':{
+                  color:'#E7BB41',
+                }
               }}
               aria-label="Get Started"
               >Get Started</Button>
@@ -82,7 +90,7 @@ const Navbar = () => {
 
             {/* <Link to={routes.}> */}
               <Button color="inherit" sx={{ 
-                color: 'black',
+                color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
                   content: '""',
@@ -98,7 +106,11 @@ const Navbar = () => {
                 },
                 '&:hover:after': {
                   transform: 'scaleX(1)',
+                  color: '#E7BB41',
                 },
+                '&:hover':{
+                  color:'#E7BB41',
+                }
               }}
               aria-label="Login"
               >Login</Button>
