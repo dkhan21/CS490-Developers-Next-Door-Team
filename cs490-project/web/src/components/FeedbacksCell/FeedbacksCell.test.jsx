@@ -34,8 +34,11 @@ describe('FeedbacksCell', () => {
   // 2. Add test: expect(screen.getByText('Hello, world')).toBeInTheDocument()
 
   it('renders Success successfully', async () => {
-    expect(() => {
-      render(<Success feedbacks={standard().feedbacks} />)
-    }).not.toThrow()
+    const feedbacks = standard().feedbacks
+    render(<Success feedbacks={feedbacks} />)
+
+    feedbacks.forEach((feedback) => {
+      expect(screen.getByText(feedback.body)).toBeInTheDocument()
+    })
   })
 })
