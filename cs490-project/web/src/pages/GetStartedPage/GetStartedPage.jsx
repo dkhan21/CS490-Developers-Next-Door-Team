@@ -7,7 +7,6 @@ import {
   TextAreaField, TextField,
   Submit,
 } from '@redwoodjs/forms'
-import './GetStartedPage.css';
 
 import FeedbackForm from 'src/components/FeedbackForm';
 

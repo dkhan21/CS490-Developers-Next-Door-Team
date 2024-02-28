@@ -1,0 +1,19 @@
+/* FeedbackForm.css */
+
+.submit-button {
+
+  width: 100px;
+  height: 38px;
+  background-color: #2020cd;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: lightblue;
+}
+
