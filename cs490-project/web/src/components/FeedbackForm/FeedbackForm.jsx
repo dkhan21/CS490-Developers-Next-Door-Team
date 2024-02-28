@@ -12,6 +12,7 @@ import { toast } from '@redwoodjs/web/toast'
 
 
 import FeedbacksCell from 'src/components/FeedbacksCell';
+
 import { QUERY as FeedbacksQuery } from 'src/components/FeedbacksCell'
 
 const CREATE = gql`
@@ -27,30 +28,32 @@ const CREATE = gql`
 `
 
 
-const FeedbackForm = () => {
-  const [hasFeedbacked, setHasFeedbacked] = useState(false)
-
+const FeedbackForm = ( {id}) => {
   const [rating, setRating] = useState(0);
   const handleStarClick = (clickedRating) => {
     setRating(clickedRating === rating ? 0 : clickedRating);
   };
 
+  const [hasFeedbacked, setHasFeedbacked] = useState(false)
   const [createFeedback, { loading, error }] = useMutation(CREATE, {
     onCompleted: () => {
       setHasFeedbacked(true)
-      toast.success('Thank you for your comment!')
+      toast.success('Thank you for your Feedback!')
     },
 
     refetchQueries: [{ query: FeedbacksQuery }],
   })
 
-  const onSubmit = (input) => {
-    createFeedback({ variables: { input } })
-  }
+  const onSubmit = (data) => {
+    const { name, body } = data;
+    // Assuming your rating is stored in the 'rating' state variable
+    const input = { name, rating, body: body };
+    createFeedback({ variables: { input } });
+  };
 
   return (
     <>
-      <main>
+      <main >
         {/* Feedback Form submission start here!!!*/}
 
         <Form onSubmit={onSubmit} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px' }}>
@@ -63,7 +66,7 @@ const FeedbackForm = () => {
               validation={{ required: true }}
               style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '200px', fontSize: '16px' }}
             />
-            <FieldError name="name" />
+            <FieldError name="names" />
           </div>
 
           <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
@@ -89,23 +92,23 @@ const FeedbackForm = () => {
 
           <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
             <Label
-              name="fbody"
+              name="body"
               className="block mt-4 text-sm text-gray-600 uppercase"
             >
               Feedback
             </Label>
             <TextAreaField
-              name="fbody" required
+              name="body" required
               className="block w-full p-1 border rounded h-24 text-xs"
               validation={{ required: true }}
               style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '300px' }}
             />
-            <FieldError name="fbody" />
+            <FieldError name="body" />
 
           </div>
 
           <div style={{ marginTop: '40px' }}>
-            <Submit style={{ width: '70px', height: '30px' }}
+            <Submit disabled={loading} style={{ width: '70px', height: '30px' }}
               className="block mt-4 bg-blue-500 text-white text-xs font-semibold uppercase tracking-wide rounded px-3 py-2 disabled:opacity-50"
             >
               Submit
@@ -119,7 +122,7 @@ const FeedbackForm = () => {
 
       </main>
     </>
-  );
-};
+  )
+}
 
 export default FeedbackForm;
