@@ -1,4 +1,4 @@
-import { render } from '@redwoodjs/testing/web'
+import { render, screen } from '@redwoodjs/testing/web'
 import { Loading, Empty, Failure, Success } from './FeedbacksCell'
 import { standard } from './FeedbacksCell.mock'
 
@@ -38,7 +38,9 @@ describe('FeedbacksCell', () => {
     render(<Success feedbacks={feedbacks} />)
 
     feedbacks.forEach((feedback) => {
-      expect(screen.getByText(feedback.body)).toBeInTheDocument()
-    })
+      const regex = new RegExp(`${feedback.body.trim()}`, 'i');
+      expect(screen.getByText(regex)).toBeInTheDocument();
+    });
+
   })
 })

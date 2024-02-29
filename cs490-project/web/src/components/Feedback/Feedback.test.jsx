@@ -1,9 +1,5 @@
 import { render, screen } from '@redwoodjs/testing/web'
-
 import Feedback from './Feedback'
-
-//   Improve this test with help from the Redwood Testing Doc:
-//    https://redwoodjs.com/docs/testing#testing-components
 
 describe('Feedback', () => {
   it('renders successfully', () => {
@@ -17,10 +13,21 @@ describe('Feedback', () => {
 
     expect(screen.getByText(feedback.name)).toBeInTheDocument()
     expect(screen.getByText(feedback.body)).toBeInTheDocument()
-    expect(screen.getByText(feedback.rating)).toBeInTheDocument()
-    const dateExpect = screen.getByText('2 January 2020')
-    expect(dateExpect).toBeInTheDocument()
-    expect(dateExpect.nodeName).toEqual('TIME')
-    expect(dateExpect).toHaveAttribute('datetime', comment.createdAt)
+
+    // Check for the star icons based on the rating
+    const starIcons = screen.getAllByText('⭐')
+    expect(starIcons.length).toBe(feedback.rating)
+
+    // Check for the date
+const formattedDate = new Date(feedback.createdAt).toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+const dateExpect = screen.getByText(formattedDate);
+expect(dateExpect).toBeInTheDocument();
+expect(dateExpect.nodeName).toEqual('TIME');
+expect(dateExpect).toHaveAttribute('datetime', feedback.createdAt);
+
   })
 })
