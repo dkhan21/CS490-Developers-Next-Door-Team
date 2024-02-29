@@ -1,0 +1,103 @@
+*{
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+body{
+  background-color: #d3d0cb;
+}
+
+.container{
+  margin-top: 100px;
+  display: flex;
+  align-items: center;
+  padding: 25px;
+  border-radius: 20px;
+  line-height: 30px;
+  border:5px solid #393E41;
+  border-radius: 20px;
+}
+/*-----Image Sizes-----*/
+img {
+  max-width: 50%;
+  max-height:40%;
+  border-radius: 20px;
+}
+
+/*-----welcome banner-----*/
+#welcome{
+  width:100%;
+  height: 100vh;
+  background-image: url("/pages/images/boat.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: #E7E5DF;
+  border-radius: 20px;
+  line-height: 30px;
+}
+
+
+/*-----The Button-----*/
+#getStarted{
+  background-color: #44BBA4; /* Green */
+  border-radius: 20px;
+  color: #E7E5DF;
+  padding: 15px 32px;
+  font-size: 16px;
+  border-radius: 12px;
+  transition-duration: 0.4s;
+
+}
+
+#getStarted:hover{
+  cursor: pointer;
+  color: #E7BB41;
+  box-shadow: 0 0 5px #E7BB41;
+  text-shadow: 0 0 5px #E7BB41;
+}
+
+#getSstarted:hover::before{
+  transform: scale(1.1);
+  box-shadow: 0 0 15px #E7BB41;
+}
+
+#getStarted:active{
+  transform: scale(0.9);
+  color: #E7BB41;
+  box-shadow: 0 0 5px #E7BB41;
+  text-shadow: 0 0 5px #E7BB41;
+}
+
+
+/*-----About Section-----*/
+#about{
+  padding: 20px;
+  color: #393E41;
+  border:5px solid #393E41;
+  border-radius: 20px;
+  margin-right: 20px;
+}
+#section-about{
+  background-color: #E7BB41;
+}
+
+
+
+/*------How it works-------*/
+#workings{
+  padding-left: 50px;
+  color: #393E41;
+  border:5px solid #393E41;
+  border-radius: 20px;
+  margin: 20px;
+
+}
+#section-works{
+  background-color: #44BBA4;
+}
+
