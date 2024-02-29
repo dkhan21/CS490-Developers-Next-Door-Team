@@ -1,10 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import { Button, Paper, Select, MenuItem, makeStyles, Box, Typography, IconButton, CssBaseline } from '@material-ui/core';
+import { Button, Paper, Select, MenuItem, makeStyles, Box, Typography, IconButton, CssBaseline, CircularProgress } from '@material-ui/core';
 import { FileCopy as FileCopyIcon, FileUpload as FileUploadIcon, FileDownload as FileDownloadIcon, WidthFull } from '@mui/icons-material';
 import { CheckCircle, HighlightOff } from '@material-ui/icons';
 import saveAs from 'file-saver';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
+import { parse as parsePython } from 'filbert';
+import { parse as parseJava } from 'java-parser';
+import detectLang from 'lang-detector'; // If we want to add an auto-detect language feature
+
 
 /*
 INSTALLS IN TERMINAL:
@@ -14,12 +18,14 @@ yarn add @monaco-editor/react @monaco-editor/loader
 yarn add file-saver
 yarn add @mui/icons-material @mui/material @emotion/styled @emotion/react
 yarn add react-monaco-editor
-npm install monaco-editor-webpack-plugin
+yarn add filbert
+yarn add java-parser
+yarn add node-c-parser
 */
 
 const useStyles = makeStyles((theme) => ({
   page: { // Container for entire page
-    backgroundImage: 'linear-gradient(to right, #302c2c, #1e1e1e)', // Background gradient
+    backgroundImage: 'radial-gradient(ellipse at top, #666970, #706D66, transparent)', // Background gradient
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -56,10 +62,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
-    textAlign: 'center', // Center the text in the dropdown
+    flexDirection: 'row',
+    textAlign: 'center',
     '& .MuiSelect-icon': {
-      color: '#32368c', // Brighter arrow color
+      color: '#32368c',
     },
   },
   buttonContainer: { // Container for 3 buttons 
@@ -81,7 +87,14 @@ const useStyles = makeStyles((theme) => ({
     height: '50px',
     borderRadius: '10px',
   },
-  convertButton: { // Style for conver button
+  loadingContainer: { // Container loading and convert button 
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  convertButton: { // Style for convert button
     backgroundColor: '#32368c',
     color: '#fff',
     '&:hover': {
@@ -101,6 +114,8 @@ const languageToFileExtension = {
   java: 'java',
   python: 'py',
   cpp: 'cpp',
+  c: 'c',
+  javascript: 'js',
 };
 
 const TranslatePage = () => {
@@ -109,6 +124,7 @@ const TranslatePage = () => {
   const [outputText, setOutputText] = useState('');
   const [inputLanguage, setInputLanguage] = useState('java');
   const [outputLanguage, setOutputLanguage] = useState('python');
+  const [loading, setLoading] = useState(false); // State to control loading visibility
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
@@ -118,6 +134,14 @@ const TranslatePage = () => {
       monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
     }
   }, [inputLanguage]);
+
+  useEffect(() => {
+    if(inputLanguage === 'javascript'){
+      monaco.languages.java.javaDefaults.setDiagnosticsOptions({
+        validate: true
+    });
+    }
+  }, [inputText]);
 
   useEffect(() => {
     if (outputEditor.current) {
@@ -130,15 +154,58 @@ const TranslatePage = () => {
       alert('Please provide input text before converting.');
       return;
     }
-    setOutputText(inputText);
+
+    setLoading(true); // Show loading element
+
+    setTimeout(() => {
+      /*
+      If we want to add auto-detect feature:
+      const detectedLanguage = detectLang(inputText)
+      If we should check for syntax errors:
+      if (inputLanguage === 'java') {
+        try {
+          parseJava(inputText);
+        } catch (error) {
+          alert('Syntax error in Java code: ' + error.message);
+          setLoading(false); // Hide loading element on error
+          return;
+        }
+      }
+
+      if (inputLanguage === 'python') {
+        try {
+          parsePython(inputText);
+        } catch (error) {
+          alert('Syntax error in Python code: ' + error.message);
+          setLoading(false); // Hide loading element on error
+          return;
+        }
+      }*/
+
+      setOutputText(inputText);
+      setLoading(false);
+    }, 2000);
   };
 
+
   const handleInputLanguageChange = (e) => {
-    setInputLanguage(e.target.value);
+    if(outputLanguage === e.target.value){
+      setInputLanguage(e.target.value);
+      setOutputLanguage(inputLanguage);
+    }
+    else{
+      setInputLanguage(e.target.value);
+    }
   };
 
   const handleOutputLanguageChange = (e) => {
-    setOutputLanguage(e.target.value);
+    if(inputLanguage === e.target.value){
+      setOutputLanguage(e.target.value);
+      setInputLanguage(outputLanguage);
+    }
+    else{
+      setOutputLanguage(e.target.value);
+    }
   };
 
   const handleDownloadClick = () => {
@@ -254,7 +321,9 @@ const TranslatePage = () => {
                 <Select value={inputLanguage} onChange={handleInputLanguageChange} style={{color:'#fff'}}>
                   <MenuItem value={'java'}>Java</MenuItem>
                   <MenuItem value={'python'}>Python</MenuItem>
+                  <MenuItem value={'c'}>C</MenuItem>
                   <MenuItem value={'cpp'}>C++</MenuItem>
+                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
                 </Select>
               </div>
               <Editor
@@ -264,8 +333,7 @@ const TranslatePage = () => {
                 options={{
                   fontSize: 12,
                   scrollBeyondLastLine : false,
-                  minimap : {enabled: false}
-                  
+                  minimap : {enabled: true}
                 }}
                 language={inputLanguage}
                 theme="vs-light"
@@ -275,13 +343,16 @@ const TranslatePage = () => {
               />
             </div>
           </div>
-          <Button
-              variant="contained"
-              className={classes.convertButton}
-              onClick={handleConvertClick}
-            >
-              Convert
-          </Button>
+          <div className={classes.loadingContainer}>
+            {loading && <CircularProgress style={{ color: 'white', marginTop: '0px' }} />}
+            <Button
+                variant="contained"
+                className={classes.convertButton}
+                onClick={handleConvertClick}
+              >
+                Convert
+            </Button>
+          </div>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
               <Button
@@ -304,7 +375,9 @@ const TranslatePage = () => {
                 <Select value={outputLanguage} onChange={handleOutputLanguageChange} style={{color:'#fff'}}>
                   <MenuItem value={'java'}>Java</MenuItem>
                   <MenuItem value={'python'}>Python</MenuItem>
+                  <MenuItem value={'c'}>C</MenuItem>
                   <MenuItem value={'cpp'}>C++</MenuItem>
+                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
                 </Select>
               </div>
               <Editor
@@ -315,14 +388,16 @@ const TranslatePage = () => {
                   readOnly: true,
                   fontSize: 12,
                   scrollBeyondLastLine : false,
-                  minimap : {enabled: false}
+                  minimap : {enabled: true}
                 }}
                 language={outputLanguage}
                 theme="vs-dark"
                 onChange={setOutputText}
                 value={outputText}
                 loading={<div>Loading...</div>}
+                
               />
+
             </div>
           </div>
         </div>
