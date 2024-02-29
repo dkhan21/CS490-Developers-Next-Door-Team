@@ -5,14 +5,13 @@ import {
   Form,
   Label, FieldError,
   TextAreaField, TextField,
-  Submit,useForm
+  Submit, useForm
 } from '@redwoodjs/forms'
 import { useMutation } from '@redwoodjs/web'
 import { Toaster, toast } from '@redwoodjs/web/toast'
-import 'src/components/FeedbackForm/FeedbackForm.css'
 import FeedbacksCell from 'src/components/FeedbacksCell';
 import { QUERY as FeedbacksQuery } from 'src/components/FeedbacksCell'
-
+import Example from 'src/components/FeedbackForm/EncryptButton';
 
 const CREATE = gql`
   mutation CreateFeedbackMutation($input: CreateFeedbackInput!) {
@@ -26,7 +25,9 @@ const CREATE = gql`
   }
 `
 
+
 const FeedbackForm = () => {
+
   const [rating, setRating] = useState(0);
   const handleStarClick = (clickedRating) => {
     setRating(clickedRating === rating ? 0 : clickedRating);
@@ -55,7 +56,7 @@ const FeedbackForm = () => {
     <>
       <main >
         {/* Feedback Form submission start here!!!*/}
-        <Toaster/>
+        <Toaster />
         <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px' }}>
 
           <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column' }}>
@@ -106,16 +107,16 @@ const FeedbackForm = () => {
 
           </div>
 
-          <div style={{ marginTop: '37px' }}>
-            <Submit className="submit-button" disabled={loading}
-            >
-              Submit
-            </Submit>
+          <div style={{ marginTop: '37px', marginRight: '20px', marginLeft: '0px' }}>
 
+            <Submit className="submit-button" disabled={loading} style={{ cursor: 'pointer', color: 'white', width: '110px', height: '35px', border: 'none', backgroundColor: 'white' }}
+            >
+              <Example ></Example>
+
+            </Submit>
           </div>
 
         </Form>
-
         {/* Feedback Form submission ends here!!!*/}
 
         <FeedbacksCell ></FeedbacksCell>
