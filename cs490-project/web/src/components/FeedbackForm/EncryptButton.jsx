@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { FiLock } from "react-icons/fi";
+import { FiCheck, FiCheckCircle, FiCloudLightning, FiCloudSnow, FiGitBranch, FiLock, FiSave } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 const Example = () => {
@@ -66,7 +66,7 @@ const EncryptButton = () => {
       className="group relative overflow-hidden rounded-lg border-[1px] border-neutral-500 bg-neutral-700 px-4 py-2 font-mono font-medium uppercase text-neutral-300 transition-colors hover:text-indigo-300"
     >
       <div className="relative z-10 flex items-center gap-2">
-        <FiLock />
+        <FiCheckCircle />
         <span>{text}</span>
       </div>
       <motion.span
