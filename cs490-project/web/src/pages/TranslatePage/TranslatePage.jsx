@@ -1,31 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
-import { Button, Paper, Select, MenuItem, makeStyles, Box, Typography, IconButton, CssBaseline, CircularProgress } from '@material-ui/core';
+import { Button, IconButton, makeStyles, Box, CircularProgress, MenuItem, Select } from '@material-ui/core';
 import { FileCopy as FileCopyIcon, FileUpload as FileUploadIcon, FileDownload as FileDownloadIcon, WidthFull } from '@mui/icons-material';
 import { CheckCircle, HighlightOff } from '@material-ui/icons';
 import saveAs from 'file-saver';
 import Editor from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { parse as parsePython } from 'filbert';
-import { parse as parseJava } from 'java-parser';
-import detectLang from 'lang-detector'; // If we want to add an auto-detect language feature
-
-
-/*
-INSTALLS IN TERMINAL:
-yarn add @material-ui/core
-yarn add @material-ui/icons
-yarn add @monaco-editor/react @monaco-editor/loader
-yarn add file-saver
-yarn add @mui/icons-material @mui/material @emotion/styled @emotion/react
-yarn add react-monaco-editor
-yarn add filbert
-yarn add java-parser
-yarn add node-c-parser
-*/
+//import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
+import Navbar from 'src/components/Navbar/Navbar'
 
 const useStyles = makeStyles((theme) => ({
   page: { // Container for entire page
-    backgroundImage: 'radial-gradient(ellipse at top, #666970, #706D66, transparent)', // Background gradient
+    backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', // Background gradient
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -33,10 +18,22 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 'fit-content',
     minHeight: '100vh',
   },
+  dropdownContainer: { // Container for dropdown
+    marginBottom: '10px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    textAlign: 'center', // Center the text in the dropdown
+    '& .MuiSelect-icon': {
+      color: '#32368c', // Brighter arrow color
+    },
+  },
   convertContainer: { // Container for entire converter
     display: 'flex',
     flexDirection: 'row',
     gap: '10px',
+    marginTop: '50px',
     justifyContent: 'center',
     alignItems: 'center',
     padding: '20px',
@@ -49,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#1e1e1e',
     padding: '20px',
     borderRadius: '10px',
-    width: '100vrm',
     boxShadow: '10px 10px 10px 0px rgba(0, 0, 0, 0.1)',
   },
   fieldContainer: { // Container for dropdown and editor
@@ -57,23 +53,12 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  dropdownContainer: { // Container for dropdown
-    marginBottom: '10px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    textAlign: 'center',
-    '& .MuiSelect-icon': {
-      color: '#32368c',
-    },
-  },
   buttonContainer: { // Container for 3 buttons 
     display: 'flex',
     flexDirection: 'column',
     gap: '50px',
-    marginLeft: '-5px',
-    marginRight: '0px',
+    marginLeft: '-10px',
+    marginRight: '5px',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -87,12 +72,12 @@ const useStyles = makeStyles((theme) => ({
     height: '50px',
     borderRadius: '10px',
   },
-  loadingContainer: { // Container loading and convert button 
+  loadingContainer: { // Container GPT-3 Status, convert button, and loading 
     display: 'flex',
     flexDirection: 'column',
-    gap: '10px',
+    height: '605px',
+    width: '156px',
     alignItems: 'center',
-    justifyContent: 'center',
   },
   convertButton: { // Style for convert button
     backgroundColor: '#32368c',
@@ -105,6 +90,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     fontSize: '1.5rem',
     fontWeight: 'bold',
+    marginTop: '150%',
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', // Add subtle shadow
     transition: 'background-color 0.3s ease', // Smooth transition on hover
   },
@@ -128,20 +114,13 @@ const TranslatePage = () => {
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
+  const selectRef = useRef(null);
 
   useEffect(() => {
     if (inputEditor.current) {
       monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
     }
   }, [inputLanguage]);
-
-  useEffect(() => {
-    if(inputLanguage === 'javascript'){
-      monaco.languages.java.javaDefaults.setDiagnosticsOptions({
-        validate: true
-    });
-    }
-  }, [inputText]);
 
   useEffect(() => {
     if (outputEditor.current) {
@@ -160,28 +139,7 @@ const TranslatePage = () => {
     setTimeout(() => {
       /*
       If we want to add auto-detect feature:
-      const detectedLanguage = detectLang(inputText)
-      If we should check for syntax errors:
-      if (inputLanguage === 'java') {
-        try {
-          parseJava(inputText);
-        } catch (error) {
-          alert('Syntax error in Java code: ' + error.message);
-          setLoading(false); // Hide loading element on error
-          return;
-        }
-      }
-
-      if (inputLanguage === 'python') {
-        try {
-          parsePython(inputText);
-        } catch (error) {
-          alert('Syntax error in Python code: ' + error.message);
-          setLoading(false); // Hide loading element on error
-          return;
-        }
-      }*/
-
+      const detectedLanguage = detectLang(inputText)*/
       setOutputText(inputText);
       setLoading(false);
     }, 2000);
@@ -259,32 +217,23 @@ const TranslatePage = () => {
       alert('There is no output to download.');
       return;
     }
-    
     const fileExtension = languageToFileExtension[outputLanguage];
     const fileName = `output.${fileExtension}`;
     const blob = new Blob([outputText], { type: 'text/plain;charset=utf-8' });
     saveAs(blob, fileName);
   };
   
-
   const [isGreen, setIsGreen] = useState(true);
-
   const handleToggleColor = () => {
     setIsGreen(prevState => !prevState);
   };
 
   return (
     <>
-      <CssBaseline />
       <div className={classes.page}>
-        <Paper elevation={3} style={{ backgroundColor: '#1e1e1e', color: '#fff', padding: '5px', borderRadius: '10px', width: 'fit-content', marginTop: '10px' }}>
-          <Box display="flex" alignItems="center">
-            <Typography variant="body1">GPT-3 Status</Typography>
-            <IconButton onClick={handleToggleColor}>
-              {isGreen ? <CheckCircle style={{ color: 'green' }} /> : <HighlightOff style={{ color: 'red' }} />}
-            </IconButton>
-          </Box>
-        </Paper>
+        <header>
+          <Navbar/>
+        </header>
         <div className={classes.convertContainer}>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
@@ -292,15 +241,13 @@ const TranslatePage = () => {
                 variant="contained"
                 className={classes.button}
                 onClick={handleUploadClick} 
-              >
-                <FileUploadIcon fontSize="large" />
+              ><FileUploadIcon fontSize="large" />
               </Button>
               <Button
                 variant="contained"
                 className={classes.button}
                 onClick={handleDownloadClick}
-              >
-                <FileDownloadIcon fontSize="large" />
+              ><FileDownloadIcon fontSize="large" />
               </Button>
               <Button
                 variant="contained"
@@ -318,7 +265,20 @@ const TranslatePage = () => {
             </div>
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
-                <Select value={inputLanguage} onChange={handleInputLanguageChange} style={{color:'#fff'}}>
+                <Select  value={inputLanguage}  onChange={handleInputLanguageChange}  style={{color:'#fff' }}
+                  MenuProps={{                   
+                    PaperProps: { 
+                      style: { 
+                        backgroundColor: '#393e41', // background color of the dropdown menu
+                      }, 
+                    }, 
+                    MenuListProps: {
+                      style: {
+                        color: '#fff', // text color of the dropdown items
+                        textAlign: 'center', // center the text in the dropdown
+                      },
+                    },
+                  }}>
                   <MenuItem value={'java'}>Java</MenuItem>
                   <MenuItem value={'python'}>Python</MenuItem>
                   <MenuItem value={'c'}>C</MenuItem>
@@ -331,12 +291,11 @@ const TranslatePage = () => {
                 height="535px"
                 width="550px"
                 options={{
-                  fontSize: 12,
+                  fontSize: 14,
                   scrollBeyondLastLine : false,
-                  minimap : {enabled: true}
                 }}
                 language={inputLanguage}
-                theme="vs-light"
+                theme="vs-dark"
                 onChange={setInputText}
                 value={inputText}
                 loading={<div>Loading...</div>}
@@ -344,35 +303,55 @@ const TranslatePage = () => {
             </div>
           </div>
           <div className={classes.loadingContainer}>
-            {loading && <CircularProgress style={{ color: 'white', marginTop: '0px' }} />}
-            <Button
-                variant="contained"
-                className={classes.convertButton}
-                onClick={handleConvertClick}
-              >
-                Convert
-            </Button>
+          <Box
+            display="flex"
+            alignItems="center"
+            boxShadow={3}
+            style={{backgroundColor: '#1e1e1e', color: '#fff', padding: '5px', borderRadius: '10px', width: 'fit-content' }}>
+            GPT-3 Status
+            <IconButton onClick={handleToggleColor}>
+              {isGreen ? <CheckCircle style={{ color: 'green' }} /> : <HighlightOff style={{ color: 'red' }} />}
+            </IconButton>
+          </Box>
+          <Button
+              variant="contained"
+              className={classes.convertButton}
+              onClick={handleConvertClick}
+            >Convert
+          </Button>
+          {loading && <CircularProgress style={{ color: 'white', marginTop: '10px'}} />}
           </div>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
               <Button
                 variant="contained"
                 className={classes.button}
-                onClick={handleOutputDownloadClick}
-              >
+                onClick={handleOutputDownloadClick}>
                 <FileDownloadIcon fontSize="large" />
               </Button>
               <Button
                 variant="contained"
                 className={classes.button}
                 onClick={handleOutputCopyClick}
-              >
-                <FileCopyIcon fontSize="large" />
+              ><FileCopyIcon fontSize="large" />
               </Button>
             </div>
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
-                <Select value={outputLanguage} onChange={handleOutputLanguageChange} style={{color:'#fff'}}>
+                <Select  value={outputLanguage}  onChange={handleOutputLanguageChange}  style={{color:'#fff' }}
+                  MenuProps={{                   
+                    PaperProps: { 
+                      style: { 
+                        backgroundColor: '#393e41', // background color of the dropdown menu
+                      }, 
+                    }, 
+                    MenuListProps: {
+                      style: {
+                        color: '#fff', // text color of the dropdown items
+                        textAlign: 'center', // center the text in the dropdown
+                      },
+                    },
+                  }}>
                   <MenuItem value={'java'}>Java</MenuItem>
                   <MenuItem value={'python'}>Python</MenuItem>
                   <MenuItem value={'c'}>C</MenuItem>
@@ -385,19 +364,15 @@ const TranslatePage = () => {
                 height="535px"
                 width="550px"
                 options={{
-                  readOnly: true,
-                  fontSize: 12,
+                  fontSize: 14,
                   scrollBeyondLastLine : false,
-                  minimap : {enabled: true}
                 }}
                 language={outputLanguage}
                 theme="vs-dark"
                 onChange={setOutputText}
                 value={outputText}
                 loading={<div>Loading...</div>}
-                
               />
-
             </div>
           </div>
         </div>
