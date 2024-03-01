@@ -39,3 +39,19 @@ model UserCredential {
   transports String?
   counter    BigInt
 }
+
+
+//model UserExample {
+  //id    Int     @id @default(autoincrement())
+  //email String  @unique
+  //name  String?
+//}
+
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  name      String
+  rating    Int
+  body      String
+  createdAt DateTime @default(now())
+}
