@@ -8,6 +8,7 @@ export const QUERY = gql`
       body
       rating
       createdAt
+      userId
     }
   }
 `

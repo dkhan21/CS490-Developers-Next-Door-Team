@@ -1,6 +1,6 @@
 export const standard = defineScenario({
   feedback: {
-    Dani: { data: { name: 'Dani', rating: 4640320, body: 'Hello There' } },
-    Sam: { data: { name: 'Sam', rating: 8951490, body: 'Bye' } },
+    one: { data: { name: 'String', rating: 3492316, body: 'String' } },
+    two: { data: { name: 'String', rating: 378131, body: 'String' } },
   },
 })

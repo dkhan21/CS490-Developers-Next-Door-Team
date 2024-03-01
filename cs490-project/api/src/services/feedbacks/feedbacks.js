@@ -16,6 +16,13 @@ export const createFeedback = ({ input }) => {
   })
 }
 
+export const updateFeedback = ({ id, input }) => {
+  return db.feedback.update({
+    data: input,
+    where: { id },
+  })
+}
+
 export const deleteFeedback = ({ id }) => {
   return db.feedback.delete({
     where: { id },

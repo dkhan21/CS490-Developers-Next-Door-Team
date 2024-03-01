@@ -54,4 +54,6 @@ model Feedback {
   rating    Int
   body      String
   createdAt DateTime @default(now())
+  userId    Int      @default(-1)
+  
 }

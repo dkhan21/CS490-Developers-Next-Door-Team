@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, routes } from '@redwoodjs/router';
+import { useAuth } from 'src/auth'
 
 import {
   Form,
@@ -21,13 +22,15 @@ const CREATE = gql`
       rating
       body
       createdAt
+      userId
     }
   }
 `
 
 
 const FeedbackForm = () => {
-
+  const { isAuthenticated, currentUser, logOut } = useAuth()
+  
   const [rating, setRating] = useState(0);
   const handleStarClick = (clickedRating) => {
     setRating(clickedRating === rating ? 0 : clickedRating);
@@ -48,7 +51,19 @@ const FeedbackForm = () => {
   const onSubmit = (data) => {
     const { name, body } = data;
     // Assuming your rating is stored in the 'rating' state variable
-    const input = { name, rating, body: body };
+    
+    //Get user ID
+    
+    var userID = -1;
+    
+    
+    if(isAuthenticated){
+      userID = currentUser.id;
+    }
+    
+    const user = userID;
+    
+    const input = { name, rating, body: body, userId: user };
     createFeedback({ variables: { input } });
   };
 

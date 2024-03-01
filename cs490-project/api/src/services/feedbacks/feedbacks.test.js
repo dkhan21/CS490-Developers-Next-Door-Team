@@ -1,5 +1,10 @@
-import { feedbacks, createFeedback } from './feedbacks'
-import { standard } from './feedbacks.scenarios'
+import {
+  feedbacks,
+  feedback,
+  createFeedback,
+  updateFeedback,
+  deleteFeedback,
+} from './feedbacks'
 
 // Generated boilerplate tests do not account for all circumstances
 // and can fail without adjustments, e.g. Float.
@@ -13,19 +18,41 @@ describe('feedbacks', () => {
 
     expect(result.length).toEqual(Object.keys(scenario.feedback).length)
   })
-})
 
-scenario('standard', 'create new feedback',  async (scenario) => {
-  const feedback = await createFeedback({
-    input: {
-      name: 'Billy Bob',
-      rating: 4,
-      body: 'What is your favorite tree bark?',
-    },
+  scenario('returns a single feedback', async (scenario) => {
+    const result = await feedback({ id: scenario.feedback.one.id })
+
+    expect(result).toEqual(scenario.feedback.one)
   })
 
-  expect(feedback.name).toEqual('Billy Bob')
-  expect(feedback.body).toEqual('What is your favorite tree bark?')
-  expect(feedback.rating).toEqual(4)
-  expect(feedback.createdAt).not.toEqual(null)
+  scenario('creates a feedback', async () => {
+    const result = await createFeedback({
+      input: { name: 'String', rating: 1638966, body: 'String' },
+    })
+
+    expect(result.name).toEqual('String')
+    expect(result.rating).toEqual(1638966)
+    expect(result.body).toEqual('String')
+  })
+
+  scenario('updates a feedback', async (scenario) => {
+    const original = await feedback({
+      id: scenario.feedback.one.id,
+    })
+    const result = await updateFeedback({
+      id: original.id,
+      input: { name: 'String2' },
+    })
+
+    expect(result.name).toEqual('String2')
+  })
+
+  scenario('deletes a feedback', async (scenario) => {
+    const original = await deleteFeedback({
+      id: scenario.feedback.one.id,
+    })
+    const result = await feedback({ id: original.id })
+
+    expect(result).toEqual(null)
+  })
 })
