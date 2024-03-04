@@ -1,5 +1,6 @@
 import { Link, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
+
 import Navbar from 'src/components/Navbar/Navbar'
 
 const HomePage = () => {
@@ -63,10 +64,6 @@ const HomePage = () => {
             </ol>
           </div>
         </div>
-        <footer>
-          <h1>Contact Us</h1>
-          <p1>Email: </p1>
-        </footer>
       </body>
     </>
   )
