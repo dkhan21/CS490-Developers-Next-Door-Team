@@ -13,7 +13,6 @@ body{
   display: flex;
   align-items: center;
   padding: 25px;
-  border-radius: 20px;
   line-height: 30px;
   border:5px solid #393E41;
   border-radius: 20px;
@@ -108,3 +107,14 @@ img {
   background-color: #44BBA4;
 }
 
+/*----Footer----*/
+footer{
+  margin-top: 100px;
+  height: 200px;
+  border:5px solid #393E41;
+  border-radius: 20px;
+  background-color: #E7BB41;
+  color: #393E41;
+  padding: 20px;
+  line-height: 30px;
+}
