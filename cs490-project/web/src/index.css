@@ -41,6 +41,11 @@ img {
   line-height: 30px;
 }
 
+#welcome-text{
+  text-align: center;
+  -webkit-text-stroke: 1px black;
+}
+
 
 /*-----The Button-----*/
 #getStarted{
