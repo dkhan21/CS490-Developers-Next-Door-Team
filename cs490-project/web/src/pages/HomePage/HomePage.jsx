@@ -1,5 +1,6 @@
 import { Link, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
+
 import Navbar from 'src/components/Navbar/Navbar'
 
 const HomePage = () => {
@@ -7,12 +8,14 @@ const HomePage = () => {
     <>
       <Metadata title="Home" description="Home page" />
       <header>
-        <Navbar/>
+        <Navbar />
       </header>
       <div id="welcome">
-        <h1>Welcome To Code Harbor!</h1>
-        <h3>The Place To Convert Your Code, </h3>
-        <h3>Into Other Programming Languages!</h3>
+        <div id="welcome-text">
+          <h1>Welcome To Code Harbor!</h1>
+          <h3>The Place To Convert Your Code, </h3>
+          <h3>Into Other Programming Languages!</h3>
+        </div>
         <button id="getStarted">Get Started</button>
       </div>
       <body>
