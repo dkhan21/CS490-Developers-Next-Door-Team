@@ -86,6 +86,7 @@ img {
   border:5px solid #393E41;
   border-radius: 20px;
   margin-right: 20px;
+  padding: 40px;
 }
 #section-about{
   background-color: #E7BB41;
@@ -100,6 +101,7 @@ img {
   border:5px solid #393E41;
   border-radius: 20px;
   margin: 20px;
+  padding: 40px;
 
 }
 #section-works{
