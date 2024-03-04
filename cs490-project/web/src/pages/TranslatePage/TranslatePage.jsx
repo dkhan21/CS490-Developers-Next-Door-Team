@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
-import { Button, IconButton, makeStyles, Box, CircularProgress, MenuItem, Select } from '@material-ui/core';
+import { useState, useRef, useEffect, forwardRef } from 'react';
+import { Button, IconButton, makeStyles, Box, CircularProgress, MenuItem, Select, InputLabel } from '@material-ui/core';
 import { FileCopy as FileCopyIcon, FileUpload as FileUploadIcon, FileDownload as FileDownloadIcon, WidthFull } from '@mui/icons-material';
 import { CheckCircle, HighlightOff } from '@material-ui/icons';
 import saveAs from 'file-saver';
-import Editor from '@monaco-editor/react';
-import * as monaco from 'monaco-editor';
+import MonacoEditor from '@monaco-editor/react';
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
 import Navbar from 'src/components/Navbar/Navbar'
 
@@ -24,9 +23,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    textAlign: 'center', // Center the text in the dropdown
+    textAlign: 'center',
     '& .MuiSelect-icon': {
-      color: '#32368c', // Brighter arrow color
+      color: '#32368c',
     },
   },
   convertContainer: { // Container for entire converter
@@ -103,6 +102,9 @@ const languageToFileExtension = {
   c: 'c',
   javascript: 'js',
 };
+const MonacoEditorWrapper = forwardRef((props, ref) => {
+  return <MonacoEditor {...props} ref={ref} />;
+});
 
 const TranslatePage = () => {
   const classes = useStyles();
@@ -133,13 +135,9 @@ const TranslatePage = () => {
       alert('Please provide input text before converting.');
       return;
     }
-
     setLoading(true); // Show loading element
-
     setTimeout(() => {
-      /*
-      If we want to add auto-detect feature:
-      const detectedLanguage = detectLang(inputText)*/
+      //If we want to add auto-detect feature: const detectedLanguage = detectLang(inputText)
       setOutputText(inputText);
       setLoading(false);
     }, 2000);
@@ -202,7 +200,6 @@ const TranslatePage = () => {
       alert('File extension unsupported.');
     }
   };
-  
 
   const handleCopyClick = () => {
     navigator.clipboard.writeText(inputText);
@@ -230,10 +227,10 @@ const TranslatePage = () => {
 
   return (
     <>
+      <header>
+        <Navbar/>
+      </header>
       <div className={classes.page}>
-        <header>
-          <Navbar/>
-        </header>
         <div className={classes.convertContainer}>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
@@ -250,11 +247,11 @@ const TranslatePage = () => {
               ><FileDownloadIcon fontSize="large" />
               </Button>
               <Button
+                aria-label="copy-button"
                 variant="contained"
                 className={classes.button}
                 onClick={handleCopyClick}
-              >
-                <FileCopyIcon fontSize="large" />
+              ><FileCopyIcon fontSize="large" />
               </Button>
               <input
                 type="file"
@@ -265,29 +262,31 @@ const TranslatePage = () => {
             </div>
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
-                <Select  value={inputLanguage}  onChange={handleInputLanguageChange}  style={{color:'#fff' }}
-                  MenuProps={{                   
-                    PaperProps: { 
-                      style: { 
-                        backgroundColor: '#393e41', // background color of the dropdown menu
+                  <Select  value={inputLanguage}  onChange={handleInputLanguageChange}  style={{color:'#fff' }}
+                  aria-label='input-language-dropdown'
+                    MenuProps={{
+                      PaperProps: { 
+                        style: { 
+                          backgroundColor: '#393e41', // background color of the dropdown menu
+                        }, 
                       }, 
-                    }, 
-                    MenuListProps: {
-                      style: {
-                        color: '#fff', // text color of the dropdown items
-                        textAlign: 'center', // center the text in the dropdown
+                      MenuListProps: {
+                        style: {
+                          color: '#fff', // text color of the dropdown items
+                          textAlign: 'center', // center the text in the dropdown
+                        },
                       },
-                    },
-                  }}>
-                  <MenuItem value={'java'}>Java</MenuItem>
-                  <MenuItem value={'python'}>Python</MenuItem>
-                  <MenuItem value={'c'}>C</MenuItem>
-                  <MenuItem value={'cpp'}>C++</MenuItem>
-                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
-                </Select>
+                    }}>
+                    <MenuItem value={'java'}>Java</MenuItem>
+                    <MenuItem value={'python'}>Python</MenuItem>
+                    <MenuItem value={'c'}>C</MenuItem>
+                    <MenuItem value={'cpp'}>C++</MenuItem>
+                    <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                  </Select>
               </div>
-              <Editor
-                ref={inputEditor}
+              <MonacoEditorWrapper
+                forwardedRef={inputEditor}
+                name="inputEditor"
                 height="535px"
                 width="550px"
                 options={{
@@ -298,7 +297,6 @@ const TranslatePage = () => {
                 theme="vs-dark"
                 onChange={setInputText}
                 value={inputText}
-                loading={<div>Loading...</div>}
               />
             </div>
           </div>
@@ -339,9 +337,10 @@ const TranslatePage = () => {
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
                 <Select  value={outputLanguage}  onChange={handleOutputLanguageChange}  style={{color:'#fff' }}
-                  MenuProps={{                   
+                aria-label='output-language-dropdown'
+                  MenuProps={{
                     PaperProps: { 
-                      style: { 
+                      style: {
                         backgroundColor: '#393e41', // background color of the dropdown menu
                       }, 
                     }, 
@@ -359,8 +358,8 @@ const TranslatePage = () => {
                   <MenuItem value={'javascript'}>JavaScript</MenuItem>
                 </Select>
               </div>
-              <Editor
-                ref={outputEditor}
+              <MonacoEditorWrapper
+                forwardedRef={outputEditor}
                 height="535px"
                 width="550px"
                 options={{
@@ -371,7 +370,6 @@ const TranslatePage = () => {
                 theme="vs-dark"
                 onChange={setOutputText}
                 value={outputText}
-                loading={<div>Loading...</div>}
               />
             </div>
           </div>
