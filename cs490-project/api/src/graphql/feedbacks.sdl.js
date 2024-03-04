@@ -18,12 +18,13 @@ export const schema = gql`
   }
 
   input UpdateFeedbackInput {
-    name: String
-    rating: Int
-    body: String
+    name: String!
+    rating: Int!
+    body: String!
   }
   type Mutation {
     createFeedback(input: CreateFeedbackInput!): Feedback! @skipAuth
-    deleteFeedback(id: Int!): Feedback! @requireAuth
+    updateFeedback(id: Int!, input: UpdateFeedbackInput!): Feedback! @skipAuth
+    deleteFeedback(id: Int!): Feedback! @skipAuth
   }
 `
