@@ -48,7 +48,7 @@ const HomePage = () => {
           />
           <div id="workings">
             <h2>
-              <u>How it Works</u>
+              <u>Instructions</u>
             </h2>
             <ol>
               <li>Paste or upload your code in the input box.</li>

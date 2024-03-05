@@ -66,7 +66,39 @@ const Navbar = () => {
             }}
             aria-label="About"
           >
-            About
+            <a href="#section-about">About</a>
+          </Button>
+          {/* </Link> */}
+
+          {/* <Link to={routes.}> */}
+          <Button
+            color="inherit"
+            sx={{
+              color: '#E7E5DF',
+              position: 'relative',
+              '&:after': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: '1px',
+                backgroundColor: 'currentColor',
+                transform: 'scaleX(0)',
+                transformOrigin: 'left',
+                transition: 'transform 0.5s ease-in-out',
+              },
+              '&:hover:after': {
+                transform: 'scaleX(1)',
+                color: '#E7BB41',
+              },
+              '&:hover': {
+                color: '#E7BB41',
+              },
+            }}
+            aria-label="How It Works"
+          >
+            <a href="#section-works">Instructions</a>
           </Button>
           {/* </Link> */}
 
@@ -103,6 +135,7 @@ const Navbar = () => {
           {/* </Link> */}
 
           {/* <Link to={routes.}> */}
+
           <Button
             color="inherit"
             sx={{
