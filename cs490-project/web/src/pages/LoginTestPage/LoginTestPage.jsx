@@ -14,7 +14,7 @@ const LoginTestPage = () => {
       <p>
         This page is only accessible to users logged in
       </p>
-      <p>Logged in as {currentUser.email}</p>
+      <p>Logged in as {currentUser?.email}</p>
       
       <button type="button" onClick={logOut}>
         Logout

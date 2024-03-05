@@ -7,8 +7,15 @@ import EditFeedback from './EditFeedback'
 
 describe('EditFeedback', () => {
   it('renders successfully', () => {
+    const feedback = {
+      name: 'John Doe',
+      rating: 3,
+      body: 'This is my comment',
+      createdAt: '2020-01-02T12:34:56Z',
+    }
+    
     expect(() => {
-      render(<EditFeedback />)
+      render(<EditFeedback feedback={feedback} />)
     }).not.toThrow()
   })
 })

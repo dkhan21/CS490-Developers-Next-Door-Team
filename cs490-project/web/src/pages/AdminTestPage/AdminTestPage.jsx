@@ -16,7 +16,7 @@ const AdminTestPage = () => {
       <p>
         This page is only accessible to admins logged in.
       </p>
-      <p>Logged in as: {currentUser.email}</p>
+      <p>Logged in as: {currentUser?.email}</p>
       <p>
         My default route is named <code>adminTest</code>, link to me with `
         <Link to={routes.adminTest()}>AdminTest</Link>`
