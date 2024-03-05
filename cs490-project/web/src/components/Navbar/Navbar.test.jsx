@@ -1,10 +1,7 @@
-import { render, screen, fireEvent } from '@redwoodjs/testing/web'
+import { render, screen, fireEvent, waitFor } from '@redwoodjs/testing/web'
 import { routes } from '@redwoodjs/router'
-
 import Navbar from './Navbar'
 
-//   Improve this test with help from the Redwood Testing Doc:
-//    https://redwoodjs.com/docs/testing#testing-components
 
 describe('Navbar', () => {
   it('renders successfully', () => {
@@ -48,11 +45,7 @@ describe('Navbar', () => {
 describe('Navbar', () => {
   it('navigates to respective pages when links are clicked', () => {
     render(<Navbar />)
-
-    const aboutLink = screen.getByText(/About/i)
-    fireEvent.click(aboutLink)
-    expect(routes.about).toHaveBeenCalled()
-
+    
     const getStartedLink = screen.getByText(/Get Started/i)
     fireEvent.click(getStartedLink)
     expect(routes.getStarted).toHaveBeenCalled()
@@ -63,6 +56,19 @@ describe('Navbar', () => {
   })
 })
 
+describe('Navbar', () => {
+  it('changes url hash when links are clicked - about and instructions links', async () => {
+    render(<Navbar />)
+
+    const aboutLink = screen.getByText(/About/i)
+    fireEvent.click(aboutLink)
+    await waitFor(() => expect(window.location.hash).toEqual('#section-about'))
+
+    const instructionsLink = screen.getByText(/Instructions/i)
+    fireEvent.click(instructionsLink)
+    await waitFor(() => expect(window.location.hash).toEqual('#section-works'))
+  })
+})
 
 describe('Navbar', () => {
   it('renders without crashing on small screens', () => {
