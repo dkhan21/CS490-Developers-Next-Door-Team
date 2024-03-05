@@ -21,9 +21,9 @@ export const schema = gql`
   }
 
   input UpdateFeedbackInput {
-    name: String
-    rating: Int
-    body: String
+    name: String!
+    rating: Int!
+    body: String!
   }
 
   type Mutation {
