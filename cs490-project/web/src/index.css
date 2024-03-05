@@ -1,3 +1,7 @@
+html{
+  scroll-behavior: smooth;
+}
+
 *{
   margin: 0;
   padding: 0;
@@ -13,7 +17,6 @@ body{
   display: flex;
   align-items: center;
   padding: 25px;
-  border-radius: 20px;
   line-height: 30px;
   border:5px solid #393E41;
   border-radius: 20px;
@@ -39,6 +42,11 @@ img {
   color: #E7E5DF;
   border-radius: 20px;
   line-height: 30px;
+}
+
+#welcome-text{
+  text-align: center;
+  -webkit-text-stroke: 1px black;
 }
 
 
@@ -81,6 +89,7 @@ img {
   border:5px solid #393E41;
   border-radius: 20px;
   margin-right: 20px;
+  padding: 40px;
 }
 #section-about{
   background-color: #E7BB41;
@@ -95,6 +104,7 @@ img {
   border:5px solid #393E41;
   border-radius: 20px;
   margin: 20px;
+  padding: 40px;
 
 }
 #section-works{
