@@ -79,7 +79,7 @@ const FeedbackForm = () => {
   return (
     <>
 
-      <main style={{ backgroundColor: '#3C3C44', marginTop: '-100px' }} >
+      <main style={{ backgroundColor: '#3C3C44'}} >
 
         {/* Feedback Form submission start here!!!*/}
 
