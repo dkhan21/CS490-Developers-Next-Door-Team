@@ -6,6 +6,8 @@ import saveAs from 'file-saver';
 import MonacoEditor from '@monaco-editor/react';
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
 import Navbar from 'src/components/Navbar/Navbar'
+import FeedbackForm from 'src/components/FeedbackForm';
+
 
 const useStyles = makeStyles((theme) => ({
   page: { // Container for entire page
@@ -52,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  buttonContainer: { // Container for 3 buttons 
+  buttonContainer: { // Container for 3 buttons
     display: 'flex',
     flexDirection: 'column',
     gap: '50px',
@@ -71,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     height: '50px',
     borderRadius: '10px',
   },
-  loadingContainer: { // Container GPT-3 Status, convert button, and loading 
+  loadingContainer: { // Container GPT-3 Status, convert button, and loading
     display: 'flex',
     flexDirection: 'column',
     height: '605px',
@@ -184,13 +186,13 @@ const TranslatePage = () => {
     const fileName = file.name;
     const fileExtension = fileName.split('.').pop(); // Extract file extension
     const supportedLanguages = Object.values(languageToFileExtension);
-    
+
     if (supportedLanguages.includes(fileExtension)) {
       const language = Object.keys(languageToFileExtension).find(
         key => languageToFileExtension[key] === fileExtension
       );
       setInputLanguage(language);
-      
+
       const reader = new FileReader();
       reader.onload = () => {
         setInputText(reader.result);
@@ -219,7 +221,7 @@ const TranslatePage = () => {
     const blob = new Blob([outputText], { type: 'text/plain;charset=utf-8' });
     saveAs(blob, fileName);
   };
-  
+
   const [isGreen, setIsGreen] = useState(true);
   const handleToggleColor = () => {
     setIsGreen(prevState => !prevState);
@@ -237,7 +239,7 @@ const TranslatePage = () => {
               <Button
                 variant="contained"
                 className={classes.button}
-                onClick={handleUploadClick} 
+                onClick={handleUploadClick}
               ><FileUploadIcon fontSize="large" />
               </Button>
               <Button
@@ -265,11 +267,11 @@ const TranslatePage = () => {
                   <Select  value={inputLanguage}  onChange={handleInputLanguageChange}  style={{color:'#fff' }}
                   aria-label='input-language-dropdown'
                     MenuProps={{
-                      PaperProps: { 
-                        style: { 
+                      PaperProps: {
+                        style: {
                           backgroundColor: '#393e41', // background color of the dropdown menu
-                        }, 
-                      }, 
+                        },
+                      },
                       MenuListProps: {
                         style: {
                           color: '#fff', // text color of the dropdown items
@@ -339,11 +341,11 @@ const TranslatePage = () => {
                 <Select  value={outputLanguage}  onChange={handleOutputLanguageChange}  style={{color:'#fff' }}
                 aria-label='output-language-dropdown'
                   MenuProps={{
-                    PaperProps: { 
+                    PaperProps: {
                       style: {
                         backgroundColor: '#393e41', // background color of the dropdown menu
-                      }, 
-                    }, 
+                      },
+                    },
                     MenuListProps: {
                       style: {
                         color: '#fff', // text color of the dropdown items
@@ -375,6 +377,9 @@ const TranslatePage = () => {
           </div>
         </div>
       </div>
+
+      <FeedbackForm ></FeedbackForm>
+
     </>
   );
 };

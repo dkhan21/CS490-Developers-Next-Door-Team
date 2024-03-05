@@ -1,4 +1,4 @@
-import * as React from 'react'; 
+import * as React from 'react';
 import { Link, routes } from '@redwoodjs/router'
 import { styled } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -32,8 +32,8 @@ const Navbar = () => {
           </Typography>
 
           <Box sx={{ flexGrow: 1 }} />
-            {/* <Link to={routes.}> */}
-              <Button color="inherit" sx={{ 
+            <Link to={`${routes.home()}#about`}>
+              <Button color="inherit" sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -58,10 +58,9 @@ const Navbar = () => {
               }}
               aria-label='About'
               >About</Button>
-            {/* </Link> */}
-
-            {/* <Link to={routes.}> */}
-              <Button color="inherit" sx={{ 
+            </Link>
+            <Link to={routes.translate()}>
+              <Button color="inherit" sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -86,10 +85,10 @@ const Navbar = () => {
               }}
               aria-label="Get Started"
               >Get Started</Button>
-            {/* </Link> */}
+            </Link>
 
-            {/* <Link to={routes.}> */}
-              <Button color="inherit" sx={{ 
+            <Link to={routes.login()}>
+              <Button color="inherit" sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -114,7 +113,7 @@ const Navbar = () => {
               }}
               aria-label="Login"
               >Login</Button>
-            {/* </Link> */}
+            </Link>
 
         </Toolbar>
       </AppBar>

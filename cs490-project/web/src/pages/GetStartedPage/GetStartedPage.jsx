@@ -26,7 +26,7 @@ const GetStartedPage = () => {
 
 
         {/* Feedback Form submission start here!!!*/}
-        <FeedbackForm></FeedbackForm>
+        <FeedbackForm ></FeedbackForm>
 
         {/* Feedback Form submission ends here!!!*/}
 

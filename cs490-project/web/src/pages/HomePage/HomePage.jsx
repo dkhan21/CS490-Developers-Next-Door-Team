@@ -16,7 +16,7 @@ const HomePage = () => {
         <nav>
           <ul>
             <li>
-              <Link to={routes.translate}>Get Started</Link>
+              <Link to={routes.translate()}>Get Started</Link>
             </li>
           </ul>
         </nav>
@@ -25,7 +25,9 @@ const HomePage = () => {
         <h1>Welcome To Code Harbor!</h1>
         <h3>The Place To Convert Your Code, </h3>
         <h3>Into Other Programming Languages!</h3>
-        <button id="getStarted"  >Get Started</button>
+        <Link to={routes.translate()}>
+        <button id="getStarted" >Get Started</button>
+        </Link>
       </div>
       <body>
         <div className="container" id="section-about">
