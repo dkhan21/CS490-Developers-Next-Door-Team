@@ -1698,9 +1698,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "@babel/template@npm:^7.18.10, @babel/template@npm:^7.22.15, @babel/template@npm:^7.24.0, @babel/template@npm:^7.3.3":
   version: 7.24.0
   resolution: "@babel/template@npm:7.24.0"
+=======
+"@babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.23.9":
+  version: 7.24.0
+  resolution: "@babel/runtime@npm:7.24.0"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 3495eed727bf4a4f84c35bb51ab53317ae38f4bbc3b1d0a8303751f9dfa0ce6f5fb2afced72b76c3dd0d8bb2ccb84787559a4dee9886291a36b26f02f0f759b4
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.4.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.7":
+  version: 7.23.9
+  resolution: "@babel/runtime@npm:7.23.9"
+>>>>>>> origin/landing-page-richardtran
   dependencies:
     "@babel/code-frame": "npm:^7.23.5"
     "@babel/parser": "npm:^7.24.0"
@@ -6159,6 +6174,13 @@ __metadata:
   version: 1.15.2
   resolution: "@remix-run/router@npm:1.15.2"
   checksum: 10c0/7bcad98a91e8a2e822f3776360d284bee48f9ba2d3b7ee2235f95b8701da2f06de3db880a205c4fd4e78c9198eaf6272229a2e66574a8cf563befd428fdefeee
+  languageName: node
+  linkType: hard
+
+"@remix-run/router@npm:1.15.2":
+  version: 1.15.2
+  resolution: "@remix-run/router@npm:1.15.2"
+  checksum: 7bcad98a91e8a2e822f3776360d284bee48f9ba2d3b7ee2235f95b8701da2f06de3db880a205c4fd4e78c9198eaf6272229a2e66574a8cf563befd428fdefeee
   languageName: node
   linkType: hard
 
@@ -11930,6 +11952,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "css-vendor@npm:^2.0.8":
   version: 2.0.8
   resolution: "css-vendor@npm:2.0.8"
@@ -11940,6 +11963,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "css-what@npm:^6.0.1, css-what@npm:^6.1.0":
   version: 6.1.0
   resolution: "css-what@npm:6.1.0"
@@ -12055,6 +12080,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "csstype@npm:^2.5.2":
   version: 2.6.21
   resolution: "csstype@npm:2.6.21"
@@ -12062,6 +12088,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "csstype@npm:^3.0.2, csstype@npm:^3.1.3":
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
@@ -15774,6 +15802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "hyphenate-style-name@npm:^1.0.3":
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
@@ -15781,6 +15810,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -16268,6 +16299,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "is-in-browser@npm:^1.0.2, is-in-browser@npm:^1.1.3":
   version: 1.1.3
   resolution: "is-in-browser@npm:1.1.3"
@@ -16275,6 +16307,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "is-interactive@npm:^1.0.0":
   version: 1.0.0
   resolution: "is-interactive@npm:1.0.0"
@@ -17581,6 +17615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "jss-plugin-camel-case@npm:^10.10.0, jss-plugin-camel-case@npm:^10.5.1":
   version: 10.10.0
   resolution: "jss-plugin-camel-case@npm:10.10.0"
@@ -17667,6 +17702,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "jsx-ast-utils@npm:^2.4.1 || ^3.0.0, jsx-ast-utils@npm:^3.3.5":
   version: 3.3.5
   resolution: "jsx-ast-utils@npm:3.3.5"
@@ -20295,6 +20332,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "popper.js@npm:1.16.1-lts":
   version: 1.16.1-lts
   resolution: "popper.js@npm:1.16.1-lts"
@@ -20302,6 +20340,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "portfinder@npm:1.0.32":
   version: 1.0.32
   resolution: "portfinder@npm:1.0.32"
@@ -21304,7 +21344,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.8.0 || ^17.0.0, react-is@npm:^17.0.1":
+"react-is@npm:^17.0.1":
   version: 17.0.2
   resolution: "react-is@npm:17.0.2"
   checksum: 10c0/2bdb6b93fbb1820b024b496042cce405c57e2f85e777c9aabd55f9b26d145408f9f74f5934676ffdc46f3dcff656d78413a6e43968e7b3f92eea35b3052e9053
@@ -21338,6 +21378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "react-remove-scroll-bar@npm:^2.3.3":
   version: 2.3.5
   resolution: "react-remove-scroll-bar@npm:2.3.5"
@@ -21373,6 +21414,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "react-router-dom@npm:^6.22.2":
   version: 6.22.2
   resolution: "react-router-dom@npm:6.22.2"
@@ -21382,7 +21425,11 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
+<<<<<<< HEAD
   checksum: 10c0/5dc5a54a72b0470cce571f95021516f1afbe978f9b5103a0f7de9e8585d2f5f8d084f810f3eb648b9701a941a17f3a68517b07a4827dfc4bdb5f0ff0c18920a8
+=======
+  checksum: 5dc5a54a72b0470cce571f95021516f1afbe978f9b5103a0f7de9e8585d2f5f8d084f810f3eb648b9701a941a17f3a68517b07a4827dfc4bdb5f0ff0c18920a8
+>>>>>>> origin/landing-page-richardtran
   languageName: node
   linkType: hard
 
@@ -21393,6 +21440,7 @@ __metadata:
     "@remix-run/router": "npm:1.15.2"
   peerDependencies:
     react: ">=16.8"
+<<<<<<< HEAD
   checksum: 10c0/e0a0d1a0c8566b377cda632691a7c39d4009cbc8fced4fe06f13789a8acc38c474a366984b536b109e3685f3d7e1f839d6bec7b28fb96d311d86d02fc8999379
   languageName: node
   linkType: hard
@@ -21435,6 +21483,13 @@ __metadata:
   linkType: hard
 
 "react-transition-group@npm:^4.3.0, react-transition-group@npm:^4.4.0, react-transition-group@npm:^4.4.5":
+=======
+  checksum: e0a0d1a0c8566b377cda632691a7c39d4009cbc8fced4fe06f13789a8acc38c474a366984b536b109e3685f3d7e1f839d6bec7b28fb96d311d86d02fc8999379
+  languageName: node
+  linkType: hard
+
+"react-transition-group@npm:^4.4.5":
+>>>>>>> origin/landing-page-richardtran
   version: 4.4.5
   resolution: "react-transition-group@npm:4.4.5"
   dependencies:
@@ -22110,6 +22165,7 @@ __metadata:
     "@redwoodjs/auth-dbauth-setup": "npm:6.6.4"
     "@redwoodjs/cli-storybook": "npm:6.6.4"
     "@redwoodjs/core": "npm:6.6.4"
+<<<<<<< HEAD
     brace: "npm:^0.11.1"
     filbert: "npm:^0.1.20"
     file-saver: "npm:^2.0.5"
@@ -22125,6 +22181,9 @@ __metadata:
     react-monaco-editor: "npm:^0.55.0"
     react-router-dom: "npm:^6.22.2"
     react-select: "npm:^5.8.0"
+=======
+    react-router-dom: "npm:^6.22.2"
+>>>>>>> origin/landing-page-richardtran
   languageName: unknown
   linkType: soft
 
@@ -23773,6 +23832,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "tiny-warning@npm:^1.0.2":
   version: 1.0.3
   resolution: "tiny-warning@npm:1.0.3"
@@ -23780,6 +23840,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> origin/landing-page-richardtran
 "title-case@npm:3.0.3, title-case@npm:^3.0.3":
   version: 3.0.3
   resolution: "title-case@npm:3.0.3"

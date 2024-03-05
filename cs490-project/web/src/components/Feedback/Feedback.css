@@ -4,12 +4,14 @@
   background-color: white;
   color: black;
   border-radius: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
+  margin-left: 0px;
+  margin-right: 20px;
   margin-top: 5px;
   margin-bottom: 10px;
   height: 25px;
+  width: 35px;
   transition: background-color 0.3s, color 0.3s;
+
 }
 
 .edit-button:hover{

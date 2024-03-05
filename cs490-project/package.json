@@ -28,6 +28,7 @@
     "@emotion/styled": "^11.11.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
+<<<<<<< HEAD
     "@monaco-editor/loader": "^1.4.0",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.15.10",
@@ -48,5 +49,9 @@
     "react-monaco-editor": "^0.55.0",
     "react-router-dom": "^6.22.2",
     "react-select": "^5.8.0"
+=======
+    "@mui/material": "^5.15.10",
+    "react-router-dom": "^6.22.2"
+>>>>>>> origin/landing-page-richardtran
   }
 }

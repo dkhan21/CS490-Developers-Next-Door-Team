@@ -66,7 +66,7 @@ const FeedbackForm = () => {
     var userID = -1;
 
 
-    if(isAuthenticated){
+    if (isAuthenticated) {
       userID = currentUser.id;
     }
 
@@ -79,77 +79,83 @@ const FeedbackForm = () => {
   return (
     <>
 
-      <main >
+      <main style={{ backgroundColor: '#3C3C44' }} >
 
         {/* Feedback Form submission start here!!!*/}
 
         <Toaster />
         {isAuthenticated ? (
-        <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px' }}>
+          <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', paddingTop: '100px', backgroundColor: '#3C3C44' }}>
 
-          <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column' }}>
-            <Label name="name">Name</Label>
+            <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column', display: 'flex' }}>
+              <Label name="name" style={{
+                fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white'
+              }}>Name</Label>
 
-            <TextAreaField name="name" required
-              className="block w-full p-1 border rounded h-24 text-xs"
-              validation={{ required: true }}
-              style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '200px', height: '30px', fontSize: '16px' }}
-            />
-            <FieldError name="names" />
-          </div>
-
-          <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
-            <Label name="rating" className="block text-sm text-gray-600 uppercase" >
-              Quality
-            </Label>
-            <div style={{
-              width: '140px', borderRadius: '10px',
-              backgroundColor: 'white',
-              border: '2px solid black', height: '25px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '5px'
-            }} required >
-              {[1, 2, 3, 4, 5].map((index) => (
-                <span name="rating" key={index} onClick={() => handleStarClick(index)} style={{ cursor: 'pointer' }} validation={{ required: true }} >
-                  {index <= rating ? '⭐' : '☆'}
-                </span>
-              ))}
+              <TextAreaField name="name" required
+                className="block w-full p-1 border rounded h-24 text-xs"
+                validation={{ required: true }}
+                style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '200px', height: '30px', fontSize: '16px' }}
+              />
+              <FieldError name="names" />
             </div>
-          </div>
 
-          <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
-            <Label
-              name="body"
-              className="block mt-4 text-sm text-gray-600 uppercase"
-            >
-              Feedback
-            </Label>
-            <TextAreaField
-              name="body"
-              validation={{ required: true }}
-              style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '300px' }}
-            />
-            <FieldError name="body" />
+            <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
+              <Label name="rating" className="block text-sm text-gray-600 uppercase" style={{
+                fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white'
+              }} >
+                Quality
+              </Label>
+              <div style={{
+                width: '140px', borderRadius: '10px',
+                backgroundColor: 'white',
+                border: '2px solid black', height: '25px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '5px'
+              }} required >
+                {[1, 2, 3, 4, 5].map((index) => (
+                  <span name="rating" key={index} onClick={() => handleStarClick(index)} style={{ cursor: 'pointer' }} validation={{ required: true }} >
+                    {index <= rating ? '⭐' : '☆'}
+                  </span>
+                ))}
+              </div>
+            </div>
 
-          </div>
+            <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
+              <Label
+                name="body"
+                className="block mt-4 text-sm text-gray-600 uppercase" style={{
+                  fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white'
+                }}
+              >
+                Feedback
+              </Label>
+              <TextAreaField
+                name="body"
+                validation={{ required: true }}
+                style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '300px', fontFamily: 'Open Sans, sans-serif', fontSize: '16px', fontWeight: 400 }}
+              />
+              <FieldError name="body" />
 
-          <div style={{ marginTop: '37px', marginRight: '20px', marginLeft: '0px' }}>
+            </div>
 
-            <Submit className="submit-button" disabled={loading} style={{ cursor: 'pointer', color: 'white', width: '110px', height: '35px', border: 'none', backgroundColor: 'white' }}
-            >
-              <Example ></Example>
+            <div style={{ marginTop: '20px', marginRight: '20px', marginLeft: '0px', display: 'flex', flexDirection: 'column' }}>
 
-            </Submit>
-          </div>
+              <Submit className="submit-button" disabled={loading} style={{ marginTop: '10px', cursor: 'pointer', color: 'blue', width: '110px', height: '35px', border: 'none', backgroundColor: '#403c44' }}
+              >
+                <Example ></Example>
 
-        </Form> ) : (
+              </Submit>
+            </div>
+
+          </Form>) : (
           <p style={fontStyles}>Please log in to provide feedback.</p>
         )}
         {/* Feedback Form submission ends here!!!*/}
 
-        <FeedbacksCell ></FeedbacksCell>
+        <FeedbacksCell></FeedbacksCell>
 
       </main>
 
