@@ -122,7 +122,7 @@ const Feedback = ({ feedback, onSave }) => {
   };
 
   var canEdit = true;
-  
+
   if(feedback.userId === null || (UID != feedback.userId && roles != "admin")){
     canEdit = false;
   }
@@ -131,7 +131,7 @@ const Feedback = ({ feedback, onSave }) => {
     <div className="bg-gray-200 p-8 rounded-lg" style={{
       backgroundColor: 'white',
       border: '2px solid black', borderRadius: '10px',
-      padding: '5px', flexDirection: 'column', marginBottom: '10px'
+      padding: '5px', flexDirection: 'column', marginBottom: '10px', marginTop: '30px'
     }}>
 
       <header className="flex justify-between">
@@ -143,14 +143,14 @@ const Feedback = ({ feedback, onSave }) => {
             </span>
           ))}
 
-          
+
           {isEditing && canEdit &&
             <div style={{ marginLeft: 'auto', display: 'flex' }}>
               <button style={{ display: 'none',backgroundColor: 'white', marginLeft: '1450', marginRight: '5px', border: '2px solid black', borderRadius: '5px', cursor: 'pointer' }} onClick={handleCancelEdit}>Cancel</button>
             </div>
           }
           {!isEditing && canEdit && (
-            
+
             <div   style={{ marginLeft: 'auto', display: 'flex' }}>
               <button className='edit-button'  onClick={handleEditClick}
 
@@ -169,7 +169,7 @@ const Feedback = ({ feedback, onSave }) => {
               >Delete</button>
             </div>
           )}
-          
+
 
         </div>
       </header>

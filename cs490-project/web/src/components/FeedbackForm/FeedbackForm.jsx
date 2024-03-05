@@ -30,7 +30,7 @@ const CREATE = gql`
 
 const FeedbackForm = () => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
-  
+
   const [rating, setRating] = useState(0);
   const handleStarClick = (clickedRating) => {
     setRating(clickedRating === rating ? 0 : clickedRating);
@@ -48,34 +48,43 @@ const FeedbackForm = () => {
     refetchQueries: [{ query: FeedbacksQuery }],
   })
 
+  const fontStyles = {
+    fontFamily: 'Arial, sans-serif', // Choose the desired font-family
+    fontSize: '16px', // Adjust the font size
+    fontWeight: 'bold', // Adjust the font weight
+    color: '#333', // Choose the text color
+    textAlign: 'center', // Adjust the text alignment
+    marginTop: '20px', // Add space above the text
+  };
+
   const onSubmit = (data) => {
     const { name, body } = data;
     // Assuming your rating is stored in the 'rating' state variable
-    
+
     //Get user ID
-    
+
     var userID = -1;
-    
-    
+
+
     if(isAuthenticated){
       userID = currentUser.id;
     }
-    
+
     const user = userID;
-    
+
     const input = { name, rating, body: body, userId: user };
     createFeedback({ variables: { input } });
   };
 
   return (
     <>
-      
+
       <main >
-       
+
         {/* Feedback Form submission start here!!!*/}
-        
+
         <Toaster />
-        {isAuthenticated &&
+        {isAuthenticated ? (
         <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px' }}>
 
           <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column' }}>
@@ -135,14 +144,15 @@ const FeedbackForm = () => {
             </Submit>
           </div>
 
-        </Form>
-        }
+        </Form> ) : (
+          <p style={fontStyles}>Please log in to provide feedback.</p>
+        )}
         {/* Feedback Form submission ends here!!!*/}
-        
+
         <FeedbacksCell ></FeedbacksCell>
 
       </main>
-              
+
     </>
   )
 }
