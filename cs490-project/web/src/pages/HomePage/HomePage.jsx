@@ -1,8 +1,11 @@
 import { Link, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
 import Navbar from 'src/components/Navbar/Navbar'
+import React from 'react';
 
 const HomePage = () => {
+
+
   return (
     <>
       <Metadata title="Home" description="Home page" />
@@ -13,7 +16,7 @@ const HomePage = () => {
         <nav>
           <ul>
             <li>
-              <Link to={routes.getStarted()}>Get Started</Link>
+              <Link to={routes.translate}>Get Started</Link>
             </li>
           </ul>
         </nav>
@@ -22,7 +25,7 @@ const HomePage = () => {
         <h1>Welcome To Code Harbor!</h1>
         <h3>The Place To Convert Your Code, </h3>
         <h3>Into Other Programming Languages!</h3>
-        <button id="getStarted">Get Started</button>
+        <button id="getStarted"  >Get Started</button>
       </div>
       <body>
         <div className="container" id="section-about">
