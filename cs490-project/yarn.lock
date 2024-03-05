@@ -10348,19 +10348,20 @@ __metadata:
   linkType: hard
 
 "browserify-sign@npm:^4.0.0":
-  version: 4.2.2
-  resolution: "browserify-sign@npm:4.2.2"
+  version: 4.2.3
+  resolution: "browserify-sign@npm:4.2.3"
   dependencies:
     bn.js: "npm:^5.2.1"
     browserify-rsa: "npm:^4.1.0"
     create-hash: "npm:^1.2.0"
     create-hmac: "npm:^1.1.7"
-    elliptic: "npm:^6.5.4"
+    elliptic: "npm:^6.5.5"
+    hash-base: "npm:~3.0"
     inherits: "npm:^2.0.4"
-    parse-asn1: "npm:^5.1.6"
-    readable-stream: "npm:^3.6.2"
+    parse-asn1: "npm:^5.1.7"
+    readable-stream: "npm:^2.3.8"
     safe-buffer: "npm:^5.2.1"
-  checksum: 10c0/4d1292e5c165d93455630515003f0e95eed9239c99e2d373920c5b56903d16296a3d23cd4bdc4d298f55ad9b83714a9e63bc4839f1166c303349a16e84e9b016
+  checksum: 10c0/30c0eba3f5970a20866a4d3fbba2c5bd1928cd24f47faf995f913f1499214c6f3be14bb4d6ec1ab5c6cafb1eca9cb76ba1c2e1c04ed018370634d4e659c77216
   languageName: node
   linkType: hard
 
@@ -12836,13 +12837,13 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.668":
-  version: 1.4.692
-  resolution: "electron-to-chromium@npm:1.4.692"
-  checksum: 10c0/2a875e54be4ae100b43766dcc1d4c8de87c1b4c96b085c01939ec636e1fa4b6684ec157a9d682dbcf4231ee8fb8df6cd58bc0101ef46631f5688c4d6d3db595e
+  version: 1.4.693
+  resolution: "electron-to-chromium@npm:1.4.693"
+  checksum: 10c0/776014c015d3c326a357d3e9a2d007ad771d0ba0a70156d21fcc09fb68f5dad5e318b4ecf5bfdf0daa2805c126e5dc20da6da66bcd56331376e95c6b051fe088
   languageName: node
   linkType: hard
 
-"elliptic@npm:^6.5.3, elliptic@npm:^6.5.4":
+"elliptic@npm:^6.5.3, elliptic@npm:^6.5.5":
   version: 6.5.5
   resolution: "elliptic@npm:6.5.5"
   dependencies:
@@ -19881,7 +19882,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-asn1@npm:^5.0.0, parse-asn1@npm:^5.1.6":
+"parse-asn1@npm:^5.0.0, parse-asn1@npm:^5.1.7":
   version: 5.1.7
   resolution: "parse-asn1@npm:5.1.7"
   dependencies:
@@ -21481,7 +21482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:1 || 2, readable-stream@npm:^2.0.0, readable-stream@npm:^2.0.1, readable-stream@npm:^2.0.2, readable-stream@npm:^2.0.5, readable-stream@npm:^2.1.5, readable-stream@npm:^2.2.2, readable-stream@npm:^2.3.3, readable-stream@npm:^2.3.6, readable-stream@npm:~2.3.6":
+"readable-stream@npm:1 || 2, readable-stream@npm:^2.0.0, readable-stream@npm:^2.0.1, readable-stream@npm:^2.0.2, readable-stream@npm:^2.0.5, readable-stream@npm:^2.1.5, readable-stream@npm:^2.2.2, readable-stream@npm:^2.3.3, readable-stream@npm:^2.3.6, readable-stream@npm:^2.3.8, readable-stream@npm:~2.3.6":
   version: 2.3.8
   resolution: "readable-stream@npm:2.3.8"
   dependencies:
@@ -21496,7 +21497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^3.0.6, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0, readable-stream@npm:^3.6.2":
+"readable-stream@npm:^3.0.6, readable-stream@npm:^3.1.1, readable-stream@npm:^3.4.0, readable-stream@npm:^3.6.0":
   version: 3.6.2
   resolution: "readable-stream@npm:3.6.2"
   dependencies:

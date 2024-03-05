@@ -151,12 +151,13 @@ const Feedback = ({ feedback, onSave }) => {
           }
           {!isEditing && canEdit && (
 
-            <div   style={{ marginLeft: 'auto', display: 'flex' }}>
+            <div   style={{
+               marginLeft: 'auto', display: 'flex' }}>
               <button className='edit-button'  onClick={handleEditClick}
 
               >Edit</button>
 
-              <button style={{ height: '25px', marginTop: '5px', marginRight: '5px', transition: 'background-color 0.3s, color 0.3s', backgroundColor: 'white', marginLeft: '1450', border: '2px solid black', borderRadius: '5px', cursor: 'pointer' }} onClick={() => handleDelete(feedback.id)}
+              <button style={{width: '45px', height: '25px', marginTop: '5px', marginRight: '5px', transition: 'background-color 0.3s, color 0.3s', backgroundColor: 'white', marginLeft: '1400', border: '2px solid black', borderRadius: '5px', cursor: 'pointer' }} onClick={() => handleDelete(feedback.id)}
                 onMouseOver={(e) => {
                   e.currentTarget.style.backgroundColor = 'black';
                   e.currentTarget.style.color = 'white';
@@ -174,9 +175,9 @@ const Feedback = ({ feedback, onSave }) => {
         </div>
       </header>
 
-      <h3 style={{ margin: '0', marginLeft: '5px', flexDirection: 'column' }}>{feedback.name}</h3>
+      <h3 style={{ margin: '0', marginLeft: '5px', flexDirection: 'column' , marginBottom: '10px'}}>{feedback.name}</h3>
 
-      <div style={{ marginLeft: '5px' }}>
+      <div style={{ marginLeft: '5px', marginBottom: '10px' }}>
         {isEditing ? (
           <EditFeedback feedback={feedback} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
         ) : (
