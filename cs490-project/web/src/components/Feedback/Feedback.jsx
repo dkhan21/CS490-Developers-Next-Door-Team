@@ -39,7 +39,7 @@ export const UPDATE_FEEDBACK_MUTATION = gql`
 const Feedback = ({ feedback, onSave }) => {
 
   const { isAuthenticated, currentUser, logOut } = useAuth()
-  var UID = -1;
+  var UID = -2;
   var roles = "";
   if(isAuthenticated){
     UID = currentUser.id;
@@ -122,9 +122,8 @@ const Feedback = ({ feedback, onSave }) => {
   };
 
   var canEdit = true;
-  console.log(UID);
-  console.log(feedback.userId);
-  if(UID != feedback.userId && roles != "admin"){
+  
+  if(feedback.userId === null || (UID != feedback.userId && roles != "admin")){
     canEdit = false;
   }
 

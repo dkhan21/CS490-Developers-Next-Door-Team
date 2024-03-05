@@ -69,9 +69,13 @@ const FeedbackForm = () => {
 
   return (
     <>
+      
       <main >
+       
         {/* Feedback Form submission start here!!!*/}
+        
         <Toaster />
+        {isAuthenticated &&
         <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px' }}>
 
           <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column' }}>
@@ -132,11 +136,13 @@ const FeedbackForm = () => {
           </div>
 
         </Form>
+        }
         {/* Feedback Form submission ends here!!!*/}
-
+        
         <FeedbacksCell ></FeedbacksCell>
 
       </main>
+              
     </>
   )
 }
