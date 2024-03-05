@@ -7,8 +7,11 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { useAuth } from 'src/auth'
 
 const Navbar = () => {
+  const { isAuthenticated, currentUser, logOut } = useAuth()
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" component="nav" sx={{backgroundColor: '#393E41'}}>
@@ -87,7 +90,7 @@ const Navbar = () => {
               >Get Started</Button>
             </Link>
 
-            <Link to={routes.login()}>
+            {!isAuthenticated && <Link to={routes.login()}>
               <Button color="inherit" sx={{
                 color: '#E7E5DF',
                 position: 'relative',
@@ -113,7 +116,37 @@ const Navbar = () => {
               }}
               aria-label="Login"
               >Login</Button>
-            </Link>
+            </Link>}
+
+            {isAuthenticated && <Link to={routes.home()}>
+              <Button onClick={logOut} color="inherit" sx={{
+                color: '#E7E5DF',
+                position: 'relative',
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: '1px',
+                  backgroundColor: 'currentColor',
+                  transform: 'scaleX(0)',
+                  transformOrigin: 'left',
+                  transition: 'transform 0.5s ease-in-out',
+                },
+                '&:hover:after': {
+                  transform: 'scaleX(1)',
+                  color: '#E7BB41',
+                },
+                '&:hover':{
+                  color:'#E7BB41',
+                }
+              }}
+              aria-label="Logout"
+              >Logout</Button>
+            </Link>}
+            
+            
 
         </Toolbar>
       </AppBar>
