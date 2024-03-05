@@ -50,11 +50,11 @@ const FeedbackForm = () => {
 
   const fontStyles = {
     fontFamily: 'Arial, sans-serif', // Choose the desired font-family
-    fontSize: '16px', // Adjust the font size
+    fontSize: '25px', // Adjust the font size
     fontWeight: 'bold', // Adjust the font weight
-    color: '#333', // Choose the text color
+    color: 'black', // Choose the text color
     textAlign: 'center', // Adjust the text alignment
-    marginTop: '20px', // Add space above the text
+    paddingTop: '40px', // Add space above the text
   };
 
   const onSubmit = (data) => {
@@ -151,7 +151,7 @@ const FeedbackForm = () => {
             </div>
 
           </Form>) : (
-          <p style={fontStyles}>Please log in to provide feedback.</p>
+          <h3 style={fontStyles}>Please log in to provide feedback!</h3>
         )}
         {/* Feedback Form submission ends here!!!*/}
 

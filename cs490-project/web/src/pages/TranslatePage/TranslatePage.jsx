@@ -232,7 +232,7 @@ const TranslatePage = () => {
       <header>
         <Navbar/>
       </header>
-      <div className={classes.page}>
+      <div className={classes.page} >
         <div className={classes.convertContainer}>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
