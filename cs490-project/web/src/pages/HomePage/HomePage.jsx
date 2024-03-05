@@ -3,8 +3,21 @@ import { Metadata } from '@redwoodjs/web'
 
 import Navbar from 'src/components/Navbar/Navbar'
 import React from 'react';
+import { useEffect } from 'react';
 
 const HomePage = () => {
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const element = document.querySelector(hash);
+      if (element) {
+        window.scrollTo({
+          top: element.offsetTop,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }, [window.location.hash]);
 
 
   return (
