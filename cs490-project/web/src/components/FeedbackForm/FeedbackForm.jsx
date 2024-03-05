@@ -79,7 +79,7 @@ const FeedbackForm = () => {
   return (
     <>
 
-      <main style={{ backgroundColor: '#3C3C44' }} >
+      <main style={{ backgroundColor: '#3C3C44', marginTop: '-100px' }} >
 
         {/* Feedback Form submission start here!!!*/}
 
@@ -89,7 +89,7 @@ const FeedbackForm = () => {
 
             <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column', display: 'flex' }}>
               <Label name="name" style={{
-                fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white'
+                fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white', textAlign: 'center',
               }}>Name</Label>
 
               <TextAreaField name="name" required
@@ -101,11 +101,11 @@ const FeedbackForm = () => {
             </div>
 
             <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
-              <Label name="rating" className="block text-sm text-gray-600 uppercase" style={{
-                fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white'
-              }} >
-                Quality
-              </Label>
+            <Label name="rating" className="block text-sm text-gray-600 uppercase" style={{fontFamily: 'Open Sans, sans-serif', 
+              fontSize: '26px', fontWeight: 400, color: 'white', textAlign: 'center',
+            }} >
+              Quality
+            </Label>
               <div style={{
                 width: '140px', borderRadius: '10px',
                 backgroundColor: 'white',
@@ -127,7 +127,7 @@ const FeedbackForm = () => {
               <Label
                 name="body"
                 className="block mt-4 text-sm text-gray-600 uppercase" style={{
-                  fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white'
+                  fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white', textAlign: 'center',
                 }}
               >
                 Feedback
@@ -151,8 +151,8 @@ const FeedbackForm = () => {
             </div>
 
           </Form>) : (
-          <h3 style={fontStyles}>Please log in to provide feedback!</h3>
-        )}
+            <h3 style={{...fontStyles, color: 'white'}}>Please log in to provide feedback!</h3>
+          )}
         {/* Feedback Form submission ends here!!!*/}
 
         <FeedbacksCell></FeedbacksCell>
