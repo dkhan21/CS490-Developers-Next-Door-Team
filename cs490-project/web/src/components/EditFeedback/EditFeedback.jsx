@@ -29,17 +29,17 @@ const EditFeedback = ({ feedback, onSave, onCancel }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div>
+    <div style={{flexDirection: 'column', display: 'flex'}}>
       <label>Name:</label>
       <input
         type="text"
         name="name"
         value={editedFeedback.name}
         onChange={handleChange}
-        style={{ border: '2px solid black', backgroundColor: 'white', borderRadius: '5px' }}
+        style={{ border: '2px solid black', backgroundColor: 'white', borderRadius: '5px' , width: '150px'}}
       />
 
-      <label>Rating:</label>
+      <label style={{marginTop: '10px'}}>Rating:</label>
       <div>
         {[1, 2, 3, 4, 5].map((index) => (
           <span
@@ -52,13 +52,14 @@ const EditFeedback = ({ feedback, onSave, onCancel }) => {
         ))}
       </div>
 
-      <label>Body:</label>
+      <label style={{marginTop: '10px'}}>Body:</label>
       <textarea name="body" style={{border: '2px solid black', backgroundColor: 'white', borderRadius: '5px' , marginTop: '10px'}} value={editedFeedback.body} onChange={handleChange} />
 
       <div style={{flexDirection: 'row', display: 'flex'}}>
       <button
   onClick={handleCancel}
   style={{
+    width: '55px',
     cursor: 'pointer',
     border: '2px solid black',
     backgroundColor: 'white',
