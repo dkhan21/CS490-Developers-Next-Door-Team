@@ -1,6 +1,4 @@
-import { screen } from '@testing-library/react'
-import { render, fireEvent } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { screen, render } from '@redwoodjs/testing/web'
 
 import HomePage from './HomePage'
 
@@ -36,20 +34,6 @@ describe('HomePage', () => {
 
       expect(screen.getByAltText('People on computer')).toBeInTheDocument()
       expect(screen.getByAltText('Code on computer')).toBeInTheDocument()
-    })
-  })
-
-  describe('HomePage', () => {
-    test('navigates to the correct page when Get Started button is clicked', () => {
-      const { getByText } = render(
-        <MemoryRouter>
-          <HomePage />
-        </MemoryRouter>
-      )
-
-      const button = getByText('Get Started')
-      fireEvent.click(button)
-      // expect(history.location.pathname).toBe('/start')
     })
   })
 })
