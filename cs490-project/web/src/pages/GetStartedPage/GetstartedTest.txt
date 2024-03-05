@@ -1,0 +1,73 @@
+import { Link, routes } from '@redwoodjs/router';
+import { Metadata } from '@redwoodjs/web';
+import React, { useState } from 'react';
+import './GetStartedPage.css';
+
+const GetStartedPage = () => {
+  const [rating, setRating] = useState(0);
+
+  const handleStarClick = (clickedRating) => {
+    setRating(clickedRating === rating ? 0 : clickedRating);
+  };
+
+  return (
+    <>
+      <Metadata title="GetStarted" description="GetStarted page" />
+
+      <h1>GetStartedPage</h1>
+
+      <main>
+        <p>Start Converting!</p>
+        <Link to={routes.home()}>Back Home</Link>
+
+
+
+        <div className="box-Q">
+        {/* Adding a name above the box with a specific position */}
+          <h2 className="box-nameQuality" >Quality</h2>
+
+        {/* Adding a rectangle box with 5-star rating feature */}
+          <div className="box-Quality" style={{ width: '140px',
+                                        height: '20px',
+                                        backgroundColor: 'white',
+                                        margin: '20px',
+                                        border: '2px solid black',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        padding: '5px',
+                                        top: 590,
+                                        left: 330 }}>
+            {[1, 2, 3, 4, 5].map((index) => (
+              <span key={index} onClick={() => handleStarClick(index)}>
+                {index <= rating ? '⭐' : '☆'}
+              </span>
+            ))}
+            </div>
+        </div>
+
+        <div className="box-F">
+        {/* Adding a name above the box with a specific position */}
+            <h2 className="box-nameFeed" style={{ top: 550, left: 585}}>Feedback</h2>
+
+            <div className="box-Feeds" style={{ width: '300px',
+                                          height: '30px',
+                                          backgroundColor: 'white',
+                                          margin: '20px',
+                                          border: '2px solid black',
+                                          display: 'flex',
+                                          justifyContent: 'space-between',
+                                          alignItems: 'center',
+                                          padding: '5px',
+                                          top: 590,
+                                          left: 565 }}>
+
+            </div>
+        </div>
+
+      </main>
+    </>
+  );
+};
+
+export default GetStartedPage;

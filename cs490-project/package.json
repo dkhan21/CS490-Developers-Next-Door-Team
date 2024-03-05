@@ -7,6 +7,8 @@
     ]
   },
   "devDependencies": {
+    "@redwoodjs/auth-dbauth-setup": "6.6.4",
+    "@redwoodjs/cli-storybook": "6.6.4",
     "@redwoodjs/core": "6.6.4"
   },
   "eslintConfig": {
@@ -20,6 +22,7 @@
   "prisma": {
     "seed": "yarn rw exec seed"
   },
+
   "packageManager": "yarn@4.0.2",
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -42,6 +45,10 @@
     "node-c-parser": "^1.0.11",
     "react-ace": "^10.1.0",
     "react-monaco-editor": "^0.55.0",
-    "react-select": "^5.8.0"
+    "react-select": "^5.8.0",
+    "framer-motion": "^11.0.8",
+    "react-icons": "^5.0.1"
+
+
   }
 }

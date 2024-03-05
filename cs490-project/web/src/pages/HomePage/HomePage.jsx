@@ -7,8 +7,17 @@ const HomePage = () => {
     <>
       <Metadata title="Home" description="Home page" />
       <header>
+
         <Navbar/>
-      </header>
+        <h1>HomePage</h1>
+        <nav>
+          <ul>
+            <li>
+              <Link to={routes.getStarted()}>Get Started</Link>
+            </li>
+          </ul>
+        </nav>
+    </header>
       <div id="welcome">
         <h1>Welcome To Code Harbor!</h1>
         <h3>The Place To Convert Your Code, </h3>
@@ -37,6 +46,8 @@ const HomePage = () => {
           />
         </div>
 
+
+
         <div className="container" id="section-works">
           <img
             id="codeimg"
@@ -62,6 +73,7 @@ const HomePage = () => {
           </div>
         </div>
       </body>
+
     </>
   )
 }
