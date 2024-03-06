@@ -7,6 +7,7 @@ import MonacoEditor from '@monaco-editor/react';
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
 import Navbar from 'src/components/Navbar/Navbar'
 import FeedbackForm from 'src/components/FeedbackForm';
+import { Metadata } from '@redwoodjs/web'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -229,6 +230,7 @@ const TranslatePage = () => {
 
   return (
     <>
+          <Metadata title="Translate" description="Translate" />
       <header>
         <Navbar/>
       </header>

@@ -12,6 +12,12 @@ jest.mock('src/components/Navbar/Navbar', () => {
     return <div />;
   };
 });
+jest.mock('src/components/FeedbackForm/FeedbackForm', () => {
+  return function DummyFeedback() {
+    return <div />;
+  };
+});
+
 
 global.navigator.clipboard = { writeText: jest.fn() };
 jest.mock('file-saver', () => ({ saveAs: jest.fn() }));

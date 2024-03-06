@@ -37,7 +37,7 @@ describe('Navbar', () => {
     render(<Navbar />)
     const logo = screen.getByText(/Code Harbor/i)
     fireEvent.click(logo)
-    expect(routes.home).toHaveBeenCalled()
+    expect(routes.home()).toHaveBeenCalled()
   })
 })
 

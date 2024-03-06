@@ -22,7 +22,7 @@ const HomePage = () => {
 
   return (
     <>
-      <Metadata title="Home" description="Home page" />
+      <Metadata title="Code Harbor" description="Home page" />
       <header>
         <Navbar />
       </header>
