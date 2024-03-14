@@ -7,9 +7,22 @@ import MonacoEditor from '@monaco-editor/react';
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
 import Navbar from 'src/components/Navbar/Navbar'
 import FeedbackForm from 'src/components/FeedbackForm';
+
 import { Metadata } from '@redwoodjs/web'
+import HistoryForm from 'src/components/History/HistoryForm';
 
-
+const CREATE = gql`
+  mutation createHistoryMutation($input: CreateFeedbackInput!) {
+    createHistory(input: $input) {
+      id
+      name
+      rating
+      body
+      createdAt
+      userId
+    }
+  }
+`;
 const useStyles = makeStyles((theme) => ({
   page: { // Container for entire page
     backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', // Background gradient
@@ -144,6 +157,17 @@ const TranslatePage = () => {
       setOutputText(inputText);
       setLoading(false);
     }, 2000);
+    createHistory({
+      variables: {
+        input: {
+          inputLanguage,
+          outputLanguage,
+          inputText,
+          outputText,
+          
+        }
+      }
+    });
   };
 
 
@@ -381,6 +405,7 @@ const TranslatePage = () => {
       </div>
 
       <FeedbackForm ></FeedbackForm>
+      <HistoryForm ></HistoryForm>
 
     </>
   );
