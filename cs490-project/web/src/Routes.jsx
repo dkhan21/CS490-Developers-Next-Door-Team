@@ -15,6 +15,7 @@ const Routes = () => {
   return (
 
     <Router useAuth={useAuth}>
+      <Route path="/update-profile" page={UpdateProfilePage} name="updateProfile" />
       <Route path="/get-started" page={GetStartedPage} name="getStarted" />
       <Route path="/translate" page={TranslatePage} name="translate" />
       <PrivateSet unauthenticated="home" roles="admin">
@@ -22,6 +23,7 @@ const Routes = () => {
       </PrivateSet>
       <PrivateSet unauthenticated="home">
         <Route path="/login-test" page={LoginTestPage} name="loginTest" />
+        <Route path="/profile" page={ProfilePage} name="profile" />
       </PrivateSet>
       <Route path="/login" page={LoginPage} name="login" />
       <Route path="/signup" page={SignupPage} name="signup" />
