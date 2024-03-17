@@ -11,7 +11,7 @@ export const schema = gql`
 
     input UpdateUserInput {
         id: Int! 
-        name: String!
+        name: String
         email: String! 
     }
 

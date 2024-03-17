@@ -5,12 +5,10 @@ import { Form, TextField, Submit } from '@redwoodjs/forms'
 import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 
-// import { updateUser } from 'src/services/users/users'
 const UPDATE_USER_MUTATION = gql`
   mutation UpdatedUserMutation($input: UpdateUserInput!) {
     updateUser(input: $input) {
       id
-      name 
       email
     }
   }
@@ -25,32 +23,29 @@ const UpdateProfilePage = () => {
     },
   })
 
-  const [name, setName] = useState(currentUser.name)
+  // const [name, setName] = useState(currentUser.name)
+  //  
 
   const onSubmit = (data) => {
-    const variables = { input: { id: currentUser.id, ...data } } 
-      setName(data.name)
 
-      updateUser({ variables })
-        .then(() => {
-          reauthenticate()
-        },1000)
+    const input = { 
+      id: currentUser.id, 
+      email: data.email || currentUser.email}
+
+    const variables = { input }
+
+    updateUser({ variables })
+      .then(() => {
+        reauthenticate()
+      },1000)
   }
 
   return (
     
     <Form onSubmit={onSubmit}>
-      <TextField 
-        name="name"
-        defaultValue={name}
-        // onChange={(e) => setName(e.target.value)}
-        validation={{ required: true }}
-      />
-
+      <label>Email</label>
       <TextField 
         name="email"
-        defaultValue={currentUser.email}
-        validation={{ required: true }}
       />
       
       <Submit>Update Profile</Submit>
