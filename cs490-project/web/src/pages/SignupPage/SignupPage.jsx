@@ -127,7 +127,20 @@ const SignupPage = () => {
                   />
 
                   <FieldError name="password" className="rw-field-error" />
-
+                  <Label
+                    name="passwordConfirmation"
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    Confirm Password
+                  </Label>
+                  <PasswordField
+                    name="passwordConfirmation"
+                    className="rw-input"
+                    errorClassName="rw-input rw-input-error"
+                    autoComplete="current-password"
+                  />
+                  <FieldError name="passwordConfirmation" className="rw-field-error" />
                   <div className="rw-button-group">
                     <Submit className="rw-button rw-button-blue">
                       Sign Up
