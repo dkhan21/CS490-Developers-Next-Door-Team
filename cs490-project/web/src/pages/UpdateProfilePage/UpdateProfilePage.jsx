@@ -4,6 +4,7 @@ import { useAuth } from 'src/auth'
 import { Form, TextField, Submit } from '@redwoodjs/forms'
 import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
+import { toast, Toaster } from '@redwoodjs/web/toast'
 
 const UPDATE_USER_MUTATION = gql`
   mutation UpdatedUserMutation($input: UpdateUserInput!) {
@@ -19,6 +20,7 @@ const UpdateProfilePage = () => {
   const { currentUser, reauthenticate } = useAuth() 
   const [updateUser, {loading: updating, error: updateError}] = useMutation(UPDATE_USER_MUTATION, {
     onCompleted: (response) => {
+      // toast.success('Profile updated successfully')
       navigate(routes.profile())
     },
   })
@@ -41,15 +43,16 @@ const UpdateProfilePage = () => {
   }
 
   return (
-    
-    <Form onSubmit={onSubmit}>
-      <label>Email</label>
-      <TextField 
-        name="email"
-      />
-      
-      <Submit>Update Profile</Submit>
-    </Form>
+    <div>
+      <Form onSubmit={onSubmit}>
+        <label>Email</label>
+        <TextField 
+          name="email"
+        />
+        
+        <Submit>Update Profile</Submit>
+      </Form>
+    </div>
   )
 }
 
