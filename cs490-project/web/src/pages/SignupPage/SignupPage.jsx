@@ -139,6 +139,12 @@ const SignupPage = () => {
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
                     autoComplete="current-password"
+                    validation={{
+                      required: {
+                        value: true,
+                        message: 'Password confirmation is required',
+                      },
+                    }}
                   />
                   <FieldError name="passwordConfirmation" className="rw-field-error" />
                   <div className="rw-button-group">
