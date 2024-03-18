@@ -94,6 +94,12 @@ const SignupPage = () => {
                     name="email"
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
+                    validation={{
+                      required: {
+                        value: true,
+                        message: 'Email is required',
+                      },
+                    }}
                   />
                   <FieldError name="email" className="rw-field-error" />
                   <Label
