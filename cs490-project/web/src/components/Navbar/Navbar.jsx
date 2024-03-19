@@ -8,10 +8,21 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
 import { useAuth } from 'src/auth'
+import MenuItem from '@mui/material/MenuItem';
 
 const Navbar = () => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -124,7 +135,7 @@ const Navbar = () => {
                   aria-controls={open ? 'basic-menu' : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
-                  // onClick={handleClick}
+                  onClick={handleClick}
                   color="inherit" sx={{
                     color: '#E7E5DF',
                     position: 'relative',
@@ -156,14 +167,15 @@ const Navbar = () => {
                   id="basic-menu"
                   anchorEl={anchorEl}
                   open={open}
-                  // onClose={handleClose}
+                  onClose={handleClose}
                   MenuListProps={{
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <Link ><MenuItem letterSpacingtyle={{color: 'black'}}>Profile</MenuItem></Link>
-                  <Link ><MenuItem style={{color: 'black'}}>Logout</MenuItem></Link>
-                  
+                  <Link to={routes.faq()}><MenuItem style={{color: 'black'}}>FAQs</MenuItem></Link>
+                  <Link ><MenuItem style={{color: 'black'}}>User Guides</MenuItem></Link>
+                  <Link ><MenuItem style={{color: 'black'}}>Resources</MenuItem></Link>
+                  <Link ><MenuItem style={{color: 'black'}}>Contact Us</MenuItem></Link>
                 </Menu>
 
             {!isAuthenticated && <Link to={routes.login()}>

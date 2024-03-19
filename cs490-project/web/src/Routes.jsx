@@ -15,6 +15,7 @@ const Routes = () => {
   return (
 
     <Router useAuth={useAuth}>
+      <Route path="/faq" page={FAQPage} name="faq" />
       <Route path="/get-started" page={GetStartedPage} name="getStarted" />
       <Route path="/translate" page={TranslatePage} name="translate" />
       <PrivateSet unauthenticated="home" roles="admin">
