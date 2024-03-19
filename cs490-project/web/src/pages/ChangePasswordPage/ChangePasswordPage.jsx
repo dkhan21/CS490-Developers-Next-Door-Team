@@ -6,8 +6,8 @@ import { useAuth } from 'src/auth'
 import { useMutation } from '@redwoodjs/web'
 
 const CHANGE_PASSWORD_MUTATION = gql`
-  mutation ChangePasswordMutation($email: String!, $currentPassword: String!, $newPassword: String!) {
-    changePassword(email: $email, currentPassword: $currentPassword, newPassword: $newPassword) {
+  mutation ChangePasswordMutation($email: String!, $newPassword: String!) {
+    changePassword(email: $email, newPassword: $newPassword) {
       email
     }
   }
@@ -28,22 +28,28 @@ const ChangePasswordPage = () => {
 
 
   const onSubmit = (data) => {
-    changePassword( { variables: { ...data, email: currentUser.email } })
+    if (data.newPassword !== data.confirmNewPassword){
+      alert('Passwords do not match!')
+    }else{
+      changePassword( { variables: { ...data, email: currentUser.email } })
+    }
+    
   }
 
   return (
+    
     <Form onSubmit={onSubmit} >
-      <Label name="currentPassword" errorClassName="error">Current Password</Label>
-      <TextField
-        name="currentPassword"
-        placeholder="Current password"
-        validation={{ required: true }}
-        errorClassName='error'
-      />
       <Label name="newPassword" errorClassName="error">New Password</Label>
       <TextField
         name="newPassword"
-        placeholder="New password"
+        placeholder="New Password"
+        validation={{ required: true }}
+        errorClassName='error'
+      />
+      <Label name="confirmNewPassword" errorClassName="error">Confirm New Password</Label>
+      <TextField
+        name="confirmNewPassword"
+        placeholder="Confirm New Password"
         validation={{ required: true }}
         errorClassName='error'
       />

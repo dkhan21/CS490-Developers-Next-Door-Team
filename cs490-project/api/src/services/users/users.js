@@ -58,28 +58,13 @@ export const changePassword = async ({ email, currentPassword, newPassword }) =>
     throw new Error('User not found')
   }
 
-  //compare current password with stored password 
-  // const isValidPassword = verifyPassword(currentPassword, user.hashedPassword, user.salt)
-  const currentHashedPassword = CryptoJS.PBKDF2(currentPassword, user.salt, { keySize: 8, iterations: 16384, hasher: CryptoJS.algo.SHA256 }).toString(CryptoJS.enc.Hex)
-
-  // console.error(`Current hashed password: ${currentHashedPassword}`)
-
-  const isValidPassword = currentHashedPassword === user.hashedPassword
-
-
-  //if current password is invalid, throw an error 
-  if (!isValidPassword){
-    throw new Error(`Invalid current password ${currentHashedPassword}`)
-  }
-
-  //if current password is valid, has the new password 
-  // const saltRounds = 10
-  // const hashedPassword = await bcrypt.hash(newPassword, saltRounds)
   const [hashedPassword, salt] = hashPassword(newPassword)
 
   //update the user's password in the database 
-  await db.user.update({
+  const updatedUser = await db.user.update({
     where: { email }, 
     data: { hashedPassword, salt },
   })
+
+  return updatedUser
 }
