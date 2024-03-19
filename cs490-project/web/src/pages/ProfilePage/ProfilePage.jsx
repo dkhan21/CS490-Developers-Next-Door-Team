@@ -45,7 +45,7 @@ const ProfilePage = () => {
       </p>
 
       <Link to={routes.updateProfile()}>Update Profile</Link>
-      <Link to={routes.resetPassword()}>Reset Password</Link>
+      <Link to={routes.changePassword()}>Change Password</Link>
      <button onClick={onClickDelete}>Delete Account</button>
     </>
   )

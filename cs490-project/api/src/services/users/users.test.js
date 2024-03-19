@@ -1,11 +1,5 @@
 import { users, user, createUser, updateUser, deleteUser } from './users'
 
-// Generated boilerplate tests do not account for all circumstances
-// and can fail without adjustments, e.g. Float.
-//           Please refer to the RedwoodJS Testing Docs:
-//       https://redwoodjs.com/docs/testing#testing-services
-// https://redwoodjs.com/docs/testing#jest-expect-type-considerations
-
 describe('users', () => {
   scenario('returns all users', async (scenario) => {
     const result = await users()
@@ -33,20 +27,34 @@ describe('users', () => {
     expect(result.salt).toEqual('String')
   })
 
-  scenario('updates a user', async (scenario) => {
-    const original = await user({ id: scenario.user.one.id })
-    const result = await updateUser({
-      id: original.id,
-      input: { email: 'String48948352' },
+  scenario('updates user profile', async (scenario) => {
+    //fetch user before update 
+    const originalUser = await user({ id: scenario.user.one.id })
+
+    //update the user's profile
+    const updatedUser = await updateUser({
+      input: {
+        id: originalUser.id, 
+        email: 'new-email@example.com',
+      },
     })
 
-    expect(result.email).toEqual('String48948352')
+    //check if user was updated
+    const result = await user({ id: updatedUser.id })
+    expect(result.email).toEqual('new-email@example.com')
   })
 
   scenario('deletes a user', async (scenario) => {
-    const original = await deleteUser({ id: scenario.user.one.id })
-    const result = await user({ id: original.id })
-
+    // Fetch the user before deletion
+    const originalUser = await user({ id: scenario.user.one.id })
+    expect(originalUser).not.toEqual(null)
+  
+    // Delete the user
+    await deleteUser({ id: scenario.user.one.id })
+  
+    // Check if the user was deleted
+    const result = await user({ id: scenario.user.one.id })
     expect(result).toEqual(null)
   })
+  
 })
