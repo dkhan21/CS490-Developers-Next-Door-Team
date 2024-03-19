@@ -49,7 +49,6 @@ const LoginPage = () => {
   return (
     <>
       <Metadata title="Login" />
-
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
@@ -119,7 +118,7 @@ const LoginPage = () => {
                       className="rw-label"
                       errorClassName="rw-label rw-label-error"
                     >
-                      Remember Me
+                      Remember Me?
                     </Label>
 
                     <CheckboxField
