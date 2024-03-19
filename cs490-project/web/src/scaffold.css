@@ -395,3 +395,15 @@
   font-weight: bold;
   margin-bottom: 1rem;
 }
+
+.rw-checkbox-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.rw-checkbox-group input[type="checkbox"] {
+  margin-top: 25px; /* Adjust as needed */
+  margin-left: 5px;
+}
+
