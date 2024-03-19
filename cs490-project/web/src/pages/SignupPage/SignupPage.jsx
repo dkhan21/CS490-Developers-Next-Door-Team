@@ -77,34 +77,13 @@ const SignupPage = () => {
                     className="rw-label"
                     errorClassName="rw-label rw-label-error"
                   >
-                    Username
+                    Email
                   </Label>
                   <TextField
                     name="username"
                     className="rw-input"
                     errorClassName="rw-input rw-input-error"
                     ref={usernameRef}
-                    validation={{
-                      required: {
-                        value: true,
-                        message: 'Username is required',
-                      },
-                    }}
-                  />
-
-                  <FieldError name="username" className="rw-field-error" />
-
-                  <Label
-                    name="email"
-                    className="rw-label"
-                    errorClassName="rw-label rw-label-error"
-                  >
-                    Email
-                  </Label>
-                  <TextField
-                    name="email"
-                    className="rw-input"
-                    errorClassName="rw-input rw-input-error"
                     validation={{
                       required: {
                         value: true,
@@ -116,7 +95,10 @@ const SignupPage = () => {
                       },
                     }}
                   />
-                  <FieldError name="email" className="rw-field-error" />
+
+                  <FieldError name="username" className="rw-field-error" />
+
+                  
                   <Label
                     name="password"
                     className="rw-label"
