@@ -31,8 +31,14 @@ const SignupPage = () => {
   }, [])
 
   const onSubmit = async (data) => {
+    if (data.password !== data.passwordConfirmation) {
+      toast.error('Password confirmation does not match password')
+      return
+    }
+
     const response = await signUp({
       username: data.username,
+      email: data.email,
       password: data.password,
     })
 
@@ -146,7 +152,10 @@ const SignupPage = () => {
                       },
                     }}
                   />
-                  <FieldError name="passwordConfirmation" className="rw-field-error" />
+                  <FieldError
+                    name="passwordConfirmation"
+                    className="rw-field-error"
+                  />
                   <div className="rw-button-group">
                     <Submit className="rw-button rw-button-blue">
                       Sign Up
