@@ -40,18 +40,19 @@ export const jsonTruncate = (obj) => {
 }
 
 export const timeTag = (dateTime) => {
-  let output = ''
+  let output = '';
 
   if (dateTime) {
+    const localDateTime = new Date(dateTime).toLocaleString();
     output = (
-      <time dateTime={dateTime} title={dateTime}>
-        {new Date(dateTime).toUTCString()}
+      <time dateTime={dateTime} title={localDateTime}>
+        {localDateTime}
       </time>
-    )
+    );
   }
 
-  return output
-}
+  return output;
+};
 
 export const checkboxInputTag = (checked) => {
   return <input type="checkbox" checked={checked} disabled />

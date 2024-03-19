@@ -7,22 +7,19 @@ import MonacoEditor from '@monaco-editor/react';
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
 import Navbar from 'src/components/Navbar/Navbar'
 import FeedbackForm from 'src/components/FeedbackForm';
-
-import { Metadata } from '@redwoodjs/web'
 import HistoryForm from 'src/components/History/HistoryForm';
+import { Metadata } from '@redwoodjs/web';
+import { useAuth } from 'src/auth';
+import { gql, useMutation } from '@redwoodjs/web';
 
-const CREATE = gql`
-  mutation createHistoryMutation($input: CreateFeedbackInput!) {
+const CREATE_HISTORY_MUTATION = gql`
+  mutation CreateHistoryMutation($input: CreateHistoryInput!) {
     createHistory(input: $input) {
       id
-      name
-      rating
-      body
-      createdAt
-      userId
     }
   }
 `;
+
 const useStyles = makeStyles((theme) => ({
   page: { // Container for entire page
     backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', // Background gradient
@@ -109,6 +106,9 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', // Add subtle shadow
     transition: 'background-color 0.3s ease', // Smooth transition on hover
   },
+  uploadButtonDragOver: {
+  backgroundColor: '#536dfe', // Change the background color to indicate drag over
+},
 }));
 
 const languageToFileExtension = {
@@ -124,15 +124,24 @@ const MonacoEditorWrapper = forwardRef((props, ref) => {
 
 const TranslatePage = () => {
   const classes = useStyles();
-  const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
   const [inputLanguage, setInputLanguage] = useState('java');
   const [outputLanguage, setOutputLanguage] = useState('python');
   const [loading, setLoading] = useState(false); // State to control loading visibility
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
-  const selectRef = useRef(null);
+  const { currentUser } = useAuth();
+  const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
+    onCompleted: () => {
+      toast.success('History created');
+      refetch(); // Refresh history after creating a new item
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   useEffect(() => {
     if (inputEditor.current) {
@@ -151,26 +160,33 @@ const TranslatePage = () => {
       alert('Please provide input text before converting.');
       return;
     }
-    setLoading(true); // Show loading element
+    setLoading(true);
+    const generatedOutputText = generateOutputText(inputText);  
     setTimeout(() => {
-      //If we want to add auto-detect feature: const detectedLanguage = detectLang(inputText)
-      setOutputText(inputText);
       setLoading(false);
+      setOutputText(generatedOutputText); 
+      createHistory({
+        variables: {
+          input: {
+            inputLanguage,
+            outputLanguage,
+            inputText,
+            outputText: generatedOutputText,
+            userId: currentUser.id,
+          },
+        },
+      }).then(() => {
+        refetch(); // Refresh history after creating a new item
+      }).catch((error) => {
+        console.error('Error creating history:', error);
+      });
     }, 2000);
-    createHistory({
-      variables: {
-        input: {
-          inputLanguage,
-          outputLanguage,
-          inputText,
-          outputText,
-          
-        }
-      }
-    });
   };
-
-
+  
+  const generateOutputText = (inputText) => {
+    return inputText;
+  };
+  
   const handleInputLanguageChange = (e) => {
     if(outputLanguage === e.target.value){
       setInputLanguage(e.target.value);
@@ -252,6 +268,25 @@ const TranslatePage = () => {
     setIsGreen(prevState => !prevState);
   };
 
+const [isDragOver, setIsDragOver] = useState(false);
+
+const handleDragOver = (e) => {
+  e.preventDefault();
+  setIsDragOver(true); // Set the state to indicate that a file is being dragged over the button
+};
+
+const handleDragLeave = () => {
+  setIsDragOver(false); // Reset the state to indicate that no file is being dragged over the button
+};
+
+const handleDrop = (e) => {
+  e.preventDefault();
+  setIsDragOver(false); // Reset the state after the file has been dropped
+  const file = e.dataTransfer.files[0];
+  handleFileChange({ target: { files: [file] } });
+};
+
+
   return (
     <>
           <Metadata title="Translate" description="Translate" />
@@ -262,10 +297,13 @@ const TranslatePage = () => {
         <div className={classes.convertContainer}>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
-              <Button
+            <Button
                 variant="contained"
-                className={classes.button}
+                className={`${classes.button} ${isDragOver ? classes.uploadButtonDragOver : ''}`}
                 onClick={handleUploadClick}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
               ><FileUploadIcon fontSize="large" />
               </Button>
               <Button
@@ -340,10 +378,11 @@ const TranslatePage = () => {
             </IconButton>
           </Box>
           <Button
-              variant="contained"
-              className={classes.convertButton}
-              onClick={handleConvertClick}
-            >Convert
+            variant="contained"
+            className={classes.convertButton}
+            onClick={handleConvertClick}
+            disabled={loading}
+          >Convert
           </Button>
           {loading && <CircularProgress style={{ color: 'white', marginTop: '10px'}} />}
           </div>
@@ -374,7 +413,7 @@ const TranslatePage = () => {
                     },
                     MenuListProps: {
                       style: {
-                        color: '#fff', // text color of the dropdown items
+                        color: '#ffffff', // text color of the dropdown items
                         textAlign: 'center', // center the text in the dropdown
                       },
                     },
@@ -402,11 +441,9 @@ const TranslatePage = () => {
             </div>
           </div>
         </div>
+        <HistoryForm setInputText={setInputText} setOutputText={setOutputText} />
       </div>
-
       <FeedbackForm ></FeedbackForm>
-      <HistoryForm ></HistoryForm>
-
     </>
   );
 };
