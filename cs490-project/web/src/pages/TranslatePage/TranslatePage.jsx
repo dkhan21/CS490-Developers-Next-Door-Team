@@ -10,12 +10,26 @@ import FeedbackForm from 'src/components/FeedbackForm';
 import HistoryForm from 'src/components/History/HistoryForm';
 import { Metadata } from '@redwoodjs/web';
 import { useAuth } from 'src/auth';
-import { gql, useMutation } from '@redwoodjs/web';
+import { gql, useMutation, useQuery } from '@redwoodjs/web';
 
 const CREATE_HISTORY_MUTATION = gql`
   mutation CreateHistoryMutation($input: CreateHistoryInput!) {
     createHistory(input: $input) {
       id
+    }
+  }
+`;
+
+const GET_USER_HISTORY_QUERY = gql`
+  query GetUserHistory {
+    histories {
+      id
+      inputLanguage
+      outputLanguage
+      inputText
+      outputText
+      userId
+      createdAt
     }
   }
 `;
@@ -112,11 +126,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const languageToFileExtension = {
-  java: 'java',
-  python: 'py',
-  cpp: 'cpp',
-  c: 'c',
-  javascript: 'js',
+  'Java': 'java',
+  'Python': 'py',
+  'C++': 'cpp',
+  'C': 'c',
+  'JavaScript': 'js',
 };
 const MonacoEditorWrapper = forwardRef((props, ref) => {
   return <MonacoEditor {...props} ref={ref} />;
@@ -126,8 +140,8 @@ const TranslatePage = () => {
   const classes = useStyles();
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
-  const [inputLanguage, setInputLanguage] = useState('java');
-  const [outputLanguage, setOutputLanguage] = useState('python');
+  const [inputLanguage, setInputLanguage] = useState('Java');
+  const [outputLanguage, setOutputLanguage] = useState('Python');
   const [loading, setLoading] = useState(false); // State to control loading visibility
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
@@ -135,13 +149,13 @@ const TranslatePage = () => {
   const { currentUser } = useAuth();
   const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
-      toast.success('History created');
-      refetch(); // Refresh history after creating a new item
+      refetch;
     },
     onError: (error) => {
-      toast.error(error.message);
+      alert("Could not create history entry.");
     },
   });
+  const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
 
   useEffect(() => {
     if (inputEditor.current) {
@@ -343,11 +357,11 @@ const handleDrop = (e) => {
                         },
                       },
                     }}>
-                    <MenuItem value={'java'}>Java</MenuItem>
-                    <MenuItem value={'python'}>Python</MenuItem>
-                    <MenuItem value={'c'}>C</MenuItem>
-                    <MenuItem value={'cpp'}>C++</MenuItem>
-                    <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                    <MenuItem value={'Java'}>Java</MenuItem>
+                    <MenuItem value={'Python'}>Python</MenuItem>
+                    <MenuItem value={'C'}>C</MenuItem>
+                    <MenuItem value={'C++'}>C++</MenuItem>
+                    <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
                   </Select>
               </div>
               <MonacoEditorWrapper
@@ -418,11 +432,11 @@ const handleDrop = (e) => {
                       },
                     },
                   }}>
-                  <MenuItem value={'java'}>Java</MenuItem>
-                  <MenuItem value={'python'}>Python</MenuItem>
-                  <MenuItem value={'c'}>C</MenuItem>
-                  <MenuItem value={'cpp'}>C++</MenuItem>
-                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                  <MenuItem value={'Java'}>Java</MenuItem>
+                  <MenuItem value={'Python'}>Python</MenuItem>
+                  <MenuItem value={'C'}>C</MenuItem>
+                  <MenuItem value={'C++'}>C++</MenuItem>
+                  <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
                 </Select>
               </div>
               <MonacoEditorWrapper
@@ -441,7 +455,7 @@ const handleDrop = (e) => {
             </div>
           </div>
         </div>
-        <HistoryForm setInputText={setInputText} setOutputText={setOutputText} />
+        <HistoryForm setInputText={setInputText} setOutputText={setOutputText} setInputLanguage={setInputLanguage} setOutputLanguage={setOutputLanguage}/>
       </div>
       <FeedbackForm ></FeedbackForm>
     </>

@@ -115,14 +115,12 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     console.log("Filter Date:", filterDate.toISOString());
     filteredHistory = filteredHistory.filter((historyItem) => {
       const historyDate = new Date(historyItem.createdAt);
-      historyDate.setUTCHours(0, 0, 0, 0); // Set history date to midnight UTC
+      historyDate.setUTCHours(0, 0, 0, 0);
       console.log("History Item Date:", historyDate.toISOString());
       return historyDate.getTime() === filterDate.getTime();
     });
   }
   
-  
-
   if (searchText) {
     const regex = new RegExp(searchText, 'i'); // Case-insensitive regex
     filteredHistory = filteredHistory.filter((historyItem) => regex.test(historyItem.inputText) || regex.test(historyItem.outputText));
@@ -137,6 +135,11 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     setOutputText(historyItem.outputText);
     setInputLanguage(historyItem.inputLanguage);
     setOutputLanguage(historyItem.outputLanguage);
+    // Scroll to the top of the page
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   return (
