@@ -25,7 +25,7 @@ model User {
   salt                String
   resetToken          String?
   resetTokenExpiresAt DateTime?
-
+  
   roles               String  @default("user")
   webAuthnChallenge   String? @unique
   credentials         UserCredential[]
@@ -55,5 +55,5 @@ model Feedback {
   body      String
   createdAt DateTime @default(now())
   userId    Int      @default(-1)
-
+  
 }
