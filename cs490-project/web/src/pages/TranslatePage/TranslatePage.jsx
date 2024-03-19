@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '20px',
     minWidth: 'fit-content',
     height: 'fit-content',
-    },
+  },
   editorContainer: { // Container for editor, dropdown, and buttons
     display: 'flex',
     flexDirection: 'row',
@@ -135,8 +135,8 @@ const TranslatePage = () => {
 
   const handleConvertClick = () => {
     if (inputText.trim() === '') {
-      alert('Please provide input text before converting.');
-      return;
+      addError("- No input text to convert")
+      return false;;
     }
     setLoading(true); // Show loading element
     setTimeout(() => {
@@ -148,28 +148,28 @@ const TranslatePage = () => {
 
 
   const handleInputLanguageChange = (e) => {
-    if(outputLanguage === e.target.value){
+    if (outputLanguage === e.target.value) {
       setInputLanguage(e.target.value);
       setOutputLanguage(inputLanguage);
     }
-    else{
+    else {
       setInputLanguage(e.target.value);
     }
   };
 
   const handleOutputLanguageChange = (e) => {
-    if(inputLanguage === e.target.value){
+    if (inputLanguage === e.target.value) {
       setOutputLanguage(e.target.value);
       setInputLanguage(outputLanguage);
     }
-    else{
+    else {
       setOutputLanguage(e.target.value);
     }
   };
 
   const handleDownloadClick = () => {
     if (inputText.trim() === '') {
-      alert('There is no input to download.');
+      addError("- No input text to download")
       return;
     }
     const fileExtension = languageToFileExtension[inputLanguage];
@@ -200,7 +200,8 @@ const TranslatePage = () => {
       };
       reader.readAsText(file);
     } else {
-      alert('File extension unsupported.');
+      addError("- Unsupported File Uploaded")
+      return;
     }
   };
 
@@ -214,7 +215,7 @@ const TranslatePage = () => {
 
   const handleOutputDownloadClick = () => {
     if (outputText.trim() === '') {
-      alert('There is no output to download.');
+      addError("- No output text to download")
       return;
     }
     const fileExtension = languageToFileExtension[outputLanguage];
@@ -228,11 +229,20 @@ const TranslatePage = () => {
     setIsGreen(prevState => !prevState);
   };
 
+  const [errorFound, setErrorFound] = useState(false);
+  const [errors, setErrors] = useState([]);
+
+  const addError = (error) => {
+    setErrorFound(true);
+    setErrors(prevErrors => [...prevErrors, error]);
+  };
+
+
   return (
     <>
-          <Metadata title="Translate" description="Translate" />
+      <Metadata title="Translate" description="Translate" />
       <header>
-        <Navbar/>
+        <Navbar />
       </header>
       <div className={classes.page} >
         <div className={classes.convertContainer}>
@@ -266,27 +276,27 @@ const TranslatePage = () => {
             </div>
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
-                  <Select  value={inputLanguage}  onChange={handleInputLanguageChange}  style={{color:'#fff' }}
+                <Select value={inputLanguage} onChange={handleInputLanguageChange} style={{ color: '#fff' }}
                   aria-label='input-language-dropdown'
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          backgroundColor: '#393e41', // background color of the dropdown menu
-                        },
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: '#393e41', // background color of the dropdown menu
                       },
-                      MenuListProps: {
-                        style: {
-                          color: '#fff', // text color of the dropdown items
-                          textAlign: 'center', // center the text in the dropdown
-                        },
+                    },
+                    MenuListProps: {
+                      style: {
+                        color: '#fff', // text color of the dropdown items
+                        textAlign: 'center', // center the text in the dropdown
                       },
-                    }}>
-                    <MenuItem value={'java'}>Java</MenuItem>
-                    <MenuItem value={'python'}>Python</MenuItem>
-                    <MenuItem value={'c'}>C</MenuItem>
-                    <MenuItem value={'cpp'}>C++</MenuItem>
-                    <MenuItem value={'javascript'}>JavaScript</MenuItem>
-                  </Select>
+                    },
+                  }}>
+                  <MenuItem value={'java'}>Java</MenuItem>
+                  <MenuItem value={'python'}>Python</MenuItem>
+                  <MenuItem value={'c'}>C</MenuItem>
+                  <MenuItem value={'cpp'}>C++</MenuItem>
+                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                </Select>
               </div>
               <MonacoEditorWrapper
                 forwardedRef={inputEditor}
@@ -295,7 +305,7 @@ const TranslatePage = () => {
                 width="550px"
                 options={{
                   fontSize: 14,
-                  scrollBeyondLastLine : false,
+                  scrollBeyondLastLine: false,
                 }}
                 language={inputLanguage}
                 theme="vs-dark"
@@ -305,23 +315,33 @@ const TranslatePage = () => {
             </div>
           </div>
           <div className={classes.loadingContainer}>
-          <Box
-            display="flex"
-            alignItems="center"
-            boxShadow={3}
-            style={{backgroundColor: '#1e1e1e', color: '#fff', padding: '5px', borderRadius: '10px', width: 'fit-content' }}>
-            GPT-3 Status
-            <IconButton onClick={handleToggleColor}>
-              {isGreen ? <CheckCircle style={{ color: 'green' }} /> : <HighlightOff style={{ color: 'red' }} />}
-            </IconButton>
-          </Box>
-          <Button
+            <Box
+              display="flex"
+              alignItems="center"
+              boxShadow={3}
+              style={{ backgroundColor: '#1e1e1e', color: '#fff', padding: '5px', borderRadius: '10px', width: 'fit-content' }}>
+              GPT-3 Status
+              <IconButton onClick={handleToggleColor}>
+                {isGreen ? <CheckCircle style={{ color: 'green' }} /> : <HighlightOff style={{ color: 'red' }} />}
+              </IconButton>
+            </Box>
+
+            {errorFound ? <Box
+              boxShadow={3}
+              style={{ backgroundColor: '#1e1e1e', color: 'red', padding: '5px', marginTop: '5px', borderRadius: '10px', width: 'fit-content' }}>Error:
+              {errors.map((error, indexErr) => (
+                <p key={indexErr}>{error}</p>
+              ))}
+            </Box> : null}
+
+
+            <Button
               variant="contained"
               className={classes.convertButton}
               onClick={handleConvertClick}
             >Convert
-          </Button>
-          {loading && <CircularProgress style={{ color: 'white', marginTop: '10px'}} />}
+            </Button>
+            {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
           </div>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
@@ -340,8 +360,8 @@ const TranslatePage = () => {
             </div>
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
-                <Select  value={outputLanguage}  onChange={handleOutputLanguageChange}  style={{color:'#fff' }}
-                aria-label='output-language-dropdown'
+                <Select value={outputLanguage} onChange={handleOutputLanguageChange} style={{ color: '#fff' }}
+                  aria-label='output-language-dropdown'
                   MenuProps={{
                     PaperProps: {
                       style: {
@@ -368,7 +388,7 @@ const TranslatePage = () => {
                 width="550px"
                 options={{
                   fontSize: 14,
-                  scrollBeyondLastLine : false,
+                  scrollBeyondLastLine: false,
                 }}
                 language={outputLanguage}
                 theme="vs-dark"
