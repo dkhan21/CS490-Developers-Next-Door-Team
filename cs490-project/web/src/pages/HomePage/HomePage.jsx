@@ -1,24 +1,24 @@
+import React from 'react'
+import { useEffect } from 'react'
+
 import { Link, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
 
 import Navbar from 'src/components/Navbar/Navbar'
-import React from 'react';
-import { useEffect } from 'react';
 
 const HomePage = () => {
   useEffect(() => {
-    const hash = window.location.hash;
+    const hash = window.location.hash
     if (hash) {
-      const element = document.querySelector(hash);
+      const element = document.querySelector(hash)
       if (element) {
         window.scrollTo({
           top: element.offsetTop,
           behavior: 'smooth',
-        });
+        })
       }
     }
-  }, [window.location.hash]);
-
+  }, [window.location.hash])
 
   return (
     <>
@@ -33,7 +33,7 @@ const HomePage = () => {
           <h3>Into Other Programming Languages!</h3>
         </div>
         <Link to={routes.translate()}>
-        <button id="getStarted">Get Started</button>
+          <button id="getStarted">Get Started</button>
         </Link>
       </div>
       <div className="container" id="section-about">
