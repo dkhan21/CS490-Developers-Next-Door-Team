@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #444',
     borderRadius: '10px',
     boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.5)',
+    maxWidth: '300px',
   },
   cardContent: {
     padding: '20px',
@@ -26,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
     color: '#ff5555',
   },
   copyButton: {
-    color: '#0066cc', // Blue color
-    fontSize: 'smaller', // Adjust font size
-    backgroundColor: 'transparent', // Transparent background
+    color: '#0066cc',
+    fontSize: 'smaller',
+    backgroundColor: 'transparent',
   },
   cardActions: {
     display: 'flex',
@@ -53,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     color: '#fff',
   },
+  filterText: {
+    textAlign: 'center',
+    color: '#00f',
+  },
 }));
 
 const GET_USER_HISTORY_QUERY = gql`
@@ -65,6 +70,7 @@ const GET_USER_HISTORY_QUERY = gql`
       outputText
       userId
       createdAt
+      status
     }
   }
 `;
@@ -85,8 +91,6 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [searchText, setSearchText] = useState('');
-  const [selectedHistory, setSelectedHistory] = useState(null);
-  const [openPreview, setOpenPreview] = useState(false);
   const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
@@ -94,17 +98,6 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   const [deleteHistory] = useMutation(DELETE_HISTORY_MUTATION, {
     refetchQueries: [{ query: GET_USER_HISTORY_QUERY }],
   });
-
-  // Function to handle opening preview dialog
-  const handlePreviewOpen = (historyItem) => {
-    setSelectedHistory(historyItem);
-    setOpenPreview(true);
-  };
-
-  // Function to handle closing preview dialog
-  const handlePreviewClose = () => {
-    setOpenPreview(false);
-  };
 
   const handleDelete = async (id) => {
     console.log("Deleting history with ID:", id);
@@ -187,8 +180,8 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   }
 
   filteredHistory = filteredHistory
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sort by newest first
-    .slice((page - 1) * 5, page * 5); // Paginate the sorted data
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice((page - 1) * 5, page * 5);
 
   const handleCopyHistory = (historyItem) => {
     setInputText(historyItem.inputText);
@@ -281,6 +274,9 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
               </Typography>
               <Typography variant="body2">
                 Created At: {new Date(historyItem.createdAt).toLocaleString()}
+              </Typography>
+              <Typography variant="body2">
+                Status: {historyItem.status} {/* Display the status here */}
               </Typography>
             </CardContent>
             <CardActions className={classes.cardActions}>

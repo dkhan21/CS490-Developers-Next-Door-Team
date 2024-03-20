@@ -30,6 +30,7 @@ const GET_USER_HISTORY_QUERY = gql`
       outputText
       userId
       createdAt
+      status
     }
   }
 `;
@@ -178,7 +179,11 @@ const TranslatePage = () => {
     const generatedOutputText = generateOutputText(inputText);  
     setTimeout(() => {
       setLoading(false);
-      setOutputText(generatedOutputText); 
+      let stat = "Not Translated";
+      setOutputText(generatedOutputText);
+      if(generatedOutputText.length > 0){
+        stat = "Successfully Translated";
+      }
       createHistory({
         variables: {
           input: {
@@ -187,10 +192,11 @@ const TranslatePage = () => {
             inputText,
             outputText: generatedOutputText,
             userId: currentUser.id,
+            status: stat
           },
         },
       }).then(() => {
-        refetch(); // Refresh history after creating a new item
+        refetch();
       }).catch((error) => {
         console.error('Error creating history:', error);
       });
@@ -286,11 +292,11 @@ const [isDragOver, setIsDragOver] = useState(false);
 
 const handleDragOver = (e) => {
   e.preventDefault();
-  setIsDragOver(true); // Set the state to indicate that a file is being dragged over the button
+  setIsDragOver(true); 
 };
 
 const handleDragLeave = () => {
-  setIsDragOver(false); // Reset the state to indicate that no file is being dragged over the button
+  setIsDragOver(false);
 };
 
 const handleDrop = (e) => {
@@ -303,7 +309,7 @@ const handleDrop = (e) => {
 
   return (
     <>
-          <Metadata title="Translate" description="Translate" />
+    <Metadata title="Translate" description="Translate" />
       <header>
         <Navbar/>
       </header>
@@ -352,8 +358,8 @@ const handleDrop = (e) => {
                       },
                       MenuListProps: {
                         style: {
-                          color: '#fff', // text color of the dropdown items
-                          textAlign: 'center', // center the text in the dropdown
+                          color: '#fff',
+                          textAlign: 'center',
                         },
                       },
                     }}>
@@ -427,8 +433,8 @@ const handleDrop = (e) => {
                     },
                     MenuListProps: {
                       style: {
-                        color: '#ffffff', // text color of the dropdown items
-                        textAlign: 'center', // center the text in the dropdown
+                        color: '#ffffff',
+                        textAlign: 'center',
                       },
                     },
                   }}>

@@ -6,6 +6,7 @@ export const schema = gql`
     inputText: String!
     outputText: String!
     createdAt: DateTime!
+    status: String!
     userId: Int!
   }
 
@@ -19,6 +20,7 @@ export const schema = gql`
     outputLanguage: String!
     inputText: String!
     outputText: String!
+    status: String!
     userId: Int!
   }
 

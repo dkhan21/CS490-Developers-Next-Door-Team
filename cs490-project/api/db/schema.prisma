@@ -62,6 +62,7 @@ model History {
   outputLanguage      String
   inputText      String
   outputText      String
+  status    String
   createdAt DateTime @default(now())
   userId    Int      @default(-1) 
 }
