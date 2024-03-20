@@ -33,7 +33,7 @@ export const handler = async (event, context) => {
     const sourceLanguage = body.messages[0].source;
 
     const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
-    
+
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
@@ -41,7 +41,7 @@ export const handler = async (event, context) => {
     });
     return {
       statusCode: 200,
-      headers: { 
+      headers: {
             'Content-Type': 'application/json'
        },
       body: JSON.stringify({ completion: completion.choices[0].message.content }),
@@ -53,5 +53,5 @@ export const handler = async (event, context) => {
       statusCode: 500
     }
   }
-  
+
 }

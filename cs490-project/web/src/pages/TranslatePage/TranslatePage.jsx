@@ -133,20 +133,35 @@ const TranslatePage = () => {
     }
   }, [outputLanguage]);
 
+  const [isStatus500, setisStatus500] = useState(false);
+
+
   const handleConvertClick = () => {
     if (inputText.trim() === '') {
       addError("- No input text to convert")
       return false;;
     }
     setLoading(true); // Show loading element
+    resetErrorState();
+    let timeoutId; // Initialize timeout variable
+    setisStatus500(false);
+
+    const timeoutPromise = new Promise((resolve, reject) => {
+      timeoutId = setTimeout(() => {
+        if (!isStatus500) {
+          addError("- API rate limit reached. Please try again later.");
+          setIsGreen(false);
+        }
+      }, 4000); // Set timeout to 4 seconds
+    });
 
     const dataPayload = {
       "messages": [
-        { 
-          "role": "system", 
-          "content": inputText, 
-          "source": inputLanguage, 
-          "target": outputLanguage 
+        {
+          "role": "system",
+          "content": inputText,
+          "source": inputLanguage,
+          "target": outputLanguage
         }
       ]
     };
@@ -159,12 +174,28 @@ const TranslatePage = () => {
       },
       body: JSON.stringify(dataPayload)
     })
-    .then(response => {
-      return response.json();
-  })
-    .then(data => {
-      setOutputText(data.completion);
-    });
+
+      .then(response => {
+        if (response.ok) {
+          setIsGreen(true);
+          console.log(response)
+          return response.json();
+        }
+        else {
+          if (response.status === 500) {
+            setIsGreen(false);
+            setisStatus500(true);
+            addError("API Currently Down")
+          } else {
+            console.log(response)
+            addError(response.statusText)
+          }
+        }
+      })
+      .then(data => {
+        clearTimeout(timeoutId);
+        setOutputText(data.completion);
+      })
     setTimeout(() => {
       //If we want to add auto-detect feature: const detectedLanguage = detectLang(inputText)
       setLoading(false);
@@ -231,10 +262,18 @@ const TranslatePage = () => {
   };
 
   const handleCopyClick = () => {
+    if (inputText.trim() === '') {
+      addError("- No input text to copy")
+      return;
+    }
     navigator.clipboard.writeText(inputText);
   };
 
   const handleOutputCopyClick = () => {
+    if (outputText.trim() === '') {
+      addError("- No output text to copy")
+      return;
+    }
     navigator.clipboard.writeText(outputText);
   };
 
@@ -257,7 +296,13 @@ const TranslatePage = () => {
   const [errorFound, setErrorFound] = useState(false);
   const [errors, setErrors] = useState([]);
 
+  const resetErrorState = () => {
+    setErrorFound(false);
+    setErrors([]);
+  };
+
   const addError = (error) => {
+    resetErrorState();
     setErrorFound(true);
     setErrors(prevErrors => [...prevErrors, error]);
   };
