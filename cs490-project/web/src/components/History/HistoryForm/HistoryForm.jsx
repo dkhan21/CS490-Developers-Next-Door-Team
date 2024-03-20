@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
 import { useAuth } from 'src/auth';
-import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box } from '@material-ui/core';
+import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box, Dialog, DialogTitle, DialogContent, Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Pagination from '@mui/material/Pagination';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -47,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
   searchField: {
     marginRight: '10px',
   },
+  signInMessage: {
+    textAlign: 'center',
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 }));
 
 const GET_USER_HISTORY_QUERY = gql`
@@ -74,9 +80,13 @@ const DELETE_HISTORY_MUTATION = gql`
 const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputLanguage }) => {
   const { currentUser } = useAuth();
   const [page, setPage] = useState(1);
-  const [languageFilter, setLanguageFilter] = useState('');
-  const [dayFilter, setDayFilter] = useState('');
+  const [inputLanguageFilter, setInputLanguageFilter] = useState('');
+  const [outputLanguageFilter, setOutputLanguageFilter] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [searchText, setSearchText] = useState('');
+  const [selectedHistory, setSelectedHistory] = useState(null);
+  const [openPreview, setOpenPreview] = useState(false);
   const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
@@ -84,6 +94,17 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   const [deleteHistory] = useMutation(DELETE_HISTORY_MUTATION, {
     refetchQueries: [{ query: GET_USER_HISTORY_QUERY }],
   });
+
+  // Function to handle opening preview dialog
+  const handlePreviewOpen = (historyItem) => {
+    setSelectedHistory(historyItem);
+    setOpenPreview(true);
+  };
+
+  // Function to handle closing preview dialog
+  const handlePreviewClose = () => {
+    setOpenPreview(false);
+  };
 
   const handleDelete = async (id) => {
     console.log("Deleting history with ID:", id);
@@ -99,31 +120,70 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     setPage(newPage);
   };
 
-  if (!currentUser) return <div>You need to sign in to access your history.</div>;
+  const handleStartDateChange = (date) => {
+    if (!endDate || new Date(date) <= new Date(endDate)) {
+      setStartDate(date);
+    } else {
+      setStartDate(endDate);
+      setEndDate(date);
+    }
+  };
+
+  const handleEndDateChange = (date) => {
+    if (!startDate || new Date(date) >= new Date(startDate)) {
+      setEndDate(date);
+    } else {
+      setEndDate(startDate);
+      setStartDate(date);
+    }
+  };
+
+  if (!currentUser) {
+    return (
+      <Typography variant="h1" className={classes.signInMessage}>
+        You need to sign in to access your history.
+      </Typography>
+    );
+  }
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
   let filteredHistory = data.histories
     .filter((historyItem) => historyItem.userId === currentUser.id);
 
-  if (languageFilter && languageFilter !== 'All') {
-    filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage.toLowerCase().includes(languageFilter.toLowerCase()) || historyItem.outputLanguage.toLowerCase().includes(languageFilter.toLowerCase()));
+  if (inputLanguageFilter && inputLanguageFilter !== 'All') {
+    filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage.toLowerCase().includes(inputLanguageFilter.toLowerCase()));
   }
 
-  if (dayFilter) {
-    const filterDate = new Date(dayFilter + 'T00:00:00Z'); // Set filter date to midnight UTC
-    console.log("Filter Date:", filterDate.toISOString());
+  if (outputLanguageFilter && outputLanguageFilter !== 'All') {
+    filteredHistory = filteredHistory.filter((historyItem) => historyItem.outputLanguage.toLowerCase().includes(outputLanguageFilter.toLowerCase()));
+  }
+
+  if (startDate && endDate) {
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+  
     filteredHistory = filteredHistory.filter((historyItem) => {
       const historyDate = new Date(historyItem.createdAt);
-      historyDate.setUTCHours(0, 0, 0, 0);
-      console.log("History Item Date:", historyDate.toISOString());
-      return historyDate.getTime() === filterDate.getTime();
+      return historyDate >= startDateObj && historyDate <= endDateObj;
     });
   }
   
   if (searchText) {
-    const regex = new RegExp(searchText, 'i'); // Case-insensitive regex
-    filteredHistory = filteredHistory.filter((historyItem) => regex.test(historyItem.inputText) || regex.test(historyItem.outputText));
+    const searchTextLowerCase = searchText.replace(/\n/g, '').toLowerCase();
+    filteredHistory = filteredHistory.filter((historyItem) => {
+      const inputTextLowerCase = historyItem.inputText.replace(/\n/g, '').toLowerCase();
+      const outputTextLowerCase = historyItem.outputText.replace(/\n/g, '').toLowerCase();
+      return (
+        inputTextLowerCase.includes(searchTextLowerCase) ||
+        outputTextLowerCase.includes(searchTextLowerCase)
+      );
+    });
+  }
+
+  const totalPages = Math.ceil(filteredHistory.length / 5);
+  if (page > totalPages) {
+    setPage(totalPages);
   }
 
   filteredHistory = filteredHistory
@@ -135,7 +195,6 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     setOutputText(historyItem.outputText);
     setInputLanguage(historyItem.inputLanguage);
     setOutputLanguage(historyItem.outputLanguage);
-    // Scroll to the top of the page
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
@@ -148,25 +207,60 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       <Box className={classes.searchContainer}>
         <TextField
           className={classes.searchField}
-          label="Language Filter"
-          value={languageFilter}
-          onChange={(e) => setLanguageFilter(e.target.value)}
+          label="Input Language Filter"
+          value={inputLanguageFilter}
+          onChange={(e)=> setInputLanguageFilter(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+            style: { color: '#fff' } // Change label color to white
+          }}
+          InputProps={{ style: { color: '#fff' } }} // Change text color to white
         />
         <TextField
           className={classes.searchField}
-          label="Day Filter"
-          type="date"
-          value={dayFilter}
-          onChange={(e) => setDayFilter(e.target.value)}
+          label="Output Language Filter"
+          value={outputLanguageFilter}
+          onChange={(e) => setOutputLanguageFilter(e.target.value)}
           InputLabelProps={{
             shrink: true,
+            style: { color: '#fff' } // Change label color to white
           }}
+          InputProps={{ style: { color: '#fff' } }} // Change text color to white
+        />
+        <TextField
+          className={classes.searchField}
+          label="Start Date"
+          type="date"
+          value={startDate}
+          onChange={(e) => handleStartDateChange(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+            style: { color: '#fff' } // Change label color to white
+          }}
+          InputProps={{ style: { color: '#fff' } }} // Change text color to white
+        />
+        <TextField
+          className={classes.searchField}
+          label="End Date"
+          type="date"
+          value={endDate}
+          onChange={(e) => handleEndDateChange(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+            style: { color: '#fff' } // Change label color to white
+          }}
+          InputProps={{ style: { color: '#fff' } }} // Change text color to white
         />
         <TextField
           className={classes.searchField}
           label="Search"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+            style: { color: '#fff' } // Change label color to white
+          }}
+          InputProps={{ style: { color: '#fff' } }} // Change text color to white
         />
       </Box>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -201,19 +295,10 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
         ))}
       </div>
       <div className={classes.pagination}>
-        <Pagination
-          count={Math.ceil(data.histories.length / 5)}
-          page={page}
-          onChange={onPageChange}
-          color="primary"
-          shape="rounded"
-          variant="outlined"
-          size="large"
-          boundaryCount={2}
-          showFirstButton
-          showLastButton
-          prevIcon={<ArrowBackIcon />}
-          nextIcon={<ArrowForwardIcon />}
+        <Pagination count={totalPages} page={page} onChange={onPageChange} color="primary"
+          shape="rounded" variant="outlined" size="large"
+          boundaryCount={2} showFirstButton
+          showLastButton prevIcon={<ArrowBackIcon />} nextIcon={<ArrowForwardIcon />}
         />
       </div>
     </div>
