@@ -43,17 +43,23 @@ const UpdateProfilePage = () => {
   }
 
   return (
-    <div>
-      <Form onSubmit={onSubmit}>
-        <label>Email</label>
-        <TextField 
-          name="email"
-        />
+    <div style={{ display: 'flex'}}>
+      <Form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', width: '50%' }}>
+        <div>
+          <label>Email </label>
+          <TextField 
+            name="email"
+            placeholder="New Email"
+          />
+        </div>
         
-        <Submit>Update Profile</Submit>
+        <div>
+          <Submit>Update Profile</Submit>
+        </div>
       </Form>
     </div>
   )
+  
 }
 
 export default UpdateProfilePage

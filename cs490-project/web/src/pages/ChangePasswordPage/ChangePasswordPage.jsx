@@ -37,26 +37,27 @@ const ChangePasswordPage = () => {
   }
 
   return (
-    
-    <Form onSubmit={onSubmit} >
-      <Label name="newPassword" errorClassName="error">New Password</Label>
-      <TextField
-        name="newPassword"
-        placeholder="New Password"
-        validation={{ required: true }}
-        errorClassName='error'
-      />
-      <Label name="confirmNewPassword" errorClassName="error">Confirm New Password</Label>
-      <TextField
-        name="confirmNewPassword"
-        placeholder="Confirm New Password"
-        validation={{ required: true }}
-        errorClassName='error'
-      />
-      <Submit disabled={loading}>Change Password</Submit>
+    <div >
+      <Form onSubmit={onSubmit} >
+        <Label name="newPassword" errorClassName="error">New Password</Label>
+        <TextField
+          name="newPassword"
+          placeholder="New Password"
+          validation={{ required: true }}
+          errorClassName='error'
+        />
+        <Label name="confirmNewPassword" errorClassName="error">Confirm New Password</Label>
+        <TextField
+          name="confirmNewPassword"
+          placeholder="Confirm New Password"
+          validation={{ required: true }}
+          errorClassName='error'
+        />
+        <Submit disabled={loading}>Change Password</Submit>
 
-      {error && <div className='error'>{error.message}</div>}
-    </Form>
+        {error && <div className='error'>{error.message}</div>}
+      </Form>
+    </div>
   )
 }
 

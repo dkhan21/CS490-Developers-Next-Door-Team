@@ -1,4 +1,6 @@
-import { users, user, createUser, updateUser, deleteUser } from './users'
+import { users, user, createUser, updateUser, deleteUser, changePassword } from './users'
+import { hashPassword } from '@redwoodjs/auth-dbauth-api'
+import { db } from 'src/lib/db'
 
 describe('users', () => {
   scenario('returns all users', async (scenario) => {
@@ -56,5 +58,64 @@ describe('users', () => {
     const result = await user({ id: scenario.user.one.id })
     expect(result).toEqual(null)
   })
+
+  scenario('updates user password', async (scenario) => {
+    // Fetch user before update 
+    const originalUser = await user({ id: scenario.user.one.id })
   
+    // Store the original hashed password
+    const originalHashedPassword = originalUser.hashedPassword;
+  
+    // Update the user's password
+    const newPassword = 'newPassword123'; // replace with your test data
+    await changePassword({ email: originalUser.email, newPassword })
+  
+    // Fetch the updated user from the database
+    const updatedUser = await user({ id: originalUser.id })
+  
+    // Check if the user's password was updated
+    expect(updatedUser.hashedPassword).not.toEqual(originalHashedPassword)
+  }) 
+
+  scenario('updates user profile with proper authorization', async (scenario) => {
+    //fetch user before update 
+    const originalUser = await user({ id: scenario.user.one.id })
+
+    //attempt to update user's profile as a different user 
+    const otherUserEmail = 'other-user@example.com'; 
+    try {
+      await changePassword({ email: otherUserEmail, newPassword: 'newPassword123' })
+    }catch (error){
+      expect(error.message).toEqual('User not found')
+    }
+
+    //check if the user's password was not updated 
+    const updatedUser = await user({ id: originalUser.id })
+    expect(updatedUser.hashedPassword).toEqual(originalUser.hashedPassword)
+
+  })
+
+  scenario('fails to update a non-existent user', async (scenario) => {
+    const nonExistentUserId = 999999; // some non-existent integer id
+    await expect(updateUser({
+      input: {
+        id: nonExistentUserId,
+        email: 'new-email@example.com',
+      },
+    })).rejects.toThrow()
+  })
+
+  scenario('fails to change password of a non-existent user', async (scenario) => {
+    const nonExistentUserEmail = 'non-existent-email@example.com';
+    try {
+      await changePassword({ email: nonExistentUserEmail, newPassword: 'newPassword123' })
+    } catch (error) {
+      expect(error.message).toEqual('User not found')
+    }
+  })
+  
+  scenario('fails to delete a non-existent user', async (scenario) => {
+    const nonExistentUserId = 999999; // some non-existent integer id
+    await expect(deleteUser({ id: nonExistentUserId })).rejects.toThrow()
+  })
 })

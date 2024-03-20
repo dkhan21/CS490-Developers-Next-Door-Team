@@ -37,18 +37,41 @@ const ProfilePage = () => {
     return <div>Loading...</div> 
   }
 
+  // return (
+  //   <>
+  //     <Metadata title="Profile" description="Profile page" />
+  //     <p>
+  //       Email: {currentUser.email}
+  //     </p>
+
+  //     <Link to={routes.updateProfile()}>Update Profile</Link>
+  //     <Link to={routes.changePassword()}>Change Password</Link>
+  //    <button onClick={onClickDelete}>Delete Account</button>
+  //   </>
+  // )
   return (
     <>
       <Metadata title="Profile" description="Profile page" />
       <p>
         Email: {currentUser.email}
       </p>
-
-      <Link to={routes.updateProfile()}>Update Profile</Link>
-      <Link to={routes.changePassword()}>Change Password</Link>
-     <button onClick={onClickDelete}>Delete Account</button>
+  
+      <div>
+        <Link to={routes.updateProfile()} style={{ color: 'black' }}>
+          Update Profile
+        </Link>
+      </div>
+      <div>
+        <Link to={routes.changePassword()} style={{ color: 'black' }}>
+          Change Password
+        </Link>
+      </div>
+      <div>
+        <button onClick={onClickDelete}>Delete Account</button>
+      </div>
     </>
   )
+  
 }
 
 export default ProfilePage
