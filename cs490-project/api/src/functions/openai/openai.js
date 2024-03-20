@@ -23,15 +23,27 @@ export const handler = async (event, context) => {
   //logger.info(`${event.httpMethod} ${event.path}: openai function`)
   try {
     //const body = JSON.stringify(event.body);
+
+    //console.log("Event: ", event.body);
+
     const body = JSON.parse(event.body);
+
+    const code = body.messages[0].content;
+    const targetLanguage = body.messages[0].target;
+    const sourceLanguage = body.messages[0].source;
+
+    const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
     
+
     const completion = await openai.chat.completions.create({
-      messages: [{ role: "system", content: body.messages[0].content }],
+      messages: [{ role: "system", content: prompt }],
       model: "gpt-3.5-turbo"
     });
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+            'Content-Type': 'application/json'
+       },
       body: JSON.stringify({ completion: completion.choices[0].message.content }),
     };
 

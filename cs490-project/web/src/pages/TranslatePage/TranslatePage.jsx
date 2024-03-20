@@ -7,7 +7,7 @@ import MonacoEditor from '@monaco-editor/react';
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
 import Navbar from 'src/components/Navbar/Navbar'
 import FeedbackForm from 'src/components/FeedbackForm';
-import { Metadata } from '@redwoodjs/web'
+import { Metadata } from '@redwoodjs/web';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -139,9 +139,34 @@ const TranslatePage = () => {
       return false;;
     }
     setLoading(true); // Show loading element
+
+    const dataPayload = {
+      "messages": [
+        { 
+          "role": "system", 
+          "content": inputText, 
+          "source": inputLanguage, 
+          "target": outputLanguage 
+        }
+      ]
+    };
+
+    fetch('http://localhost:8910/.redwood/functions/openai', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataPayload)
+    })
+    .then(response => {
+      return response.json();
+  })
+    .then(data => {
+      setOutputText(data.completion);
+    });
     setTimeout(() => {
       //If we want to add auto-detect feature: const detectedLanguage = detectLang(inputText)
-      setOutputText(inputText);
       setLoading(false);
     }, 2000);
   };
