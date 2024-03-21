@@ -58,7 +58,7 @@ const FaqPage = () => {
 
   return (
     <ThemeProvider theme={theme}>
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '110px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '140px' }}>
     <header> 
       <Navbar/> 
     </header>
