@@ -8,7 +8,32 @@ import MonacoEditor from '@monaco-editor/react';
 import Navbar from 'src/components/Navbar/Navbar'
 import FeedbackForm from 'src/components/FeedbackForm';
 import { Metadata } from '@redwoodjs/web';
+import HistoryForm from 'src/components/History/HistoryForm';
+import { useAuth } from 'src/auth';
+import { gql, useMutation, useQuery } from '@redwoodjs/web';
 
+const CREATE_HISTORY_MUTATION = gql`
+  mutation CreateHistoryMutation($input: CreateHistoryInput!) {
+    createHistory(input: $input) {
+      id
+    }
+  }
+`;
+
+const GET_USER_HISTORY_QUERY = gql`
+  query GetUserHistory {
+    histories {
+      id
+      inputLanguage
+      outputLanguage
+      inputText
+      outputText
+      userId
+      createdAt
+      status
+    }
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
   page: { // Container for entire page
@@ -96,14 +121,17 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', // Add subtle shadow
     transition: 'background-color 0.3s ease', // Smooth transition on hover
   },
+  uploadButtonDragOver: {
+  backgroundColor: '#536dfe', // Change the background color to indicate drag over
+},
 }));
 
 const languageToFileExtension = {
-  java: 'java',
-  python: 'py',
-  cpp: 'cpp',
-  c: 'c',
-  javascript: 'js',
+  'Java': 'java',
+  'Python': 'py',
+  'C++': 'cpp',
+  'C': 'c',
+  'JavaScript': 'js',
 };
 const MonacoEditorWrapper = forwardRef((props, ref) => {
   return <MonacoEditor {...props} ref={ref} />;
@@ -111,16 +139,25 @@ const MonacoEditorWrapper = forwardRef((props, ref) => {
 
 const TranslatePage = () => {
   const classes = useStyles();
-  const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
-  const [inputLanguage, setInputLanguage] = useState('java');
-  const [outputLanguage, setOutputLanguage] = useState('python');
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
+  const [inputLanguage, setInputLanguage] = useState('Java');
+  const [outputLanguage, setOutputLanguage] = useState('Python');
   const [loading, setLoading] = useState(false); // State to control loading visibility
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
-  const selectRef = useRef(null);
-
+  const { currentUser } = useAuth();
+  const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
+    onCompleted: () => {
+      refetch;
+    },
+    onError: (error) => {
+      alert("Could not create history entry.");
+    },
+  });
+  const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
+  
   useEffect(() => {
     if (inputEditor.current) {
       monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
@@ -195,13 +232,29 @@ const TranslatePage = () => {
       .then(data => {
         clearTimeout(timeoutId);
         setOutputText(data.completion);
+        createHistory({
+          variables: {
+            input: {
+              inputLanguage,
+              outputLanguage,
+              inputText,
+              outputText: generatedOutputText,
+              userId: currentUser.id,
+              status: stat
+            },
+          },
+        }).then(() => {
+          refetch();
+          setPage(1);
+        }).catch((error) => {
+          console.error('Error creating history:', error);
+        });
       })
     setTimeout(() => {
       //If we want to add auto-detect feature: const detectedLanguage = detectLang(inputText)
       setLoading(false);
     }, 2000);
   };
-
 
   const handleInputLanguageChange = (e) => {
     if (outputLanguage === e.target.value) {
@@ -293,6 +346,25 @@ const TranslatePage = () => {
     setIsGreen(prevState => !prevState);
   };
 
+const [isDragOver, setIsDragOver] = useState(false);
+
+const handleDragOver = (e) => {
+  e.preventDefault();
+  setIsDragOver(true); 
+};
+
+const handleDragLeave = () => {
+  setIsDragOver(false);
+};
+
+const handleDrop = (e) => {
+  e.preventDefault();
+  setIsDragOver(false);
+  const file = e.dataTransfer.files[0];
+  handleFileChange({ target: { files: [file] } });
+};
+
+
   const [errorFound, setErrorFound] = useState(false);
   const [errors, setErrors] = useState([]);
 
@@ -310,7 +382,7 @@ const TranslatePage = () => {
 
   return (
     <>
-      <Metadata title="Translate" description="Translate" />
+    <Metadata title="Translate" description="Translate" />
       <header>
         <Navbar />
       </header>
@@ -318,10 +390,13 @@ const TranslatePage = () => {
         <div className={classes.convertContainer}>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
-              <Button
+            <Button
                 variant="contained"
-                className={classes.button}
+                className={`${classes.button} ${isDragOver ? classes.uploadButtonDragOver : ''}`}
                 onClick={handleUploadClick}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
               ><FileUploadIcon fontSize="large" />
               </Button>
               <Button
@@ -348,25 +423,25 @@ const TranslatePage = () => {
               <div className={classes.dropdownContainer}>
                 <Select value={inputLanguage} onChange={handleInputLanguageChange} style={{ color: '#fff' }}
                   aria-label='input-language-dropdown'
-                  MenuProps={{
-                    PaperProps: {
-                      style: {
-                        backgroundColor: '#393e41', // background color of the dropdown menu
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          backgroundColor: '#393e41', // background color of the dropdown menu
+                        },
                       },
-                    },
-                    MenuListProps: {
-                      style: {
-                        color: '#fff', // text color of the dropdown items
-                        textAlign: 'center', // center the text in the dropdown
+                      MenuListProps: {
+                        style: {
+                          color: '#fff',
+                          textAlign: 'center',
+                        },
                       },
-                    },
-                  }}>
-                  <MenuItem value={'java'}>Java</MenuItem>
-                  <MenuItem value={'python'}>Python</MenuItem>
-                  <MenuItem value={'c'}>C</MenuItem>
-                  <MenuItem value={'cpp'}>C++</MenuItem>
-                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
-                </Select>
+                    }}>
+                    <MenuItem value={'Java'}>Java</MenuItem>
+                    <MenuItem value={'Python'}>Python</MenuItem>
+                    <MenuItem value={'C'}>C</MenuItem>
+                    <MenuItem value={'C++'}>C++</MenuItem>
+                    <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
+                  </Select>
               </div>
               <MonacoEditorWrapper
                 forwardedRef={inputEditor}
@@ -409,6 +484,7 @@ const TranslatePage = () => {
               variant="contained"
               className={classes.convertButton}
               onClick={handleConvertClick}
+              disabled={loading}
             >Convert
             </Button>
             {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
@@ -440,16 +516,16 @@ const TranslatePage = () => {
                     },
                     MenuListProps: {
                       style: {
-                        color: '#fff', // text color of the dropdown items
-                        textAlign: 'center', // center the text in the dropdown
+                        color: '#ffffff',
+                        textAlign: 'center',
                       },
                     },
                   }}>
-                  <MenuItem value={'java'}>Java</MenuItem>
-                  <MenuItem value={'python'}>Python</MenuItem>
-                  <MenuItem value={'c'}>C</MenuItem>
-                  <MenuItem value={'cpp'}>C++</MenuItem>
-                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                  <MenuItem value={'Java'}>Java</MenuItem>
+                  <MenuItem value={'Python'}>Python</MenuItem>
+                  <MenuItem value={'C'}>C</MenuItem>
+                  <MenuItem value={'C++'}>C++</MenuItem>
+                  <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
                 </Select>
               </div>
               <MonacoEditorWrapper
@@ -468,10 +544,9 @@ const TranslatePage = () => {
             </div>
           </div>
         </div>
+        <HistoryForm setInputText={setInputText} setOutputText={setOutputText} setInputLanguage={setInputLanguage} setOutputLanguage={setOutputLanguage}/>
       </div>
-
       <FeedbackForm ></FeedbackForm>
-
     </>
   );
 };

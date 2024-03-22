@@ -54,6 +54,15 @@ model Feedback {
   rating    Int
   body      String
   createdAt DateTime @default(now())
-  userId    Int      @default(-1)
-  
+  userId    Int      @default(-1) 
+}
+model History {
+  id        Int      @id @default(autoincrement())
+  inputLanguage      String
+  outputLanguage      String
+  inputText      String
+  outputText      String
+  status    String
+  createdAt DateTime @default(now())
+  userId    Int      @default(-1) 
 }
