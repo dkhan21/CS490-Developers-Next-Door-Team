@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
 import { useAuth } from 'src/auth';
-import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box, Dialog, DialogTitle, DialogContent, Button } from '@material-ui/core';
+import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box, FormLabel } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Pagination from '@mui/material/Pagination';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -99,6 +99,12 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     refetchQueries: [{ query: GET_USER_HISTORY_QUERY }],
   });
 
+  useEffect(() => { // For first entry
+    if (data && data.histories && data.histories.length > 0) {
+      setPage(1);
+    }
+  }, [data]);
+
   const handleDelete = async (id) => {
     console.log("Deleting history with ID:", id);
     try {
@@ -120,6 +126,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       setStartDate(endDate);
       setEndDate(date);
     }
+    setPage(1);
   };
 
   const handleEndDateChange = (date) => {
@@ -129,6 +136,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       setEndDate(startDate);
       setStartDate(date);
     }
+    setPage(1);
   };
 
   if (!currentUser) {
@@ -144,6 +152,16 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   let filteredHistory = data.histories
     .filter((historyItem) => historyItem.userId === currentUser.id);
 
+  const handleInputLanguageFilterChange = (e) => {
+    setInputLanguageFilter(e.target.value);
+    setPage(1); // Reset page to 1 when filter changes
+  };
+  
+  const handleOutputLanguageFilterChange = (e) => {
+    setOutputLanguageFilter(e.target.value);
+    setPage(1); // Reset page to 1 when filter changes
+  };
+    
   if (inputLanguageFilter && inputLanguageFilter !== 'All') {
     filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage.toLowerCase().includes(inputLanguageFilter.toLowerCase()));
   }
@@ -161,7 +179,10 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       return historyDate >= startDateObj && historyDate <= endDateObj;
     });
   }
-  
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+    setPage(1); // Reset page to 1 when search field changes
+  };
   if (searchText) {
     const searchTextLowerCase = searchText.replace(/\n/g, '').toLowerCase();
     filteredHistory = filteredHistory.filter((historyItem) => {
@@ -195,30 +216,30 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   };
 
   return (
-    <div>
+    <div className="pa"> {/* Apply transition class to the wrapper */}
       {/* Search elements */}
       <Box className={classes.searchContainer}>
         <TextField
           className={classes.searchField}
           label="Input Language Filter"
           value={inputLanguageFilter}
-          onChange={(e)=> setInputLanguageFilter(e.target.value)}
+          onChange={handleInputLanguageFilterChange}
           InputLabelProps={{
             shrink: true,
-            style: { color: '#fff' } // Change label color to white
+            style: { color: '#fff', fontSize: '1.25rem', justifyContent: 'end'}
           }}
-          InputProps={{ style: { color: '#fff' } }} // Change text color to white
+          InputProps={{ style: { color: '#fff' } }}
         />
         <TextField
           className={classes.searchField}
           label="Output Language Filter"
           value={outputLanguageFilter}
-          onChange={(e) => setOutputLanguageFilter(e.target.value)}
+          onChange={handleOutputLanguageFilterChange}
           InputLabelProps={{
             shrink: true,
-            style: { color: '#fff' } // Change label color to white
+            style: { color: '#fff', fontSize: '1.15rem' }
           }}
-          InputProps={{ style: { color: '#fff' } }} // Change text color to white
+          InputProps={{ style: { color: '#fff' } }}
         />
         <TextField
           className={classes.searchField}
@@ -228,9 +249,9 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           onChange={(e) => handleStartDateChange(e.target.value)}
           InputLabelProps={{
             shrink: true,
-            style: { color: '#fff' } // Change label color to white
+            style: { color: '#fff', fontSize: '1.5rem' }
           }}
-          InputProps={{ style: { color: '#fff' } }} // Change text color to white
+          InputProps={{ style: { color: '#fff' } }}
         />
         <TextField
           className={classes.searchField}
@@ -240,20 +261,20 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           onChange={(e) => handleEndDateChange(e.target.value)}
           InputLabelProps={{
             shrink: true,
-            style: { color: '#fff' } // Change label color to white
+            style: { color: '#fff', fontSize: '1.5rem' }
           }}
-          InputProps={{ style: { color: '#fff' } }} // Change text color to white
+          InputProps={{ style: { color: '#fff' } }}
         />
         <TextField
           className={classes.searchField}
           label="Search"
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => handleSearchTextChange(e.target.value)}
           InputLabelProps={{
             shrink: true,
-            style: { color: '#fff' } // Change label color to white
+            style: { color: '#fff', fontSize: '1.5rem', }
           }}
-          InputProps={{ style: { color: '#fff' } }} // Change text color to white
+          InputProps={{ style: { color: '#fff' } }}
         />
       </Box>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>

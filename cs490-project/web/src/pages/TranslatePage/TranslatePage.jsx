@@ -157,7 +157,7 @@ const TranslatePage = () => {
     },
   });
   const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
-
+  
   useEffect(() => {
     if (inputEditor.current) {
       monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
@@ -197,6 +197,7 @@ const TranslatePage = () => {
         },
       }).then(() => {
         refetch();
+        setPage(1);
       }).catch((error) => {
         console.error('Error creating history:', error);
       });
@@ -301,7 +302,7 @@ const handleDragLeave = () => {
 
 const handleDrop = (e) => {
   e.preventDefault();
-  setIsDragOver(false); // Reset the state after the file has been dropped
+  setIsDragOver(false);
   const file = e.dataTransfer.files[0];
   handleFileChange({ target: { files: [file] } });
 };
