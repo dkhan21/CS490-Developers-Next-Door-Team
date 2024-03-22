@@ -127,11 +127,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const languageToFileExtension = {
-  'Java': 'java',
-  'Python': 'py',
-  'C++': 'cpp',
-  'C': 'c',
-  'JavaScript': 'js',
+  'java': 'java',
+  'python': 'py',
+  'cpp': 'cpp',
+  'c': 'c',
+  'javscript': 'js',
 };
 const MonacoEditorWrapper = forwardRef((props, ref) => {
   return <MonacoEditor {...props} ref={ref} />;
@@ -141,8 +141,8 @@ const TranslatePage = () => {
   const classes = useStyles();
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
-  const [inputLanguage, setInputLanguage] = useState('Java');
-  const [outputLanguage, setOutputLanguage] = useState('Python');
+  const [inputLanguage, setInputLanguage] = useState('java');
+  const [outputLanguage, setOutputLanguage] = useState('python');
   const [loading, setLoading] = useState(false); // State to control loading visibility
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
@@ -440,11 +440,11 @@ const handleDrop = (e) => {
                         },
                       },
                     }}>
-                    <MenuItem value={'Java'}>Java</MenuItem>
-                    <MenuItem value={'Python'}>Python</MenuItem>
-                    <MenuItem value={'C'}>C</MenuItem>
-                    <MenuItem value={'C++'}>C++</MenuItem>
-                    <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
+                    <MenuItem value={'java'}>Java</MenuItem>
+                    <MenuItem value={'python'}>Python</MenuItem>
+                    <MenuItem value={'c'}>C</MenuItem>
+                    <MenuItem value={'cpp'}>C++</MenuItem>
+                    <MenuItem value={'javascript'}>JavaScript</MenuItem>
                   </Select>
               </div>
               <MonacoEditorWrapper
@@ -526,11 +526,11 @@ const handleDrop = (e) => {
                       },
                     },
                   }}>
-                  <MenuItem value={'Java'}>Java</MenuItem>
-                  <MenuItem value={'Python'}>Python</MenuItem>
-                  <MenuItem value={'C'}>C</MenuItem>
-                  <MenuItem value={'C++'}>C++</MenuItem>
-                  <MenuItem value={'JavaScript'}>JavaScript</MenuItem>
+                  <MenuItem value={'java'}>Java</MenuItem>
+                  <MenuItem value={'python'}>Python</MenuItem>
+                  <MenuItem value={'c'}>C</MenuItem>
+                  <MenuItem value={'cpp'}>C++</MenuItem>
+                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
                 </Select>
               </div>
               <MonacoEditorWrapper

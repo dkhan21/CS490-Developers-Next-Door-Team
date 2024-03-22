@@ -299,7 +299,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
               <strong>Created At:</strong> {new Date(historyItem.createdAt).toLocaleString()}
               </Typography>
               <Typography variant="body2">
-              <strong>Status:</strong> {historyItem.status} {/* Display the status here */}
+              <strong>Status:</strong> {historyItem.status} {}
               </Typography>
             </CardContent>
             <CardActions className={classes.cardActions}>
