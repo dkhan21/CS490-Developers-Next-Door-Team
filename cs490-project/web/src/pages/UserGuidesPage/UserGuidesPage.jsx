@@ -131,7 +131,7 @@ const UserGuidesPage = () => {
             <li style={{ marginBottom: '10px' }}>
               <ButtonBase 
               component={RouterLink} 
-              // to={routes.account()} 
+              to={routes.reportingBugs()} 
               style={linkStyle('bugs')} 
               onMouseEnter={() => setHoveredLink('bugs')}
               onMouseLeave={() => setHoveredLink(null)}
