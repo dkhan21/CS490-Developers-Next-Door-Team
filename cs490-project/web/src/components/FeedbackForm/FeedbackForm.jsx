@@ -141,13 +141,11 @@ const FeedbackForm = () => {
 
             </div>
 
-            <div style={{ marginTop: '20px', marginRight: '20px', marginLeft: '0px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginTop: '35px', marginRight: '20px', marginLeft: '0px', display: 'flex', flexDirection: 'column' }}>
 
-              <Submit className="submit-button" disabled={loading} style={{ marginTop: '10px', cursor: 'pointer', color: 'blue', width: '110px', height: '35px', border: 'none', backgroundColor: '#403c44' }}
-              >
-                <Example ></Example>
 
-              </Submit>
+                <Example  className="submit-button" disabled={loading} style={{ marginTop: '10px', cursor: 'pointer', color: 'blue', width: '110px', height: '35px', border: 'none', backgroundColor: '#403c44' }} ></Example>
+
             </div>
 
           </Form>) : (
