@@ -148,6 +148,8 @@ const TranslatePage = () => {
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
   const { currentUser } = useAuth();
+  const [stat, setStat] = useState("Not Translated");
+
   const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
       refetch;
@@ -178,6 +180,7 @@ const TranslatePage = () => {
       addError("- No input text to convert")
       return false;;
     }
+    setStat("Not Translated");
     setLoading(true); // Show loading element
     resetErrorState();
     let timeoutId; // Initialize timeout variable
@@ -232,15 +235,18 @@ const TranslatePage = () => {
       .then(data => {
         clearTimeout(timeoutId);
         setOutputText(data.completion);
+        if(outputText.length > 0){
+          setStat("Successfully Translated");
+        }  
         createHistory({
           variables: {
             input: {
               inputLanguage,
               outputLanguage,
               inputText,
-              outputText: generatedOutputText,
+              outputText: data.completion,
               userId: currentUser.id,
-              status: stat
+              status: stat,
             },
           },
         }).then(() => {

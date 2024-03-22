@@ -19,10 +19,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.5)',
     maxWidth: '300px',
+    maxHeight: '300px'
   },
   cardContent: {
-    padding: '20px',
+    flexDirection: 'column',
   },
+
   deleteButton: {
     color: '#ff5555',
   },
