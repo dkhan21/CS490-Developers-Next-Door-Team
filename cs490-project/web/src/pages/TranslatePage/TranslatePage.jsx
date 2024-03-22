@@ -104,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     height: '605px',
     width: '156px',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   convertButton: { // Style for convert button
     backgroundColor: '#32368c',
@@ -117,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    marginTop: '150%',
+    marginTop: '103%',   //Change this to move the CONVERT BUTTON UP OR DOWN
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', // Add subtle shadow
     transition: 'background-color 0.3s ease', // Smooth transition on hover
   },
@@ -159,7 +159,7 @@ const TranslatePage = () => {
     },
   });
   const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
-  
+
   useEffect(() => {
     if (inputEditor.current) {
       monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
@@ -237,7 +237,7 @@ const TranslatePage = () => {
         setOutputText(data.completion);
         if(outputText.length > 0){
           setStat("Successfully Translated");
-        }  
+        }
         createHistory({
           variables: {
             input: {
@@ -356,7 +356,7 @@ const [isDragOver, setIsDragOver] = useState(false);
 
 const handleDragOver = (e) => {
   e.preventDefault();
-  setIsDragOver(true); 
+  setIsDragOver(true);
 };
 
 const handleDragLeave = () => {
@@ -475,16 +475,17 @@ const handleDrop = (e) => {
               <IconButton onClick={handleToggleColor}>
                 {isGreen ? <CheckCircle style={{ color: 'green' }} /> : <HighlightOff style={{ color: 'red' }} />}
               </IconButton>
+
             </Box>
-
-            {errorFound ? <Box
-              boxShadow={3}
-              style={{ backgroundColor: '#1e1e1e', color: 'red', padding: '5px', marginTop: '5px', borderRadius: '10px', width: 'fit-content' }}>Error:
-              {errors.map((error, indexErr) => (
-                <p key={indexErr}>{error}</p>
-              ))}
-            </Box> : null}
-
+            <div style={{width: '156px', height: '60px'}}>
+              {errorFound ? <Box
+                boxShadow={3}
+                style={{ backgroundColor: '#1e1e1e', color: 'red', padding: '5px', marginTop: '5px', borderRadius: '10px', width: 'fit-content' }}>Error:
+                {errors.map((error, indexErr) => (
+                  <p key={indexErr}>{error}</p>
+                ))}
+              </Box> : null}
+            </div>
 
             <Button
               variant="contained"

@@ -23,5 +23,5 @@ export const Failure = ({ error }) => (
 )
 
 export const Success = ({ history }) => {
-  return <History history={history} />
+  return <History  history={history} />
 }

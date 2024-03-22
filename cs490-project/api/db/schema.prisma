@@ -25,28 +25,26 @@ model User {
   salt                String
   resetToken          String?
   resetTokenExpiresAt DateTime?
-  
-  roles               String  @default("user")
-  webAuthnChallenge   String? @unique
-  credentials         UserCredential[]
+
+  roles             String           @default("user")
+  webAuthnChallenge String?          @unique
+  credentials       UserCredential[]
 }
 
 model UserCredential {
-  id         String @id
+  id         String  @id
   userId     Int
-  user       User   @relation(fields: [userId], references: [id])
+  user       User    @relation(fields: [userId], references: [id])
   publicKey  Bytes
   transports String?
   counter    BigInt
 }
 
-
 //model UserExample {
-  //id    Int     @id @default(autoincrement())
-  //email String  @unique
-  //name  String?
+//id    Int     @id @default(autoincrement())
+//email String  @unique
+//name  String?
 //}
-
 
 model Feedback {
   id        Int      @id @default(autoincrement())
@@ -54,15 +52,16 @@ model Feedback {
   rating    Int
   body      String
   createdAt DateTime @default(now())
-  userId    Int      @default(-1) 
+  userId    Int      @default(-1)
 }
+
 model History {
-  id        Int      @id @default(autoincrement())
-  inputLanguage      String
-  outputLanguage      String
+  id             Int      @id @default(autoincrement())
+  inputLanguage  String
+  outputLanguage String
   inputText      String
-  outputText      String
-  status    String
-  createdAt DateTime @default(now())
-  userId    Int      @default(-1) 
+  outputText     String
+  status         String
+  createdAt      DateTime @default(now())
+  userId         Int      @default(-1)
 }
