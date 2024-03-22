@@ -54,7 +54,7 @@ const UserGuidesPage = () => {
               </li>
             <li style={{ marginBottom: '10px' }}><ButtonBase 
               component={RouterLink} 
-              // to={routes.account()} 
+              to={routes.navigatingInterfaceGuide()} 
               style={linkStyle('navigating')} 
               onMouseEnter={() => setHoveredLink('navigating')}
               onMouseLeave={() => setHoveredLink(null)}
