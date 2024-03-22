@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #444',
     borderRadius: '10px',
     boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.5)',
-    maxWidth: '300px',
+    maxWidth: '270px',
     maxHeight: '300px'
   },
   cardContent: {
@@ -283,23 +283,23 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
         {filteredHistory.map((historyItem) => (
           <Card key={historyItem.id} className={classes.card}>
             <CardContent className={classes.cardContent}>
-              <Typography variant="h6">
-                Input Language: {historyItem.inputLanguage}
+              <Typography variant="subtitle1" style={{ fontSize: '1.0rem' }}> {}
+              <strong>Input Language:</strong> {historyItem.inputLanguage}
               </Typography>
-              <Typography variant="h6">
-                Output Language: {historyItem.outputLanguage}
+              <Typography variant="subtitle1" style={{ fontSize: '1.0rem' }}> {}
+              <strong>Output Language:</strong> {historyItem.outputLanguage}
               </Typography>
-              <Typography variant="body1">
-                Input Text: {historyItem.inputText.substring(0, 10)}
+              <Typography variant="body2" style={{ fontSize: '0.8rem', whiteSpace: 'pre-wrap', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                  <strong>Input Text:</strong> {historyItem.inputText.substring(0, 500).replace(/[\r\n]+/g, ' ')}
               </Typography>
-              <Typography variant="body1">
-                Output Text: {historyItem.outputText.substring(0, 10)}
-              </Typography>
-              <Typography variant="body2">
-                Created At: {new Date(historyItem.createdAt).toLocaleString()}
+            <Typography variant="body2" style={{  fontSize: '0.8rem', whiteSpace: 'pre-wrap',  overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'  }}>
+            <strong>Output Text:</strong> {historyItem.outputText.substring(0, 500).replace(/[\r\n]+/g, ' ')}
               </Typography>
               <Typography variant="body2">
-                Status: {historyItem.status} {/* Display the status here */}
+              <strong>Created At:</strong> {new Date(historyItem.createdAt).toLocaleString()}
+              </Typography>
+              <Typography variant="body2">
+              <strong>Status:</strong> {historyItem.status} {/* Display the status here */}
               </Typography>
             </CardContent>
             <CardActions className={classes.cardActions}>
@@ -307,10 +307,11 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
                 <DeleteIcon />
               </IconButton>
               <IconButton onClick={() => handleCopyHistory(historyItem)} className={classes.copyButton}>
-                <FileCopyIcon /> <Typography variant="body2">Copy to Editors</Typography>
+                <FileCopyIcon /> <Typography variant="body2" style={{ fontSize: '0.8rem' }}>Copy to Editors</Typography>
               </IconButton>
             </CardActions>
           </Card>
+
         ))}
       </div>
       <div className={classes.pagination}>
