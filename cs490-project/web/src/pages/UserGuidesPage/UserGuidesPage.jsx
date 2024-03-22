@@ -38,7 +38,7 @@ const UserGuidesPage = () => {
           <ul>
             <li style={{ marginBottom: '10px' }}><ButtonBase 
                 component={RouterLink} 
-                // to={routes.account()} 
+                to={routes.createAccountGuide()} 
                 style={linkStyle('account')} 
                 onMouseEnter={() => setHoveredLink('account')}
                 onMouseLeave={() => setHoveredLink(null)}
@@ -46,7 +46,7 @@ const UserGuidesPage = () => {
             </li>
             <li style={{ marginBottom: '10px' }}><ButtonBase 
                 component={RouterLink} 
-                // to={routes.account()} 
+                to={routes.loggingInOutGuide()} 
                 style={linkStyle('logging')} 
                 onMouseEnter={() => setHoveredLink('logging')}
                 onMouseLeave={() => setHoveredLink(null)}
