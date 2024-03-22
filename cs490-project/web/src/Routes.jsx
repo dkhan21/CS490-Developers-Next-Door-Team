@@ -15,6 +15,7 @@ const Routes = () => {
   return (
 
     <Router useAuth={useAuth}>
+      <Route path="/saving-retrieving-guide" page={SavingRetrievingGuidePage} name="savingRetrievingGuide" />
       <Route path="/troubleshooting-translation-guide" page={TroubleshootingTranslationGuidePage} name="troubleshootingTranslationGuide" />
       <Route path="/understanding-output-guide" page={UnderstandingOutputGuidePage} name="understandingOutputGuide" />
       <Route path="/basic-code-translation-guide" page={BasicCodeTranslationGuidePage} name="basicCodeTranslationGuide" />
