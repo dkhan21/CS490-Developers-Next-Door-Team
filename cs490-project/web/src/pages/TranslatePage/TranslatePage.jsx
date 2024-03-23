@@ -188,7 +188,7 @@ const TranslatePage = () => {
     const timeoutPromise = new Promise((resolve, reject) => {
       timeoutId = setTimeout(() => {
         if (!isStatus500) {
-          addError("- API rate limit reached. Please try again later.");
+          addError("- Please wait API rate limit reached. Translation will be here shortly!");
           setIsGreen(false);
         }
       }, 4000); // Set timeout to 4 seconds
@@ -224,7 +224,7 @@ const TranslatePage = () => {
           if (response.status === 500) {
             setIsGreen(false);
             setisStatus500(true);
-            addError("API Currently Down")
+            addError("API Currently Down. Please try again later")
           } else {
             console.log(response)
             addError(response.statusText)
@@ -232,6 +232,7 @@ const TranslatePage = () => {
         }
       })
       .then(data => {
+        resetErrorState();
         clearTimeout(timeoutId);
         setOutputText(data.completion);
         if(data.completion.length > 0){
@@ -254,10 +255,9 @@ const TranslatePage = () => {
           console.error('Error creating history:', error);
         });
       })
-    setTimeout(() => {
-      //If we want to add auto-detect feature: const detectedLanguage = detectLang(inputText)
-      setLoading(false);
-    }, 2000);
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleInputLanguageChange = (e) => {
