@@ -174,8 +174,7 @@ const Navbar = () => {
                 >
                   <Link to={routes.faq()}><MenuItem style={{color: 'black'}}>FAQs</MenuItem></Link>
                   <Link to={routes.userGuides()}><MenuItem style={{color: 'black'}}>User Guides</MenuItem></Link>
-                  <Link ><MenuItem style={{color: 'black'}}>Resources</MenuItem></Link>
-                  <Link ><MenuItem style={{color: 'black'}}>Contact Us</MenuItem></Link>
+                  <Link to={routes.resources()}><MenuItem style={{color: 'black'}}>Resources</MenuItem></Link>
                 </Menu>
 
             {!isAuthenticated && <Link to={routes.login()}>

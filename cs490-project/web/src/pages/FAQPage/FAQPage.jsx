@@ -58,10 +58,10 @@ const FaqPage = () => {
 
   return (
     <ThemeProvider theme={theme}>
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '140px' }}>
-    <header> 
-      <Navbar/> 
-    </header>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '120px' }}>
+      <header> 
+        <Navbar/> 
+      </header>
       <h1 style={{ marginBottom: "20px "}}>Frequently Asked Questions</h1>
       <p style={{ marginBottom: "40px "}}>Find answers to our most frequently asked questions below. If you can't find what you are looking for please contact us. </p>
       <TextField

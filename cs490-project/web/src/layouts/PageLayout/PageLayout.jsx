@@ -4,7 +4,7 @@ import { Link, routes } from '@redwoodjs/router';
 import Navbar from 'src/components/Navbar/Navbar'
 
 const PageLayout = ({ title, subtitle, children }) => (
-  <div style={{ margin: '0 auto', maxWidth: '900px', marginTop: '140px' }}>
+  <div style={{ margin: '0 auto', maxWidth: '900px', marginTop: '120px' }}>
     <header><Navbar/></header>
     <h1 style={{ textAlign: 'center', marginBottom: "20px " }}>{title}</h1>
     <Button sx={{

@@ -25,7 +25,7 @@ const UserGuidesPage = () => {
   })
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '140px' }}> 
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '120px' }}> 
     <header> 
       <Navbar/> 
     </header>
