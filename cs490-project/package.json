@@ -44,9 +44,11 @@
     "monaco-editor": "^0.46.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
     "node-c-parser": "^1.0.11",
+    "openai": "^4.29.0",
     "react-ace": "^10.1.0",
     "react-icons": "^5.0.1",
     "react-monaco-editor": "^0.55.0",
+    "react-paginate": "^8.2.0",
     "react-router-dom": "^6.22.2",
     "react-select": "^5.8.0"
   }
