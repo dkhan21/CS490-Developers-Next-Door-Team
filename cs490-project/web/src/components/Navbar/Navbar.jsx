@@ -207,12 +207,12 @@ const Navbar = () => {
                 >
                   <Link to={routes.profile()}><MenuItem onClick={handleClose} style={{color: 'black'}}>Profile</MenuItem></Link>
                   <Link to={routes.home()}><MenuItem onClick={logOut} style={{color: 'black'}}>Logout</MenuItem></Link>
-                  
+
                 </Menu>
               </>
             )}
-            
-            
+
+
 
 
 
