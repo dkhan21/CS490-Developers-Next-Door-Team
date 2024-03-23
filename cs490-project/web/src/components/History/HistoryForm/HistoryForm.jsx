@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
 import { useAuth } from 'src/auth';
-import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box, FormLabel } from '@material-ui/core';
+import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box, Select, MenuItem  } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Pagination from '@mui/material/Pagination';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -11,6 +11,9 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 const useStyles = makeStyles((theme) => ({
   card: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: 'auto',
     marginBottom: '20px',
     marginRight: '20px',
     background: '#222',
@@ -22,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '300px'
   },
   cardContent: {
+    flex: '1 0 auto',
     flexDirection: 'column',
   },
 
@@ -34,18 +38,21 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'transparent',
   },
   cardActions: {
+    flex: '0 0 auto',
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'end',
   },
   pagination: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '20px',
   },
   searchContainer: {
     display: 'flex',
     justifyContent: 'center',
+    marginLeft: '110px',
     marginBottom: '20px',
+    marginTop: '20px',
   },
   searchField: {
     marginRight: '10px',
@@ -155,21 +162,23 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     .filter((historyItem) => historyItem.userId === currentUser.id);
 
   const handleInputLanguageFilterChange = (e) => {
-    setInputLanguageFilter(e.target.value);
-    setPage(1); // Reset page to 1 when filter changes
+    const inputValue = e.target.value;
+    setInputLanguageFilter(inputValue === 'C++' ? 'cpp' : inputValue);
+    setPage(1);
   };
   
   const handleOutputLanguageFilterChange = (e) => {
-    setOutputLanguageFilter(e.target.value);
-    setPage(1); // Reset page to 1 when filter changes
+    const outputValue = e.target.value;
+    setOutputLanguageFilter(outputValue === 'C++' ? 'cpp' : outputValue);
+    setPage(1); 
   };
     
   if (inputLanguageFilter && inputLanguageFilter !== 'All') {
-    filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage.toLowerCase().includes(inputLanguageFilter.toLowerCase()));
+    filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage === inputLanguageFilter.toLowerCase());
   }
 
   if (outputLanguageFilter && outputLanguageFilter !== 'All') {
-    filteredHistory = filteredHistory.filter((historyItem) => historyItem.outputLanguage.toLowerCase().includes(outputLanguageFilter.toLowerCase()));
+    filteredHistory = filteredHistory.filter((historyItem) => historyItem.outputLanguage === outputLanguageFilter.toLowerCase());
   }
 
   if (startDate && endDate) {
@@ -183,7 +192,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   }
   const handleSearchTextChange = (text) => {
     setSearchText(text);
-    setPage(1); // Reset page to 1 when search field changes
+    setPage(1);
   };
   if (searchText) {
     const searchTextLowerCase = searchText.replace(/\n/g, '').toLowerCase();
@@ -218,31 +227,67 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   };
 
   return (
-    <div className="pa"> {/* Apply transition class to the wrapper */}
+    <div> {}
       {/* Search elements */}
       <Box className={classes.searchContainer}>
-        <TextField
-          className={classes.searchField}
-          label="Input Language Filter"
-          value={inputLanguageFilter}
-          onChange={handleInputLanguageFilterChange}
-          InputLabelProps={{
-            shrink: true,
-            style: { color: '#fff', fontSize: '1.25rem', justifyContent: 'end'}
-          }}
-          InputProps={{ style: { color: '#fff' } }}
-        />
-        <TextField
-          className={classes.searchField}
-          label="Output Language Filter"
-          value={outputLanguageFilter}
-          onChange={handleOutputLanguageFilterChange}
-          InputLabelProps={{
-            shrink: true,
-            style: { color: '#fff', fontSize: '1.15rem' }
-          }}
-          InputProps={{ style: { color: '#fff' } }}
-        />
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ color: 'white', marginRight: '25px', }}>Input Language</div>
+            <Select
+              className={classes.searchField}
+              value={inputLanguageFilter}
+              onChange={handleInputLanguageFilterChange}
+              style={{ color: '#fff' }}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    backgroundColor: '#393e41',
+                  },
+                },
+                MenuListProps: {
+                  style: {
+                    color: '#fff',
+                    textAlign: 'center',
+                  },
+                },
+              }}
+              displayEmpty>
+              <MenuItem value="">All Languages</MenuItem>
+              <MenuItem value="Java">Java</MenuItem>
+              <MenuItem value="Python">Python</MenuItem>
+              <MenuItem value="C">C</MenuItem>
+              <MenuItem value="cpp">C++</MenuItem>
+              <MenuItem value="JavaScript">JavaScript</MenuItem>
+            </Select>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ color: 'white', marginRight: '25px' }}>Output Language</div>
+            <Select
+              className={classes.searchField}
+              value={outputLanguageFilter}
+              onChange={handleOutputLanguageFilterChange}
+              style={{ color: '#fff' }}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    backgroundColor: '#393e41',
+                  },
+                },
+                MenuListProps: {
+                  style: {
+                    color: '#fff',
+                    textAlign: 'center',
+                  },
+                },
+              }}
+              displayEmpty>
+              <MenuItem value="">All Languages</MenuItem>
+              <MenuItem value="Java">Java</MenuItem>
+              <MenuItem value="Python">Python</MenuItem>
+              <MenuItem value="C">C</MenuItem>
+              <MenuItem value="cpp">C++</MenuItem>
+              <MenuItem value="JavaScript">JavaScript</MenuItem>
+            </Select>
+        </div>
         <TextField
           className={classes.searchField}
           label="Start Date"
@@ -292,37 +337,37 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
               <Typography variant="body2" style={{ fontSize: '0.8rem', whiteSpace: 'pre-wrap', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                   <strong>Input Text:</strong> {historyItem.inputText.substring(0, 500).replace(/[\r\n]+/g, ' ')}
               </Typography>
-            <Typography variant="body2" style={{  fontSize: '0.8rem', whiteSpace: 'pre-wrap',  overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'  }}>
-            <strong>Output Text:</strong> {historyItem.outputText.substring(0, 500).replace(/[\r\n]+/g, ' ')}
-              </Typography>
-              <Typography variant="body2">
-              <strong>Created At:</strong> {new Date(historyItem.createdAt).toLocaleString()}
-              </Typography>
-              <Typography variant="body2">
-              <strong>Status:</strong> {historyItem.status} {}
-              </Typography>
+              <Typography variant="body2" style={{  fontSize: '0.8rem', whiteSpace: 'pre-wrap',  overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical'  }}>
+              <strong>Output Text:</strong> {historyItem.outputText.substring(0, 500).replace(/[\r\n]+/g, ' ')}
+                </Typography>
+                <Typography variant="body2">
+                <strong>Created At:</strong> {new Date(historyItem.createdAt).toLocaleString()}
+                </Typography>
+                <Typography variant="body2">
+                <strong>Status:</strong> {historyItem.status} {}
+                </Typography>
             </CardContent>
             <CardActions className={classes.cardActions}>
               <IconButton onClick={() => handleDelete(historyItem.id)} className={classes.deleteButton}>
                 <DeleteIcon />
               </IconButton>
               <IconButton onClick={() => handleCopyHistory(historyItem)} className={classes.copyButton}>
-                <FileCopyIcon /> <Typography variant="body2" style={{ fontSize: '0.8rem' }}>Copy to Editors</Typography>
+                <FileCopyIcon /> <Typography variant="body2" style={{ fontSize: '1.0rem' }}>Copy to Editors</Typography>
               </IconButton>
             </CardActions>
           </Card>
-
         ))}
       </div>
       <div className={classes.pagination}>
         <Pagination count={totalPages} page={page} onChange={onPageChange} color="primary"
           shape="rounded" variant="outlined" size="large"
           boundaryCount={2} showFirstButton
-          showLastButton prevIcon={<ArrowBackIcon />} nextIcon={<ArrowForwardIcon />}
+          showLastButton previcon={<ArrowBackIcon />} nexticon={<ArrowForwardIcon />}
         />
       </div>
     </div>
   );
+  
 };
 
 export default HistoryForm;
