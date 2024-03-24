@@ -130,6 +130,81 @@ const Navbar = () => {
               >Get Started</Button>
             </Link>
 
+            <Button
+                  id="basic-button"
+                  aria-controls={open ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  onClick={handleClick}
+                  color="inherit" sx={{
+                    color: '#E7E5DF',
+                    position: 'relative',
+                    '&:after': {
+                      content: '""',
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      height: '1px',
+                      backgroundColor: 'currentColor',
+                      transform: 'scaleX(0)',
+                      transformOrigin: 'left',
+                      transition: 'transform 0.5s ease-in-out',
+                    },
+                    '&:hover:after': {
+                      transform: 'scaleX(1)',
+                      color: '#E7BB41',
+                    },
+                    '&:hover':{
+                      color:'#E7BB41',
+                    }
+                  }}
+                  aria-label="UserEmail"
+                >
+                  Help
+                </Button>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <Link to={routes.faq()}><MenuItem style={{color: 'black'}}>FAQs</MenuItem></Link>
+                  <Link to={routes.userGuides()}><MenuItem style={{color: 'black'}}>User Guides</MenuItem></Link>
+                  <Link to={routes.resources()}><MenuItem style={{color: 'black'}}>Resources</MenuItem></Link>
+                </Menu>
+
+            {!isAuthenticated && <Link to={routes.login()}>
+              <Button color="inherit" sx={{
+                color: '#E7E5DF',
+                position: 'relative',
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: '1px',
+                  backgroundColor: 'currentColor',
+                  transform: 'scaleX(0)',
+                  transformOrigin: 'left',
+                  transition: 'transform 0.5s ease-in-out',
+                },
+                '&:hover:after': {
+                  transform: 'scaleX(1)',
+                  color: '#E7BB41',
+                },
+                '&:hover':{
+                  color:'#E7BB41',
+                }
+              }}
+              aria-label="Login"
+              >Login</Button>
+            </Link>}
+
 
             {!isAuthenticated && (
               <Link to={routes.login()}>
@@ -207,12 +282,12 @@ const Navbar = () => {
                 >
                   <Link to={routes.profile()}><MenuItem onClick={handleClose} style={{color: 'black'}}>Profile</MenuItem></Link>
                   <Link to={routes.home()}><MenuItem onClick={logOut} style={{color: 'black'}}>Logout</MenuItem></Link>
-                  
+
                 </Menu>
               </>
             )}
-            
-            
+
+
 
 
 
