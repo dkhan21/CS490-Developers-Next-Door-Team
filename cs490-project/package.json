@@ -33,6 +33,7 @@
     "@mui/icons-material": "^5.15.10",
     "@mui/material": "^5.15.11",
     "@mui/styles": "^5.15.11",
+    "@redwoodjs/auth-dbauth-web": "^7.0.7",
     "brace": "^0.11.1",
     "filbert": "^0.1.20",
     "file-saver": "^2.0.5",
@@ -43,9 +44,11 @@
     "monaco-editor": "^0.46.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
     "node-c-parser": "^1.0.11",
+    "openai": "^4.29.0",
     "react-ace": "^10.1.0",
     "react-icons": "^5.0.1",
     "react-monaco-editor": "^0.55.0",
+    "react-paginate": "^8.2.0",
     "react-router-dom": "^6.22.2",
     "react-select": "^5.8.0"
   }

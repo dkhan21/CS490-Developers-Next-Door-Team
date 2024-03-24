@@ -91,7 +91,6 @@ const FeedbackForm = () => {
               <Label name="name" style={{
                 fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white', textAlign: 'center',
               }}>Name</Label>
-
               <TextAreaField name="name" required
                 className="block w-full p-1 border rounded h-24 text-xs"
                 validation={{ required: true }}
@@ -99,7 +98,6 @@ const FeedbackForm = () => {
               />
               <FieldError name="names" />
             </div>
-
             <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
             <Label name="rating" className="block text-sm text-gray-600 uppercase" style={{fontFamily: 'Open Sans, sans-serif',
               fontSize: '26px', fontWeight: 400, color: 'white', textAlign: 'center',
@@ -141,13 +139,11 @@ const FeedbackForm = () => {
 
             </div>
 
-            <div style={{ marginTop: '20px', marginRight: '20px', marginLeft: '0px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginTop: '35px', marginRight: '20px', marginLeft: '0px', display: 'flex', flexDirection: 'column' }}>
 
-              <Submit className="submit-button" disabled={loading} style={{ marginTop: '10px', cursor: 'pointer', color: 'blue', width: '110px', height: '35px', border: 'none', backgroundColor: '#403c44' }}
-              >
-                <Example ></Example>
 
-              </Submit>
+                <Example  className="submit-button" disabled={loading} style={{ marginTop: '10px', cursor: 'pointer', color: 'blue', width: '110px', height: '35px', border: 'none', backgroundColor: '#403c44' }} ></Example>
+
             </div>
 
           </Form>) : (

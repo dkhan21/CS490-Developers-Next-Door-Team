@@ -9,6 +9,8 @@
 
 import {Set, PrivateSet, Router, Route } from '@redwoodjs/router'
 
+import ScaffoldLayout from 'src/layouts/ScaffoldLayout'
+
 import { useAuth } from './auth'
 
 const Routes = () => {
@@ -28,6 +30,16 @@ const Routes = () => {
       <Route path="/create-account-guide" page={CreateAccountGuidePage} name="createAccountGuide" />
       <Route path="/user-guides" page={UserGuidesPage} name="userGuides" />
       <Route path="/faq" page={FAQPage} name="faq" />
+
+      <Route path="/change-password" page={ChangePasswordPage} name="changePassword" />
+      <Route path="/update-profile" page={UpdateProfilePage} name="updateProfile" />
+
+      <Set wrap={ScaffoldLayout} title="Histories" titleTo="histories" buttonLabel="New History" buttonTo="newHistory">
+        <Route path="/histories/new" page={HistoryNewHistoryPage} name="newHistory" />
+        <Route path="/histories/{id:Int}/edit" page={HistoryEditHistoryPage} name="editHistory" />
+        <Route path="/histories/{id:Int}" page={HistoryHistoryPage} name="history" />
+        <Route path="/histories" page={HistoryHistoriesPage} name="histories" />
+      </Set>
       <Route path="/get-started" page={GetStartedPage} name="getStarted" />
       <Route path="/translate" page={TranslatePage} name="translate" />
       <PrivateSet unauthenticated="home" roles="admin">
@@ -35,6 +47,7 @@ const Routes = () => {
       </PrivateSet>
       <PrivateSet unauthenticated="home">
         <Route path="/login-test" page={LoginTestPage} name="loginTest" />
+        <Route path="/profile" page={ProfilePage} name="profile" />
       </PrivateSet>
       <Route path="/login" page={LoginPage} name="login" />
       <Route path="/signup" page={SignupPage} name="signup" />
