@@ -13,9 +13,22 @@ const DELETE_USER_MUTATION = gql`
   }
 
 `
+const USER_QUERY = gql`
+  query FindUserById($id: Int!){
+    user: user(id: $id){
+      id
+      email
+      name
+      preferredProgrammingLanguage
+    }
+  }
+`
 
 const ProfilePage = () => {
   const { currentUser, reauthenticate, logOut } = useAuth() 
+  const { load, err, data } = useQuery(USER_QUERY, {
+    variables: {id: currentUser?.id}
+  })
 
   const [deleteUser, { loading, error }] = useMutation(DELETE_USER_MUTATION, {
     onCompleted: () => {
@@ -37,25 +50,20 @@ const ProfilePage = () => {
     return <div>Loading...</div> 
   }
 
-  // return (
-  //   <>
-  //     <Metadata title="Profile" description="Profile page" />
-  //     <p>
-  //       Email: {currentUser.email}
-  //     </p>
+  if (err){
+    console.error(err)
+    return <div> Error: {err.message}</div>
+  }
 
-  //     <Link to={routes.updateProfile()}>Update Profile</Link>
-  //     <Link to={routes.changePassword()}>Change Password</Link>
-  //    <button onClick={onClickDelete}>Delete Account</button>
-  //   </>
-  // )
   return (
     <>
       <Metadata title="Profile" description="Profile page" />
       <p>
         Email: {currentUser.email}
       </p>
-  
+      <p>{data && data.user && <p>Name: {data.user.name}</p>}</p>
+      <p>Preferences</p>
+      <p>{data && data.user && <p>Preferred Programming Language: {data.user.preferredProgrammingLanguage}</p>}</p>
       <div>
         <Link to={routes.updateProfile()} style={{ color: 'black' }}>
           Update Profile
