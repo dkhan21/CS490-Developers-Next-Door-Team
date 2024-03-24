@@ -39,9 +39,12 @@ const LoginPage = () => {
   }, [])
 
   const onSubmit = async (data) => {
+    const expires = rememberMe ? 60 * 60 * 24 * 30 * 3 : 60 * 60 * 24
     const response = await logIn({
       username: data.username,
       password: data.password,
+      rememberMe,
+      expires,
     })
 
     if (!response.error) {

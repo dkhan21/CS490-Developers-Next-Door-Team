@@ -33,7 +33,7 @@ export const handler = async (event, context) => {
       usernameRequired: 'Username is required',
     },
   }
-
+  let rememberMe
   const loginOptions = {
     // handler() is called after finding the user that matches the
     // username/password provided at login, but before actually considering them
@@ -61,7 +61,8 @@ export const handler = async (event, context) => {
     },
 
     // How long a user will remain logged in, in seconds
-    expires: 60 * 60 * 24 * 365 * 10,
+    //3 months otherwise 1 day to sign out
+    expires: rememberMe ? 60 * 60 * 24 * 30 * 3 : 60 * 60 * 24,
   }
 
   const resetPasswordOptions = {
