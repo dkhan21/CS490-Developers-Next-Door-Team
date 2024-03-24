@@ -46,13 +46,14 @@ export const handler = async (event, context) => {
     // didn't validate their email yet), throw an error and it will be returned
     // by the `logIn()` function from `useAuth()` in the form of:
     // `{ message: 'Error message' }`
+    rememberMe: true,
     handler: (user) => {
       return user
     },
 
     errors: {
-      usernameOrPasswordMissing: 'Both username and password are required',
-      usernameNotFound: 'Username ${username} not found',
+      usernameOrPasswordMissing: 'Both email and password are required',
+      usernameNotFound: 'Email ${username} not found',
       // For security reasons you may want to make this the same as the
       // usernameNotFound error so that a malicious user can't use the error
       // to narrow down if it's the username or password that's incorrect
@@ -129,7 +130,7 @@ export const handler = async (event, context) => {
     errors: {
       // `field` will be either "username" or "password"
       fieldMissing: '${field} is required',
-      usernameTaken: 'Username `${username}` already in use',
+      usernameTaken: 'Email `${username}` already in use',
     },
   }
 
