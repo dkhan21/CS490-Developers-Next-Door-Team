@@ -64,13 +64,15 @@ const ProfilePage = () => {
       <p>{data && data.user && <p>Name: {data.user.name}</p>}</p>
       <p>Preferences</p>
       <p>{data && data.user && <p>Preferred Programming Language: {data.user.preferredProgrammingLanguage}</p>}</p>
-      <div>
-        <Link to={routes.updateProfile()} style={{ color: 'black' }}>
+      <div style={{ marginTop: '10px' }}>
+        <Link to={routes.updateProfile()} style={{ color: 'black' }} onMouseOver={(e) => e.target.style.color = 'gray'}
+        onMouseOut={(e) => e.target.style.color = 'black'}>
           Update Profile
         </Link>
       </div>
       <div>
-        <Link to={routes.changePassword()} style={{ color: 'black' }}>
+        <Link to={routes.changePassword()} style={{ color: 'black' }} onMouseOver={(e) => e.target.style.color = 'gray'}
+        onMouseOut={(e) => e.target.style.color = 'black'}>
           Change Password
         </Link>
       </div>
