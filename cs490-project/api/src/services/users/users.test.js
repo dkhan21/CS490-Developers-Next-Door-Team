@@ -21,12 +21,16 @@ describe('users', () => {
         email: 'String8286346',
         hashedPassword: 'String',
         salt: 'String',
+        name: 'Test User',
+        preferredProgrammingLanguage: 'JavaScript',
       },
     })
 
     expect(result.email).toEqual('String8286346')
     expect(result.hashedPassword).toEqual('String')
     expect(result.salt).toEqual('String')
+    expect(result.name).toEqual('Test User')
+    expect(result.preferredProgrammingLanguage).toEqual('JavaScript')
   })
 
   scenario('updates user profile', async (scenario) => {
@@ -38,12 +42,16 @@ describe('users', () => {
       input: {
         id: originalUser.id, 
         email: 'new-email@example.com',
+        name: 'Updated User', 
+        preferredProgrammingLanguage: 'Python',
       },
     })
 
     //check if user was updated
     const result = await user({ id: updatedUser.id })
     expect(result.email).toEqual('new-email@example.com')
+    expect(result.name).toEqual('Updated User')
+    expect(result.preferredProgrammingLanguage).toEqual('Python')
   })
 
   scenario('deletes a user', async (scenario) => {
