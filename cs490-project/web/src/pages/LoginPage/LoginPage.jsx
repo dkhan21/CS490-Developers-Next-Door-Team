@@ -47,25 +47,30 @@ const LoginPage = () => {
       expires,
     })
 
-    if (!response.error) {
-      if (rememberMe) {
-        localStorage.setItem('rememberMe', 'true')
-        localStorage.setItem('username', data.username)
-      } else {
-        localStorage.removeItem('rememberMe')
-        localStorage.removeItem('username')
+    // Check if the response is defined
+    if (response) {
+      if (!response.error) {
+        if (rememberMe) {
+          localStorage.setItem('rememberMe', 'true')
+          localStorage.setItem('username', data.username)
+        } else {
+          localStorage.removeItem('rememberMe')
+          localStorage.removeItem('username')
+        }
       }
-    }
 
-    if (response.message) {
-      toast(response.message)
-    } else if (response.error) {
-      toast.error(response.error)
+      if (response.message) {
+        toast(response.message)
+      } else if (response.error) {
+        toast.error(response.error)
+      } else {
+        toast.success('Welcome back!')
+      }
     } else {
-      toast.success('Welcome back!')
+      // Handle the case where the response is undefined
+      toast.error('An error occurred during login.')
     }
   }
-
 
   return (
     <>
