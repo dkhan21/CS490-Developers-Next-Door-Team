@@ -26,14 +26,26 @@ describe('ResourcesPage', () => {
   })
 
   it('renders links with correct href', () => {
-    const { getByText } = render(<ResourcesPage />)
     
     // Check that all links have the correct href
-    // expect(getByText('here').closest('a')).toHaveAttribute('href', 'https://platform.openai.com/docs/api-reference/gpt-3')
+    const { getByText, getAllByText } = render(<ResourcesPage />)
+  
+  // Check that all links have the correct href
+  const hereLinks = getAllByText('here')
+  hereLinks.forEach((link, index) => {
+    if (index === 0) {
+      expect(link.closest('a')).toHaveAttribute('href', 'https://platform.openai.com/docs/api-reference/gpt-3')
+    } else if (index === 1) {
+      expect(link.closest('a')).toHaveAttribute('href', 'https://platform.openai.com/docs/engines/gpt-3')
+    }
+  })
+
     expect(getByText('Java').closest('a')).toHaveAttribute('href', 'https://docs.oracle.com/en/java/')
     expect(getByText('Python').closest('a')).toHaveAttribute('href', 'https://docs.python.org/3/')
     expect(getByText('C').closest('a')).toHaveAttribute('href', 'https://devdocs.io/c/')
     expect(getByText('C++').closest('a')).toHaveAttribute('href', 'http://www.cplusplus.com/doc/tutorial/')
     expect(getByText('JavaScript').closest('a')).toHaveAttribute('href', 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide')
   })
+
+  
 })
