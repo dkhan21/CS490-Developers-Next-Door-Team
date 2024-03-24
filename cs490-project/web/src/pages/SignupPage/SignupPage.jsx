@@ -35,9 +35,13 @@ const SignupPage = () => {
       toast.error('Password confirmation does not match password')
       return
     }
-    const passwordStrengthRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})');
+    const passwordStrengthRegex = new RegExp(
+      '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
+    )
     if (!passwordStrengthRegex.test(data.password)) {
-      toast.error('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.')
+      toast.error(
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.'
+      )
       return
     }
 
@@ -98,7 +102,6 @@ const SignupPage = () => {
 
                   <FieldError name="username" className="rw-field-error" />
 
-                  
                   <Label
                     name="password"
                     className="rw-label"

@@ -20,6 +20,14 @@ const LoginPage = () => {
   const { isAuthenticated, logIn } = useAuth()
   const [rememberMe, setRememberMe] = useState(false)
   useEffect(() => {
+    if (localStorage.getItem('rememberMe') === 'true') {
+      const rememberedUsername = localStorage.getItem('username')
+      if (usernameRef.current) {
+        usernameRef.current.value = rememberedUsername
+      }
+    }
+  }, [])
+  useEffect(() => {
     if (isAuthenticated) {
       navigate(routes.home())
     }
@@ -34,8 +42,17 @@ const LoginPage = () => {
     const response = await logIn({
       username: data.username,
       password: data.password,
-      rememberMe,
     })
+
+    if (!response.error) {
+      if (rememberMe) {
+        localStorage.setItem('rememberMe', 'true')
+        localStorage.setItem('username', data.username)
+      } else {
+        localStorage.removeItem('rememberMe')
+        localStorage.removeItem('username')
+      }
+    }
 
     if (response.message) {
       toast(response.message)
@@ -45,6 +62,7 @@ const LoginPage = () => {
       toast.success('Welcome back!')
     }
   }
+
 
   return (
     <>
