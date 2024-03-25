@@ -1,7 +1,8 @@
 import Feedback from "src/components/Feedback"
 
+
 export const QUERY = gql`
-  query FeedbacksQuery {
+  query FeedbacksListQuery {
     feedbacks {
       id
       name

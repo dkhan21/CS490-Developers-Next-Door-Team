@@ -7,8 +7,33 @@ import MonacoEditor from '@monaco-editor/react';
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
 import Navbar from 'src/components/Navbar/Navbar'
 import FeedbackForm from 'src/components/FeedbackForm';
-import { Metadata } from '@redwoodjs/web'
+import { Metadata } from '@redwoodjs/web';
+import HistoryForm from 'src/components/History/HistoryForm';
+import { useAuth } from 'src/auth';
+import { gql, useMutation, useQuery } from '@redwoodjs/web';
 
+const CREATE_HISTORY_MUTATION = gql`
+  mutation CreateHistoryMutation($input: CreateHistoryInput!) {
+    createHistory(input: $input) {
+      id
+    }
+  }
+`;
+
+const GET_USER_HISTORY_QUERY = gql`
+  query GetUserHistory {
+    histories {
+      id
+      inputLanguage
+      outputLanguage
+      inputText
+      outputText
+      userId
+      createdAt
+      status
+    }
+  }
+`;
 
 const useStyles = makeStyles((theme) => ({
   page: { // Container for entire page
@@ -41,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '20px',
     minWidth: 'fit-content',
     height: 'fit-content',
-    },
+  },
   editorContainer: { // Container for editor, dropdown, and buttons
     display: 'flex',
     flexDirection: 'row',
@@ -79,7 +104,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     height: '605px',
     width: '156px',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   convertButton: { // Style for convert button
     backgroundColor: '#32368c',
@@ -92,18 +117,21 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    marginTop: '150%',
+    marginTop: '103%',   //Change this to move the CONVERT BUTTON UP OR DOWN
     boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', // Add subtle shadow
     transition: 'background-color 0.3s ease', // Smooth transition on hover
   },
+  uploadButtonDragOver: {
+  backgroundColor: '#536dfe', // Change the background color to indicate drag over
+},
 }));
 
 const languageToFileExtension = {
-  java: 'java',
-  python: 'py',
-  cpp: 'cpp',
-  c: 'c',
-  javascript: 'js',
+  'java': 'java',
+  'python': 'py',
+  'cpp': 'cpp',
+  'c': 'c',
+  'javscript': 'js',
 };
 const MonacoEditorWrapper = forwardRef((props, ref) => {
   return <MonacoEditor {...props} ref={ref} />;
@@ -111,15 +139,25 @@ const MonacoEditorWrapper = forwardRef((props, ref) => {
 
 const TranslatePage = () => {
   const classes = useStyles();
-  const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
+  const [inputText, setInputText] = useState("");
+  const [outputText, setOutputText] = useState("");
   const [inputLanguage, setInputLanguage] = useState('java');
   const [outputLanguage, setOutputLanguage] = useState('python');
   const [loading, setLoading] = useState(false); // State to control loading visibility
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
-  const selectRef = useRef(null);
+  const { currentUser } = useAuth();
+
+  const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
+    onCompleted: () => {
+      refetch;
+    },
+    onError: (error) => {
+      alert("Could not create history entry.");
+    },
+  });
+  const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
 
   useEffect(() => {
     if (inputEditor.current) {
@@ -133,43 +171,118 @@ const TranslatePage = () => {
     }
   }, [outputLanguage]);
 
+  const [isStatus500, setisStatus500] = useState(false);
+
+
   const handleConvertClick = () => {
     if (inputText.trim() === '') {
-      alert('Please provide input text before converting.');
-      return;
+      addError("- No input text to convert")
+      return false;;
     }
+    let stat = "Not Translated";
     setLoading(true); // Show loading element
-    setTimeout(() => {
-      //If we want to add auto-detect feature: const detectedLanguage = detectLang(inputText)
-      setOutputText(inputText);
-      setLoading(false);
-    }, 2000);
+    resetErrorState();
+    let timeoutId; // Initialize timeout variable
+    setisStatus500(false);
+
+    const timeoutPromise = new Promise((resolve, reject) => {
+      timeoutId = setTimeout(() => {
+        if (!isStatus500) {
+          addError("- Please wait API rate limit reached. Translation will be here shortly!");
+          setIsGreen(false);
+        }
+      }, 4000); // Set timeout to 4 seconds
+    });
+
+    const dataPayload = {
+      "messages": [
+        {
+          "role": "system",
+          "content": inputText,
+          "source": inputLanguage,
+          "target": outputLanguage
+        }
+      ]
+    };
+
+    fetch('http://localhost:8910/.redwood/functions/openai', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataPayload)
+    })
+
+      .then(response => {
+        if (response.ok) {
+          setIsGreen(true);
+          console.log(response)
+          return response.json();
+        }
+        else {
+          if (response.status === 500) {
+            setIsGreen(false);
+            setisStatus500(true);
+            addError("API Currently Down. Please try again later")
+          } else {
+            console.log(response)
+            addError(response.statusText)
+          }
+        }
+      })
+      .then(data => {
+        resetErrorState();
+        clearTimeout(timeoutId);
+        setOutputText(data.completion);
+        if(data.completion.length > 0){
+          stat = "Successfully Translated";
+        }
+        createHistory({
+          variables: {
+            input: {
+              inputLanguage,
+              outputLanguage,
+              inputText,
+              outputText: data.completion,
+              userId: currentUser.id,
+              status: stat,
+            },
+          },
+        }).then(() => {
+          refetch();
+        }).catch((error) => {
+          console.error('Error creating history:', error);
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
-
   const handleInputLanguageChange = (e) => {
-    if(outputLanguage === e.target.value){
+    if (outputLanguage === e.target.value) {
       setInputLanguage(e.target.value);
       setOutputLanguage(inputLanguage);
     }
-    else{
+    else {
       setInputLanguage(e.target.value);
     }
   };
 
   const handleOutputLanguageChange = (e) => {
-    if(inputLanguage === e.target.value){
+    if (inputLanguage === e.target.value) {
       setOutputLanguage(e.target.value);
       setInputLanguage(outputLanguage);
     }
-    else{
+    else {
       setOutputLanguage(e.target.value);
     }
   };
 
   const handleDownloadClick = () => {
     if (inputText.trim() === '') {
-      alert('There is no input to download.');
+      addError("- No input text to download")
       return;
     }
     const fileExtension = languageToFileExtension[inputLanguage];
@@ -200,21 +313,30 @@ const TranslatePage = () => {
       };
       reader.readAsText(file);
     } else {
-      alert('File extension unsupported.');
+      addError("- Unsupported File Uploaded")
+      return;
     }
   };
 
   const handleCopyClick = () => {
+    if (inputText.trim() === '') {
+      addError("- No input text to copy")
+      return;
+    }
     navigator.clipboard.writeText(inputText);
   };
 
   const handleOutputCopyClick = () => {
+    if (outputText.trim() === '') {
+      addError("- No output text to copy")
+      return;
+    }
     navigator.clipboard.writeText(outputText);
   };
 
   const handleOutputDownloadClick = () => {
     if (outputText.trim() === '') {
-      alert('There is no output to download.');
+      addError("- No output text to download")
       return;
     }
     const fileExtension = languageToFileExtension[outputLanguage];
@@ -228,20 +350,57 @@ const TranslatePage = () => {
     setIsGreen(prevState => !prevState);
   };
 
+const [isDragOver, setIsDragOver] = useState(false);
+
+const handleDragOver = (e) => {
+  e.preventDefault();
+  setIsDragOver(true);
+};
+
+const handleDragLeave = () => {
+  setIsDragOver(false);
+};
+
+const handleDrop = (e) => {
+  e.preventDefault();
+  setIsDragOver(false);
+  const file = e.dataTransfer.files[0];
+  handleFileChange({ target: { files: [file] } });
+};
+
+
+  const [errorFound, setErrorFound] = useState(false);
+  const [errors, setErrors] = useState([]);
+
+  const resetErrorState = () => {
+    setErrorFound(false);
+    setErrors([]);
+  };
+
+  const addError = (error) => {
+    resetErrorState();
+    setErrorFound(true);
+    setErrors(prevErrors => [...prevErrors, error]);
+  };
+
+
   return (
     <>
-          <Metadata title="Translate" description="Translate" />
+    <Metadata title="Translate" description="Translate" />
       <header>
-        <Navbar/>
+        <Navbar />
       </header>
       <div className={classes.page} >
         <div className={classes.convertContainer}>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
-              <Button
+            <Button
                 variant="contained"
-                className={classes.button}
+                className={`${classes.button} ${isDragOver ? classes.uploadButtonDragOver : ''}`}
                 onClick={handleUploadClick}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
               ><FileUploadIcon fontSize="large" />
               </Button>
               <Button
@@ -266,7 +425,7 @@ const TranslatePage = () => {
             </div>
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
-                  <Select  value={inputLanguage}  onChange={handleInputLanguageChange}  style={{color:'#fff' }}
+                <Select value={inputLanguage} onChange={handleInputLanguageChange} style={{ color: '#fff' }}
                   aria-label='input-language-dropdown'
                     MenuProps={{
                       PaperProps: {
@@ -276,8 +435,8 @@ const TranslatePage = () => {
                       },
                       MenuListProps: {
                         style: {
-                          color: '#fff', // text color of the dropdown items
-                          textAlign: 'center', // center the text in the dropdown
+                          color: '#fff',
+                          textAlign: 'center',
                         },
                       },
                     }}>
@@ -295,7 +454,7 @@ const TranslatePage = () => {
                 width="550px"
                 options={{
                   fontSize: 14,
-                  scrollBeyondLastLine : false,
+                  scrollBeyondLastLine: false,
                 }}
                 language={inputLanguage}
                 theme="vs-dark"
@@ -305,23 +464,35 @@ const TranslatePage = () => {
             </div>
           </div>
           <div className={classes.loadingContainer}>
-          <Box
-            display="flex"
-            alignItems="center"
-            boxShadow={3}
-            style={{backgroundColor: '#1e1e1e', color: '#fff', padding: '5px', borderRadius: '10px', width: 'fit-content' }}>
-            GPT-3 Status
-            <IconButton onClick={handleToggleColor}>
-              {isGreen ? <CheckCircle style={{ color: 'green' }} /> : <HighlightOff style={{ color: 'red' }} />}
-            </IconButton>
-          </Box>
-          <Button
+            <Box
+              display="flex"
+              alignItems="center"
+              boxShadow={3}
+              style={{ backgroundColor: '#1e1e1e', color: '#fff', padding: '5px', borderRadius: '10px', width: 'fit-content' }}>
+              GPT-3 Status
+              <IconButton onClick={handleToggleColor}>
+                {isGreen ? <CheckCircle style={{ color: 'green' }} /> : <HighlightOff style={{ color: 'red' }} />}
+              </IconButton>
+
+            </Box>
+            <div style={{width: '156px', height: '60px'}}>
+              {errorFound ? <Box
+                boxShadow={3}
+                style={{ backgroundColor: '#1e1e1e', color: 'red', padding: '5px', marginTop: '5px', borderRadius: '10px', width: 'fit-content' }}>Error:
+                {errors.map((error, indexErr) => (
+                  <p key={indexErr}>{error}</p>
+                ))}
+              </Box> : null}
+            </div>
+
+            <Button
               variant="contained"
               className={classes.convertButton}
               onClick={handleConvertClick}
+              disabled={loading}
             >Convert
-          </Button>
-          {loading && <CircularProgress style={{ color: 'white', marginTop: '10px'}} />}
+            </Button>
+            {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
           </div>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
@@ -340,8 +511,8 @@ const TranslatePage = () => {
             </div>
             <div className={classes.fieldContainer}>
               <div className={classes.dropdownContainer}>
-                <Select  value={outputLanguage}  onChange={handleOutputLanguageChange}  style={{color:'#fff' }}
-                aria-label='output-language-dropdown'
+                <Select value={outputLanguage} onChange={handleOutputLanguageChange} style={{ color: '#fff' }}
+                  aria-label='output-language-dropdown'
                   MenuProps={{
                     PaperProps: {
                       style: {
@@ -350,8 +521,8 @@ const TranslatePage = () => {
                     },
                     MenuListProps: {
                       style: {
-                        color: '#fff', // text color of the dropdown items
-                        textAlign: 'center', // center the text in the dropdown
+                        color: '#ffffff',
+                        textAlign: 'center',
                       },
                     },
                   }}>
@@ -368,7 +539,7 @@ const TranslatePage = () => {
                 width="550px"
                 options={{
                   fontSize: 14,
-                  scrollBeyondLastLine : false,
+                  scrollBeyondLastLine: false,
                 }}
                 language={outputLanguage}
                 theme="vs-dark"
@@ -378,10 +549,9 @@ const TranslatePage = () => {
             </div>
           </div>
         </div>
+        <HistoryForm setInputText={setInputText} setOutputText={setOutputText} setInputLanguage={setInputLanguage} setOutputLanguage={setOutputLanguage}/>
       </div>
-
       <FeedbackForm ></FeedbackForm>
-
     </>
   );
 };
