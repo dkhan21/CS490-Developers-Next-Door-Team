@@ -1,6 +1,8 @@
+import { rest } from 'msw'
+import { setupServer } from 'msw/node'
 import { MemoryRouter } from 'react-router-dom'
 
-import { screen, render, fireEvent } from '@redwoodjs/testing/web'
+import { screen, render, fireEvent, waitFor } from '@redwoodjs/testing/web'
 
 import LoginPage from './LoginPage'
 
@@ -50,16 +52,16 @@ it('renders the remember me checkbox', () => {
 
 it('tests the Remember Me functionality for persistent sessions', () => {
   // Mock the localStorage
-  const localStorageMock = (function() {
+  const localStorageMock = (function () {
     let store = {}
     return {
-      getItem: function(key) {
+      getItem: function (key) {
         return store[key] || null
       },
-      setItem: function(key, value) {
+      setItem: function (key, value) {
         store[key] = value.toString()
       },
-      clear: function() {
+      clear: function () {
         store = {}
       },
     }
@@ -85,4 +87,63 @@ it('tests the Remember Me functionality for persistent sessions', () => {
 
   // Check if the rememberMe item is stored in the localStorage
   expect(localStorage.getItem('rememberMe')).toBe(null)
+})
+// Define the mock server
+const server = setupServer(
+  rest.post('/api/login', (req, res, ctx) => {
+    const { username, password } = req.body
+
+    // Define some test users
+    const testUsers = {
+      testuser1: 'password1',
+      testuser2: 'password2',
+    }
+
+    if (testUsers[username] === password) {
+      return res(ctx.json({ authenticated: true }))
+    } else {
+      return res(ctx.json({ authenticated: false }))
+    }
+  })
+)
+
+beforeAll(() => server.listen())
+afterEach(() => server.resetHandlers())
+afterAll(() => server.close())
+
+it('tests the login form with various user credentials', async () => {
+  render(
+    <MemoryRouter>
+      <LoginPage />
+    </MemoryRouter>
+  )
+
+  // Define some test credentials
+  const testCredentials = [
+    { username: 'testuser1', password: 'password1', shouldSucceed: true },
+    { username: 'testuser2', password: 'wrongpassword', shouldSucceed: false },
+    {
+      username: 'nonexistentuser',
+      password: 'password1',
+      shouldSucceed: false,
+    },
+  ]
+
+  for (let creds of testCredentials) {
+    // Fill in the username and password
+    fireEvent.change(screen.getByLabelText(/Email/i), {
+      target: { value: creds.email },
+    })
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: creds.password },
+    })
+
+    // Click the login button
+    fireEvent.click(screen.getByRole('button', { name: /Login/i }))
+
+    // Wait for the request to complete
+    await waitFor(() =>
+      expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+    )
+  }
 })
