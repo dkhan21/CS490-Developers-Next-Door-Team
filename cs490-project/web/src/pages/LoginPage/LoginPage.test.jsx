@@ -38,55 +38,57 @@ describe('LoginPage', () => {
     expect(screen.getByText(/Don't have an account?/i)).toBeInTheDocument()
   })
 })
+describe('LoginPage', () => {
+  it('renders the remember me checkbox', () => {
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    )
 
-it('renders the remember me checkbox', () => {
-  render(
-    <MemoryRouter>
-      <LoginPage />
-    </MemoryRouter>
-  )
-
-  // Check for the remember me checkbox
-  expect(screen.getByLabelText(/Remember Me?/i)).toBeInTheDocument()
-})
-
-it('tests the Remember Me functionality for persistent sessions', () => {
-  // Mock the localStorage
-  const localStorageMock = (function () {
-    let store = {}
-    return {
-      getItem: function (key) {
-        return store[key] || null
-      },
-      setItem: function (key, value) {
-        store[key] = value.toString()
-      },
-      clear: function () {
-        store = {}
-      },
-    }
-  })()
-
-  Object.defineProperty(window, 'localStorage', {
-    value: localStorageMock,
+    // Check for the remember me checkbox
+    expect(screen.getByLabelText(/Remember Me?/i)).toBeInTheDocument()
   })
+})
+describe('LoginPage', () => {
+  it('tests the Remember Me functionality for persistent sessions', () => {
+    // Mock the localStorage
+    const localStorageMock = (function () {
+      let store = {}
+      return {
+        getItem: function (key) {
+          return store[key] || null
+        },
+        setItem: function (key, value) {
+          store[key] = value.toString()
+        },
+        clear: function () {
+          store = {}
+        },
+      }
+    })()
 
-  render(
-    <MemoryRouter>
-      <LoginPage />
-    </MemoryRouter>
-  )
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+    })
 
-  // Simulate checking the Remember Me checkbox
-  const checkbox = screen.getByLabelText(/Remember Me?/i)
-  fireEvent.click(checkbox)
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
+    )
 
-  // Simulate form submission
-  const submitButton = screen.getByRole('button', { name: /Login/i })
-  fireEvent.click(submitButton)
+    // Simulate checking the Remember Me checkbox
+    const checkbox = screen.getByLabelText(/Remember Me?/i)
+    fireEvent.click(checkbox)
 
-  // Check if the rememberMe item is stored in the localStorage
-  expect(localStorage.getItem('rememberMe')).toBe(null)
+    // Simulate form submission
+    const submitButton = screen.getByRole('button', { name: /Login/i })
+    fireEvent.click(submitButton)
+
+    // Check if the rememberMe item is stored in the localStorage
+    expect(localStorage.getItem('rememberMe')).toBe(null)
+  })
 })
 // Define the mock server
 const server = setupServer(
@@ -110,40 +112,45 @@ const server = setupServer(
 beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
-
-it('tests the login form with various user credentials', async () => {
-  render(
-    <MemoryRouter>
-      <LoginPage />
-    </MemoryRouter>
-  )
-
-  // Define some test credentials
-  const testCredentials = [
-    { username: 'testuser1', password: 'password1', shouldSucceed: true },
-    { username: 'testuser2', password: 'wrongpassword', shouldSucceed: false },
-    {
-      username: 'nonexistentuser',
-      password: 'password1',
-      shouldSucceed: false,
-    },
-  ]
-
-  for (let creds of testCredentials) {
-    // Fill in the username and password
-    fireEvent.change(screen.getByLabelText(/Email/i), {
-      target: { value: creds.email },
-    })
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: creds.password },
-    })
-
-    // Click the login button
-    fireEvent.click(screen.getByRole('button', { name: /Login/i }))
-
-    // Wait for the request to complete
-    await waitFor(() =>
-      expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+describe('LoginPage', () => {
+  it('tests the login form with various user credentials', async () => {
+    render(
+      <MemoryRouter>
+        <LoginPage />
+      </MemoryRouter>
     )
-  }
+
+    // Define some test credentials
+    const testCredentials = [
+      { username: 'testuser1', password: 'password1', shouldSucceed: true },
+      {
+        username: 'testuser2',
+        password: 'wrongpassword',
+        shouldSucceed: false,
+      },
+      {
+        username: 'nonexistentuser',
+        password: 'password1',
+        shouldSucceed: false,
+      },
+    ]
+
+    for (let creds of testCredentials) {
+      // Fill in the username and password
+      fireEvent.change(screen.getByLabelText(/Email/i), {
+        target: { value: creds.email },
+      })
+      fireEvent.change(screen.getByLabelText(/password/i), {
+        target: { value: creds.password },
+      })
+
+      // Click the login button
+      fireEvent.click(screen.getByRole('button', { name: /Login/i }))
+
+      // Wait for the request to complete
+      await waitFor(() =>
+        expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+      )
+    }
+  })
 })
