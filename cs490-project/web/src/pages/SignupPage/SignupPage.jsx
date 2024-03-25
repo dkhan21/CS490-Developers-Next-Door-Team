@@ -75,7 +75,11 @@ const SignupPage = () => {
 
             <div className="rw-segment-main">
               <div className="rw-form-wrapper">
-                <Form onSubmit={onSubmit} className="rw-form-wrapper">
+                <Form
+                  data-testid="signup-form"
+                  onSubmit={onSubmit}
+                  className="rw-form-wrapper"
+                >
                   <Label
                     name="username"
                     className="rw-label"
