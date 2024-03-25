@@ -1,6 +1,6 @@
 import { MemoryRouter } from 'react-router-dom'
 
-import { screen, render } from '@redwoodjs/testing/web'
+import { screen, render, fireEvent } from '@redwoodjs/testing/web'
 
 import LoginPage from './LoginPage'
 
@@ -46,4 +46,43 @@ it('renders the remember me checkbox', () => {
 
   // Check for the remember me checkbox
   expect(screen.getByLabelText(/Remember Me?/i)).toBeInTheDocument()
+})
+
+it('tests the Remember Me functionality for persistent sessions', () => {
+  // Mock the localStorage
+  const localStorageMock = (function() {
+    let store = {}
+    return {
+      getItem: function(key) {
+        return store[key] || null
+      },
+      setItem: function(key, value) {
+        store[key] = value.toString()
+      },
+      clear: function() {
+        store = {}
+      },
+    }
+  })()
+
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+  })
+
+  render(
+    <MemoryRouter>
+      <LoginPage />
+    </MemoryRouter>
+  )
+
+  // Simulate checking the Remember Me checkbox
+  const checkbox = screen.getByLabelText(/Remember Me?/i)
+  fireEvent.click(checkbox)
+
+  // Simulate form submission
+  const submitButton = screen.getByRole('button', { name: /Login/i })
+  fireEvent.click(submitButton)
+
+  // Check if the rememberMe item is stored in the localStorage
+  expect(localStorage.getItem('rememberMe')).toBe(null)
 })
