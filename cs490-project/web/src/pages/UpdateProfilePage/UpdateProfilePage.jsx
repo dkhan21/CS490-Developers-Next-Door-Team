@@ -11,6 +11,7 @@ const UPDATE_USER_MUTATION = gql`
     updateUser(input: $input) {
       id
       email
+      name
     }
   }
 
@@ -29,10 +30,21 @@ const UpdateProfilePage = () => {
   //  
 
   const onSubmit = (data) => {
+    console.log(data)
 
     const input = { 
       id: currentUser.id, 
-      email: data.email || currentUser.email}
+      email: data.email || currentUser.email,
+      // name: data.name || currentUser.name 
+    }
+
+    if (data.name){
+      input.name = data.name
+    }
+
+    if (data.preferredProgrammingLanguage){
+      input.preferredProgrammingLanguage = data.preferredProgrammingLanguage
+    }
 
     const variables = { input }
 
@@ -50,6 +62,16 @@ const UpdateProfilePage = () => {
           <TextField 
             name="email"
             placeholder="New Email"
+          />
+          <label>Name </label>
+          <TextField 
+            name="name"
+            placeholder="New Name"
+          />
+          <label>Preferred Programming Language</label>
+          <TextField 
+            name="preferredProgrammingLanguage"
+            placeholder="Preferred Programming Language"
           />
         </div>
         

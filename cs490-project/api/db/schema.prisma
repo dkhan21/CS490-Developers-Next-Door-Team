@@ -25,10 +25,11 @@ model User {
   salt                String
   resetToken          String?
   resetTokenExpiresAt DateTime?
-
-  roles             String           @default("user")
-  webAuthnChallenge String?          @unique
-  credentials       UserCredential[]
+  preferredProgrammingLanguage String?
+  
+  roles               String  @default("user")
+  webAuthnChallenge   String? @unique
+  credentials         UserCredential[]
 }
 
 model UserCredential {
