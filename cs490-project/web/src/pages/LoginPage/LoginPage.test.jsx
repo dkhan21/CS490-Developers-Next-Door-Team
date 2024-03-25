@@ -46,13 +46,13 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    // Check for the remember me checkbox
+    //Check remember me checkbox
     expect(screen.getByLabelText(/Remember Me?/i)).toBeInTheDocument()
   })
 })
 describe('LoginPage', () => {
   it('tests the Remember Me functionality for persistent sessions', () => {
-    // Mock the localStorage
+    //for mock local storage
     const localStorageMock = (function () {
       let store = {}
       return {
@@ -78,24 +78,24 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    // Simulate checking the Remember Me checkbox
+    //Simulate checking the Remember Me checkbox
     const checkbox = screen.getByLabelText(/Remember Me?/i)
     fireEvent.click(checkbox)
 
-    // Simulate form submission
+    //Simulate form submission
     const submitButton = screen.getByRole('button', { name: /Login/i })
     fireEvent.click(submitButton)
 
-    // Check if the rememberMe item is stored in the localStorage
+    //Check if the rememberMe item is stored in the localStorage
     expect(localStorage.getItem('rememberMe')).toBe(null)
   })
 })
-// Define the mock server
+//Define the mock server
 const server = setupServer(
   rest.post('/api/login', (req, res, ctx) => {
     const { username, password } = req.body
 
-    // Define some test users
+    //Define some test users
     const testUsers = {
       testuser1: 'password1',
       testuser2: 'password2',
@@ -120,7 +120,7 @@ describe('LoginPage', () => {
       </MemoryRouter>
     )
 
-    // Define some test credentials
+    //Define some test credentials
     const testCredentials = [
       { username: 'testuser1', password: 'password1', shouldSucceed: true },
       {
@@ -136,7 +136,7 @@ describe('LoginPage', () => {
     ]
 
     for (let creds of testCredentials) {
-      // Fill in the username and password
+      //fill in the username and password
       fireEvent.change(screen.getByLabelText(/Email/i), {
         target: { value: creds.email },
       })
@@ -144,10 +144,10 @@ describe('LoginPage', () => {
         target: { value: creds.password },
       })
 
-      // Click the login button
+      //Click the login button
       fireEvent.click(screen.getByRole('button', { name: /Login/i }))
 
-      // Wait for the request to complete
+      //Wait for the request to complete
       await waitFor(() =>
         expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
       )
