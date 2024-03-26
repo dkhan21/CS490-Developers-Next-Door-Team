@@ -26,14 +26,14 @@ const Navbar = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" component="nav" sx={{backgroundColor: '#393E41'}}>
+      <AppBar position="fixed" component="nav" style={{backgroundColor: '#393E41'}}>
         <Toolbar>
           <Typography
             variant="h6"
             noWrap
             component={Link}
             to={routes.home()}
-            sx={{
+            style={{
               mr: 2,
               fontFamily: 'monospace',
               fontWeight: 700,
@@ -73,7 +73,7 @@ const Navbar = () => {
                 }
               }}
               aria-label='About'
-              ><a href="section-about">About</a></Button>
+              ><p>About</p></Button>
             </Link>
             <Link to={`${routes.home()}#section-works`}>
               <Button color="inherit" sx={{
@@ -100,7 +100,7 @@ const Navbar = () => {
                 }
               }}
               aria-label='Workings'
-              ><a href="#section-works">Instructions</a></Button>
+              ><p>Instructions</p></Button>
             </Link>
             <Link to={routes.translate()}>
               <Button color="inherit" sx={{
@@ -169,7 +169,7 @@ const Navbar = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                   onClick={handleClick}
-                  color="inherit" sx={{
+                  color="inherit" style={{
                     color: '#E7E5DF',
                     position: 'relative',
                     '&:after': {
@@ -206,6 +206,7 @@ const Navbar = () => {
                   }}
                 >
                   <Link to={routes.profile()}><MenuItem onClick={handleClose} style={{color: 'black'}}>Profile</MenuItem></Link>
+                  <br></br>
                   <Link to={routes.home()}><MenuItem onClick={logOut} style={{color: 'black'}}>Logout</MenuItem></Link>
 
                 </Menu>
