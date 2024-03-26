@@ -41,11 +41,11 @@ const FaqPage = () => {
   );
 
   const handleExpandAll = () => {
-    const newExpandedState = {}; 
+    const newExpandedState = {};
     filteredFAQ.forEach((entry, index) => {
-      newExpandedState[index] = true; 
+      newExpandedState[index] = true;
     });
-    setExpanded(newExpandedState); 
+    setExpanded(newExpandedState);
   };
 
   const handleCollapseAll = () => {
@@ -58,10 +58,11 @@ const FaqPage = () => {
 
   return (
     <ThemeProvider theme={theme}>
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '120px' }}>
-      <header> 
-        <Navbar/> 
+      <header>
+        <Navbar/>
       </header>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginTop: '120px' }}>
+
       <h1 style={{ marginBottom: "20px "}}>Frequently Asked Questions</h1>
       <p style={{ marginBottom: "40px "}}>Find answers to our most frequently asked questions below. If you can't find what you are looking for please contact us. </p>
       <TextField
@@ -75,8 +76,8 @@ const FaqPage = () => {
       />
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0px', width: '65%' }}>
         <Button onClick={handleExpandAll} color="inherit" sx={{color: '##393E41',
-                  position: 'relative', 
-                  marginRight: '15px !important', 
+                  position: 'relative',
+                  marginRight: '15px !important',
                   '&:after': {
                     content: '""',
                     position: 'absolute',
