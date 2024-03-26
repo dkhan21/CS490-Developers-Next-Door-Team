@@ -266,7 +266,7 @@ const Navbar = () => {
                   style ={{width: '10%'}}
                 >
                   <Link to={routes.profile()}><MenuItem onClick={handleClose2} style={{color: 'black', padding: '8px'}}>Profile</MenuItem></Link>
-                  <br></br>
+                  
                   <Link to={routes.home()}><MenuItem onClick={logOut} style={{color: 'black', padding: '8px'}}>Logout</MenuItem></Link>
 
                 </Menu>
