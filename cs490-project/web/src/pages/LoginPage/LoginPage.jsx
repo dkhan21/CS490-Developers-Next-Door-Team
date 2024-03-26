@@ -15,6 +15,7 @@ import { Metadata } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
 
 import { useAuth } from 'src/auth'
+import Nav2 from 'src/components/Nav2'
 
 const LoginPage = () => {
   const { isAuthenticated, logIn } = useAuth()
@@ -75,6 +76,9 @@ const LoginPage = () => {
   return (
     <>
       <Metadata title="Login" />
+      <header>
+        <Nav2 />
+      </header>
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
