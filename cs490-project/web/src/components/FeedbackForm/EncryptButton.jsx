@@ -54,7 +54,7 @@ const EncryptButton = () => {
   };
 
   return (
-    <motion.button style={{ fontWeight: 'bold', backgroundColor: 'white',fontSize: '12px' ,borderColor: "black", borderRadius: '5px', cursor: 'pointer', width: '105px', height: '30px', marginRight: '30px', paddingRight: '30px', }}
+    <motion.button style={{ fontWeight: 'bold', backgroundColor: 'white', borderWidth: '3px', fontSize: '12px' , borderColor: "black", borderRadius: '5px', cursor: 'pointer', width: '105px', height: '30px', marginRight: '30px', paddingRight: '30px', }}
       whileHover={{
         scale: 1.025, fontWeight: 'bold', backgroundColor: 'black',fontSize: '12px' , color: 'white'
       }}

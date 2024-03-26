@@ -33,7 +33,7 @@ export const handler = async (event, context) => {
       usernameRequired: 'Username is required',
     },
   }
-
+  let rememberMe
   const loginOptions = {
     // handler() is called after finding the user that matches the
     // username/password provided at login, but before actually considering them
@@ -46,13 +46,14 @@ export const handler = async (event, context) => {
     // didn't validate their email yet), throw an error and it will be returned
     // by the `logIn()` function from `useAuth()` in the form of:
     // `{ message: 'Error message' }`
+    rememberMe: true,
     handler: (user) => {
       return user
     },
 
     errors: {
-      usernameOrPasswordMissing: 'Both username and password are required',
-      usernameNotFound: 'Username ${username} not found',
+      usernameOrPasswordMissing: 'Both email and password are required',
+      usernameNotFound: 'Email ${username} not found',
       // For security reasons you may want to make this the same as the
       // usernameNotFound error so that a malicious user can't use the error
       // to narrow down if it's the username or password that's incorrect
@@ -60,7 +61,8 @@ export const handler = async (event, context) => {
     },
 
     // How long a user will remain logged in, in seconds
-    expires: 60 * 60 * 24 * 365 * 10,
+    //3 months otherwise 1 day to sign out
+    expires: rememberMe ? 60 * 60 * 24 * 30 * 3 : 60 * 60 * 24,
   }
 
   const resetPasswordOptions = {
@@ -129,7 +131,7 @@ export const handler = async (event, context) => {
     errors: {
       // `field` will be either "username" or "password"
       fieldMissing: '${field} is required',
-      usernameTaken: 'Username `${username}` already in use',
+      usernameTaken: 'Email `${username}` already in use',
     },
   }
 
@@ -140,7 +142,7 @@ export const handler = async (event, context) => {
     // The name of the property you'd call on `db` to access your user table.
     // ie. if your Prisma model is named `User` this value would be `user`, as in `db.user`
     authModelAccessor: 'user',
-    
+
     // The name of the property you'd call on `db` to access your user credentials table.
     // ie. if your Prisma model is named `UserCredential` this value would be `userCredential`, as in `db.userCredential`
     credentialModelAccessor: 'userCredential',

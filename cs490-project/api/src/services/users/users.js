@@ -22,7 +22,9 @@ export const createUser = ({ input }) => {
 export const updateUser = ({ input }) => {
   return db.user.update({
     data: {
-      email: input.email
+      email: input.email,
+      name: input.name,
+      preferredProgrammingLanguage: input.preferredProgrammingLanguage,
     },
     where: { id: input.id },
   })

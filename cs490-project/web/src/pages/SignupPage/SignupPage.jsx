@@ -31,8 +31,23 @@ const SignupPage = () => {
   }, [])
 
   const onSubmit = async (data) => {
+    if (data.password !== data.passwordConfirmation) {
+      toast.error('Password confirmation does not match password')
+      return
+    }
+    const passwordStrengthRegex = new RegExp(
+      '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
+    )
+    if (!passwordStrengthRegex.test(data.password)) {
+      toast.error(
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.'
+      )
+      return
+    }
+
     const response = await signUp({
       username: data.username,
+      email: data.email,
       password: data.password,
     })
 
@@ -55,18 +70,22 @@ const SignupPage = () => {
         <div className="rw-scaffold rw-login-container">
           <div className="rw-segment">
             <header className="rw-segment-header">
-              <h2 className="rw-heading rw-heading-secondary">Signup</h2>
+              <h2 className="rw-heading rw-heading-secondary">Sign Up</h2>
             </header>
 
             <div className="rw-segment-main">
               <div className="rw-form-wrapper">
-                <Form onSubmit={onSubmit} className="rw-form-wrapper">
+                <Form
+                  data-testid="signup-form"
+                  onSubmit={onSubmit}
+                  className="rw-form-wrapper"
+                >
                   <Label
                     name="username"
                     className="rw-label"
                     errorClassName="rw-label rw-label-error"
                   >
-                    Username
+                    Email
                   </Label>
                   <TextField
                     name="username"
@@ -76,7 +95,11 @@ const SignupPage = () => {
                     validation={{
                       required: {
                         value: true,
-                        message: 'Username is required',
+                        message: 'Email is required',
+                      },
+                      pattern: {
+                        value: /[^@]+@[^.]+\..+/,
+                        message: 'Please enter a valid email',
                       },
                     }}
                   />
@@ -104,7 +127,29 @@ const SignupPage = () => {
                   />
 
                   <FieldError name="password" className="rw-field-error" />
-
+                  <Label
+                    name="passwordConfirmation"
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    Confirm Password
+                  </Label>
+                  <PasswordField
+                    name="passwordConfirmation"
+                    className="rw-input"
+                    errorClassName="rw-input rw-input-error"
+                    autoComplete="current-password"
+                    validation={{
+                      required: {
+                        value: true,
+                        message: 'Password confirmation is required',
+                      },
+                    }}
+                  />
+                  <FieldError
+                    name="passwordConfirmation"
+                    className="rw-field-error"
+                  />
                   <div className="rw-button-group">
                     <Submit className="rw-button rw-button-blue">
                       Sign Up

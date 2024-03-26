@@ -78,7 +78,7 @@ img {
   text-shadow: 0 0 5px #E7BB41;
 }
 
-#getSstarted:hover::before{
+#getStarted:hover::before{
   transform: scale(1.1);
   box-shadow: 0 0 15px #E7BB41;
 }

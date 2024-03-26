@@ -1,8 +1,9 @@
 export const schema = gql`
     type User {
         id: Int! 
-        name: String! 
+        name: String 
         email: String! 
+        preferredProgrammingLanguage: String 
     }
 
     type Query{
@@ -13,6 +14,7 @@ export const schema = gql`
         id: Int! 
         name: String
         email: String! 
+        preferredProgrammingLanguage: String
     }
 
     type Mutation {

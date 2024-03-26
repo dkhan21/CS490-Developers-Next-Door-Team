@@ -94,7 +94,7 @@ const FeedbackForm = () => {
               <TextAreaField name="name" required
                 className="block w-full p-1 border rounded h-24 text-xs"
                 validation={{ required: true }}
-                style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '200px', height: '30px', fontSize: '16px' }}
+                style={{ borderRadius: '10px', padding: '5px', border: '2px solid black', resize: 'none', width: '200px', height: '35px', fontSize: '16px' }}
               />
               <FieldError name="names" />
             </div>
@@ -107,11 +107,11 @@ const FeedbackForm = () => {
               <div style={{
                 width: '140px', borderRadius: '10px',
                 backgroundColor: 'white',
-                border: '2px solid black', height: '25px',
+                border: '2px solid black', height: '35px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '5px'
+                padding: '4px'
               }} required >
                 {[1, 2, 3, 4, 5].map((index) => (
                   <span name="rating" key={index} onClick={() => handleStarClick(index)} style={{ cursor: 'pointer' }} validation={{ required: true }} >
@@ -133,13 +133,13 @@ const FeedbackForm = () => {
               <TextAreaField
                 name="body"
                 validation={{ required: true }}
-                style={{ borderRadius: '10px', border: '2px solid black', resize: 'none', width: '300px', fontFamily: 'Open Sans, sans-serif', fontSize: '16px', fontWeight: 400 }}
+                style={{ borderRadius: '10px', padding: '3px', border: '2px solid black', height: '35px', width: '300px', fontFamily: 'Open Sans, sans-serif', fontSize: '16px', fontWeight: 400 }}
               />
               <FieldError name="body" />
 
             </div>
 
-            <div style={{ marginTop: '35px', marginRight: '20px', marginLeft: '0px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ marginTop: '32px', marginRight: '20px', marginLeft: '0px', display: 'flex', flexDirection: 'column' }}>
 
 
                 <Example  className="submit-button" disabled={loading} style={{ marginTop: '10px', cursor: 'pointer', color: 'blue', width: '110px', height: '35px', border: 'none', backgroundColor: '#403c44' }} ></Example>
@@ -150,6 +150,10 @@ const FeedbackForm = () => {
             <h3 style={{...fontStyles, color: 'white'}}>Please log in to provide feedback!</h3>
           )}
         {/* Feedback Form submission ends here!!!*/}
+
+        <div style={{height: '20px'}}>
+
+        </div>
 
         <FeedbacksCell></FeedbacksCell>
 

@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useEffect } from 'react'
 
 import {
@@ -8,6 +8,7 @@ import {
   PasswordField,
   Submit,
   FieldError,
+  CheckboxField,
 } from '@redwoodjs/forms'
 import { Link, navigate, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
@@ -17,7 +18,15 @@ import { useAuth } from 'src/auth'
 
 const LoginPage = () => {
   const { isAuthenticated, logIn } = useAuth()
-
+  const [rememberMe, setRememberMe] = useState(false)
+  useEffect(() => {
+    if (localStorage.getItem('rememberMe') === 'true') {
+      const rememberedUsername = localStorage.getItem('username')
+      if (usernameRef.current) {
+        usernameRef.current.value = rememberedUsername
+      }
+    }
+  }, [])
   useEffect(() => {
     if (isAuthenticated) {
       navigate(routes.home())
@@ -30,24 +39,42 @@ const LoginPage = () => {
   }, [])
 
   const onSubmit = async (data) => {
+    const expires = rememberMe ? 60 * 60 * 24 * 30 * 3 : 60 * 60 * 24
     const response = await logIn({
       username: data.username,
       password: data.password,
+      rememberMe,
+      expires,
     })
 
-    if (response.message) {
-      toast(response.message)
-    } else if (response.error) {
-      toast.error(response.error)
+    // Check if the response is defined
+    if (response) {
+      if (!response.error) {
+        if (rememberMe) {
+          localStorage.setItem('rememberMe', 'true')
+          localStorage.setItem('username', data.username)
+        } else {
+          localStorage.removeItem('rememberMe')
+          localStorage.removeItem('username')
+        }
+      }
+
+      if (response.message) {
+        toast(response.message)
+      } else if (response.error) {
+        toast.error(response.error)
+      } else {
+        toast.success('Welcome back!')
+      }
     } else {
-      toast.success('Welcome back!')
+      // Handle the case where the response is undefined
+      toast.error('An error occurred during login.')
     }
   }
 
   return (
     <>
       <Metadata title="Login" />
-
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
@@ -64,7 +91,7 @@ const LoginPage = () => {
                     className="rw-label"
                     errorClassName="rw-label rw-label-error"
                   >
-                    Username
+                    Email
                   </Label>
                   <TextField
                     name="username"
@@ -74,7 +101,7 @@ const LoginPage = () => {
                     validation={{
                       required: {
                         value: true,
-                        message: 'Username is required',
+                        message: 'Email is required',
                       },
                     }}
                   />
@@ -111,7 +138,23 @@ const LoginPage = () => {
                   </div>
 
                   <FieldError name="password" className="rw-field-error" />
+                  <div className="rw-checkbox-group">
+                    <Label
+                      name="rememberMe"
+                      className="rw-label"
+                      errorClassName="rw-label rw-label-error"
+                    >
+                      Remember Me?
+                    </Label>
 
+                    <CheckboxField
+                      name="rememberMe"
+                      className="rw-input"
+                      errorClassName="rw-input rw-input-error"
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                  </div>
+                  <FieldError name="rememberMe" className="rw-field-error" />
                   <div className="rw-button-group">
                     <Submit className="rw-button rw-button-blue">Login</Submit>
                   </div>
