@@ -12,8 +12,9 @@ import {
 import { Link, navigate, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
-import Nav2 from 'src/components/Nav2'
+
 import { useAuth } from 'src/auth'
+import Nav2 from 'src/components/Nav2'
 
 const SignupPage = () => {
   const { isAuthenticated, signUp } = useAuth()
