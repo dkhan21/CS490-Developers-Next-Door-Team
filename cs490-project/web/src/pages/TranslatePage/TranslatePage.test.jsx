@@ -7,6 +7,7 @@ import { saveAs } from 'file-saver';
 import TranslatePage from './TranslatePage';
 import MonacoEditor from '@monaco-editor/react';
 
+
 jest.mock('src/components/Navbar/Navbar', () => {
   return function DummyNavbar() {
     return <div />;
@@ -126,8 +127,8 @@ describe('TranslatePage', () => {
   });
 
   it('editor renders correctly with different lengths and formats of code of code', () => {
-    const outputEditor = {};
-    const setOutputText = jest.fn();
+    
+
     const repeatedText = "editor renders correctly with different lengths of code\n";
     const outputTexts = [repeatedText.repeat(1), repeatedText.repeat(10000), 'import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }']; // Test lenght and format
     const outputLanguages = ['java', 'python', 'javascript'];
@@ -155,5 +156,85 @@ describe('TranslatePage', () => {
       );
       expect(getByLabelText(`label-${index}`)).toBeInTheDocument();
     });
+  });
+  it('API can handle several asynchronous requests at once and create translation history', async () => {
+
+    const repeatedText = "editor renders correctly with different lengths of code\n";
+    const outputTexts = [repeatedText.repeat(1), repeatedText.repeat(1000), 'import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }']; // Test lenght and format
+    const outputLanguages = ['java', 'python', 'javascript'];
+
+    
+    async function handleConvertClick(inputText, inputLanguage, outputLanguage){
+      
+      if (inputText.trim() === '') {
+        return "Invalid Length";
+      }
+      let stat = "Not Translated";
+  
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage
+          }
+        ]
+      };
+  
+      fetch('http://localhost:8910/.redwood/functions/openai', {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload)
+      })
+  
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          else {
+            throw new Error('Error Has Occurred');
+          }
+        })
+        .then(data => {
+          if(data.completion.length > 0){
+            stat = "Successfully Translated";
+          }
+          else {
+            throw new Error('Empty Response');
+          }
+          mockGraphQLMutation('createHistory', ({ inputLanguage, outputLanguage, inputText, outputText, userId, status }) => {
+            return {
+              histories: {
+                inputLanguage,
+                outputLanguage,
+                inputText,
+                outputText,
+                userId,
+                status,
+              }
+            }
+          });
+
+          
+        });
+
+        return true;
+  
+    }
+
+    //Call multiple requests
+    handleConvertClick(outputTexts[0], "java", outputLanguages[0]);
+    handleConvertClick(outputTexts[1], "java", outputLanguages[1]);
+    handleConvertClick(outputTexts[2], "java", outputLanguages[2]);
+    //Should fail because input is empty
+    let results = await handleConvertClick("", "java", "c")
+    expect(results).toEqual("Invalid Length");
+
+
+    
   });
 });

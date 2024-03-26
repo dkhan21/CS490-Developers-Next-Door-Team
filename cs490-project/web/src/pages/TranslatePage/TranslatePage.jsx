@@ -148,6 +148,8 @@ const TranslatePage = () => {
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
   const { currentUser } = useAuth();
+  const [activeTranslations, setActiveTranslations] = useState(0);
+
 
   const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
@@ -180,6 +182,8 @@ const TranslatePage = () => {
       return false;;
     }
     let stat = "Not Translated";
+    setActiveTranslations(activeTranslations + 1);
+    
     setLoading(true); // Show loading element
     resetErrorState();
     let timeoutId; // Initialize timeout variable
@@ -215,6 +219,8 @@ const TranslatePage = () => {
     })
 
       .then(response => {
+        setActiveTranslations(activeTranslations=>activeTranslations - 1);
+        
         if (response.ok) {
           setIsGreen(true);
           console.log(response)
@@ -258,6 +264,10 @@ const TranslatePage = () => {
       .finally(() => {
         setLoading(false);
       });
+
+      if(activeTranslations < 0){
+        setActiveTranslations(0);
+      }
   };
 
   const handleInputLanguageChange = (e) => {
@@ -493,6 +503,9 @@ const handleDrop = (e) => {
             >Convert
             </Button>
             {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
+            <br></br>
+            
+            
           </div>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
