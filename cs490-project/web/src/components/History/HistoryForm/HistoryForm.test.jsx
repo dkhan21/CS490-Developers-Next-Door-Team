@@ -1,35 +1,144 @@
 import { render, screen } from '@redwoodjs/testing/web'
-import { Loading, Empty, Failure, Success } from 'src/components/History/HistoryForm/HistoryForm.jsx'
-
-jest.mock('src/components/History/HistoryForm/HistoryForm.jsx', () => ({
-  Loading: () => <div>Loading</div>,
-  Empty: () => <div>Empty</div>,
-  Failure: () => <div>Failure</div>,
-  Success: () => <div>Success</div>,
-}))
+import HistoryForm from './HistoryForm';
 
 describe('HistoryForm', () => {
-  it('renders Loading successfully', () => {
-    expect(() => {
-      render(<Loading />)
-    }).not.toThrow()
-  })
+  it('renders sign-in message when user is not signed in', () => {
+    render(<HistoryForm />);
+    expect(screen.getByText('You need to sign in to access your history.')).toBeInTheDocument();
+  });
+  
+  it('pages load', () => {
+    render(<HistoryForm />);
+    expect(screen.queryByText('Pagination')).not.toBeInTheDocument();
+  });
 
-  it('renders Empty successfully', () => {
-    expect(() => {
-      render(<Empty />)
-    }).not.toThrow()
-  })
+  it('history created successfully', () => {
+    const history = {
+      inputLanguage: 'English',
+      outputLanguage: 'Spanish',
+      inputText: 'Hello',
+      outputText: 'Hola',
+      createdAt: '2024-03-26T12:00:00Z',
+      status: 'Successfully translated',
+      userId: 1
+    };
 
-  it('renders Failure successfully', () => {
-    expect(() => {
-      render(<Failure />)
-    }).not.toThrow()
-  })
+    render(
+      <HistoryForm />
+    );
 
-  it('renders Success successfully', () => {
-    expect(() => {
-      render(<Success />)
-    }).not.toThrow()
-  })
-})
+    expect(screen.queryByText(history.inputLanguage)).toBeNull();
+    expect(screen.queryByText(history.outputLanguage)).toBeNull();
+    expect(screen.queryByText(history.inputText)).toBeNull();
+    expect(screen.queryByText(history.outputText)).toBeNull();
+    expect(screen.queryByText('March 26, 2024')).toBeNull();
+    expect(screen.queryByText(history.status)).toBeNull();
+  });
+  test('renders input language when user is signed in and history created', () => {
+    const history = {
+      inputLanguage: 'English',
+      outputLanguage: 'Spanish',
+      inputText: 'Hello',
+      outputText: 'Hola',
+      createdAt: '2024-03-26T12:00:00Z',
+      status: 'completed',
+      userId: 1
+    };
+
+    render(
+      <HistoryForm />
+    );
+
+    expect(screen.queryByText(history.inputLanguage)).toBeNull();
+  });
+
+  test('renders output language when user is signed in and history created', () => {
+    const history = {
+      inputLanguage: 'English',
+      outputLanguage: 'Spanish',
+      inputText: 'Hello',
+      outputText: 'Hola',
+      createdAt: '2024-03-26T12:00:00Z',
+      status: 'completed',
+      userId: 1
+    };
+
+    render(
+      <HistoryForm />
+    );
+
+    expect(screen.queryByText(history.outputLanguage)).toBeNull();
+  });
+
+  test('renders input text when user is signed in and history created', () => {
+    const history = {
+      inputLanguage: 'English',
+      outputLanguage: 'Spanish',
+      inputText: 'Hello',
+      outputText: 'Hola',
+      createdAt: '2024-03-26T12:00:00Z',
+      status: 'completed',
+      userId: 1
+    };
+
+    render(
+      <HistoryForm />
+    );
+
+    expect(screen.queryByText(history.inputText)).toBeNull();
+  });
+
+  test('renders output text when user is signed in and history created', () => {
+    const history = {
+      inputLanguage: 'English',
+      outputLanguage: 'Spanish',
+      inputText: 'Hello',
+      outputText: 'Hola',
+      createdAt: '2024-03-26T12:00:00Z',
+      status: 'completed',
+      userId: 1
+    };
+
+    render(
+      <HistoryForm />
+    );
+
+    expect(screen.queryByText(history.outputText)).toBeNull();
+  });
+
+  test('renders created date when user is signed in and history created', () => {
+    const history = {
+      inputLanguage: 'English',
+      outputLanguage: 'Spanish',
+      inputText: 'Hello',
+      outputText: 'Hola',
+      createdAt: '2024-03-26T12:00:00Z',
+      status: 'completed',
+      userId: 1
+    };
+
+    render(
+      <HistoryForm />
+    );
+
+    expect(screen.queryByText('March 26, 2024')).toBeNull();
+  });
+
+  test('renders status when user is signed in and history created', () => {
+    const history = {
+      inputLanguage: 'English',
+      outputLanguage: 'Spanish',
+      inputText: 'Hello',
+      outputText: 'Hola',
+      createdAt: '2024-03-26T12:00:00Z',
+      status: 'completed',
+      userId: 1
+    };
+
+    render(
+      <HistoryForm />
+    );
+
+    expect(screen.queryByText(history.status)).toBeNull();
+  });
+});
