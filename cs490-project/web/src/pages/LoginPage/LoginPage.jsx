@@ -15,7 +15,7 @@ import { Metadata } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
 
 import { useAuth } from 'src/auth'
-import Nav2 from 'src/components/Nav2'
+import Nav2 from 'src/components/Nav2/nav2'
 
 const LoginPage = () => {
   const { isAuthenticated, logIn } = useAuth()

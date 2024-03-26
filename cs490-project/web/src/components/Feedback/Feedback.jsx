@@ -132,7 +132,7 @@ const Feedback = ({ feedback, onSave }) => {
     <div  style={{
       backgroundColor: 'white',
       border: '3px solid black', borderRadius: '20px',
-      padding: '5px', flexDirection: 'column', marginLeft: '50px', width: '1400px'
+      padding: '5px', flexDirection: 'column', marginLeft: '50px', width: '1400px', background: 'linear-gradient(180deg, #b6b4e8, #eae9f9)'
     }}>
 
       <header className="flex justify-between">
