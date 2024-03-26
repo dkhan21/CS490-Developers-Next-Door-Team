@@ -36,7 +36,7 @@ const Navbar = () => {
     setAnchorEl2(null); 
   }
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box style={{ flexGrow: 1 }}>
       <AppBar position="fixed" component="nav" style={{backgroundColor: '#393E41'}}>
         <Toolbar>
           <Typography
@@ -58,9 +58,9 @@ const Navbar = () => {
           </Typography>
 
 
-          <Box sx={{ flexGrow: 1 }} />
+          <Box style={{ flexGrow: 1 }} />
             <Link to={`${routes.home()}#section-about`}>
-              <Button color="inherit" sx={{
+              <Button color="inherit" style={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -87,7 +87,7 @@ const Navbar = () => {
               ><p>About</p></Button>
             </Link>
             <Link to={`${routes.home()}#section-works`}>
-              <Button color="inherit" sx={{
+              <Button color="inherit" style={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -114,7 +114,7 @@ const Navbar = () => {
               ><p>Instructions</p></Button>
             </Link>
             <Link to={routes.translate()}>
-              <Button color="inherit" sx={{
+              <Button color="inherit" style={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -191,7 +191,7 @@ const Navbar = () => {
 
             {!isAuthenticated && (
               <Link to={routes.login()}>
-                <Button color="inherit" sx={{
+                <Button color="inherit" style={{
                   color: '#E7E5DF',
                   position: 'relative',
                   '&:after': {
