@@ -226,7 +226,6 @@ const TranslatePage = () => {
 
         if (response.ok) {
           setIsGreen(true);
-          console.log(response)
           return response.json();
         }
         else {
@@ -241,6 +240,7 @@ const TranslatePage = () => {
         }
       })
       .then(data => {
+        console.log(data.completion)
         resetErrorState();
         clearTimeout(timeoutId);
         setOutputText(data.completion);
