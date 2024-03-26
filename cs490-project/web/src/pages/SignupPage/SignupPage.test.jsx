@@ -1,6 +1,5 @@
 import { within } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
 
 import { render, screen } from '@redwoodjs/testing/web'
 
@@ -19,11 +18,7 @@ describe('SignupPage', () => {
       signUp: jest.fn().mockResolvedValue({ success: true }),
     })
 
-    render(
-      <MemoryRouter>
-        <SignupPage />
-      </MemoryRouter>
-    )
+    render(<SignupPage />)
 
     // Fill in the form fields
     const emailInput = screen.getByLabelText('Email')
@@ -45,11 +40,7 @@ describe('SignupPage', () => {
       signUp: jest.fn().mockResolvedValue({ error: 'Registration failed' }),
     })
 
-    render(
-      <MemoryRouter>
-        <SignupPage />
-      </MemoryRouter>
-    )
+    render(<SignupPage />)
 
     //Fill in the form fields
     const emailInput = screen.getByLabelText('Email')
@@ -67,11 +58,7 @@ describe('SignupPage', () => {
 
 describe('SignupPage', () => {
   it('renders successfully', async () => {
-    render(
-      <MemoryRouter>
-        <SignupPage />
-      </MemoryRouter>
-    )
+    render(<SignupPage />)
 
     const signUpElements = screen.getAllByText('Sign Up')
     expect(signUpElements).toHaveLength(2)
@@ -89,11 +76,7 @@ describe('SignupPage', () => {
 
 describe('SignupPage', () => {
   it('validates email format, password strength, and matching password confirmation', async () => {
-    render(
-      <MemoryRouter>
-        <SignupPage />
-      </MemoryRouter>
-    )
+    render(<SignupPage />)
 
     const form = await screen.findByTestId('signup-form')
     const { getByLabelText } = within(form)

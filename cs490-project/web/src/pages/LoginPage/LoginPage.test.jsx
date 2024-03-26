@@ -1,6 +1,5 @@
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
-import { MemoryRouter } from 'react-router-dom'
 
 import { screen, render, fireEvent, waitFor } from '@redwoodjs/testing/web'
 
@@ -8,11 +7,7 @@ import LoginPage from './LoginPage'
 
 describe('LoginPage', () => {
   it('renders the login page components', () => {
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>
-    )
+    render(<LoginPage />)
 
     // Check for the login heading
     expect(screen.getByRole('heading', { name: /Login/i })).toBeInTheDocument()
@@ -40,11 +35,7 @@ describe('LoginPage', () => {
 })
 describe('LoginPage', () => {
   it('renders the remember me checkbox', () => {
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>
-    )
+    render(<LoginPage />)
 
     //Check remember me checkbox
     expect(screen.getByLabelText(/Remember Me?/i)).toBeInTheDocument()
@@ -72,11 +63,7 @@ describe('LoginPage', () => {
       value: localStorageMock,
     })
 
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>
-    )
+    render(<LoginPage />)
 
     //Simulate checking the Remember Me checkbox
     const checkbox = screen.getByLabelText(/Remember Me?/i)
@@ -114,11 +101,7 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 describe('LoginPage', () => {
   it('tests the login form with various user credentials', async () => {
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>
-    )
+    render(<LoginPage />)
 
     //Define some test credentials
     const testCredentials = [
