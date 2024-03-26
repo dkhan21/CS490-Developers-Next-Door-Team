@@ -6,6 +6,7 @@ export const standard = defineScenario({
         outputLanguage: 'String',
         inputText: 'String',
         outputText: 'String',
+        status: 'String'
       },
     },
     two: {
@@ -14,6 +15,8 @@ export const standard = defineScenario({
         outputLanguage: 'String',
         inputText: 'String',
         outputText: 'String',
+        status: 'String'
+
       },
     },
   },

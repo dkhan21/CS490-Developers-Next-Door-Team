@@ -32,6 +32,7 @@ describe('histories', () => {
         outputLanguage: 'String',
         inputText: 'String',
         outputText: 'String',
+        status: 'String',
       },
     })
 

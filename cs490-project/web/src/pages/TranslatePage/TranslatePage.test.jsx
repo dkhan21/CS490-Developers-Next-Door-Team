@@ -55,7 +55,7 @@ describe('TranslatePage', () => {
     const fileExtension = languageToFileExtension[outputLanguage];
     const fileName = `output.${fileExtension}`;
     const blob = new Blob([outputText], { type: 'text/plain;charset=utf-8' });
-  
+
     const handleOutputDownloadClick = () => {
       if (outputText.trim() === '') {
         alert('There is no output to download.');
@@ -63,7 +63,7 @@ describe('TranslatePage', () => {
       }
       saveAs(blob, fileName);
     };
-  
+
     const { getByLabelText } = render(
       <Button
         variant="contained"
@@ -73,9 +73,9 @@ describe('TranslatePage', () => {
         <FileDownloadIcon fontSize="large" />
       </Button>
     );
-  
+
     fireEvent.click(getByLabelText('download-output-button'));
-  
+
     expect(saveAs).toHaveBeenCalledWith(blob, fileName);
   });
 
@@ -100,7 +100,7 @@ describe('TranslatePage', () => {
     const setInputText = jest.fn();
     const inputTexts = ['Test input text 1', 'Test input text 2', 'Test input text 3'];
     const inputLanguages = ['java', 'python', 'javascript'];
-  
+
     inputTexts.forEach((inputText, index) => {
       const { getByLabelText } = render(
         <div aria-label={`label-${index}`} key={index}>
@@ -127,12 +127,13 @@ describe('TranslatePage', () => {
   });
 
   it('editor renders correctly with different lengths and formats of code of code', () => {
-    
 
+    const outputEditor = {};
+    const setOutputText = jest.fn();
     const repeatedText = "editor renders correctly with different lengths of code\n";
     const outputTexts = [repeatedText.repeat(1), repeatedText.repeat(10000), 'import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }']; // Test lenght and format
     const outputLanguages = ['java', 'python', 'javascript'];
-  
+
     outputTexts.forEach((outputText, index) => {
       const { getByLabelText } = render(
         <div aria-label={`label-${index}`} key={index}>
@@ -163,14 +164,14 @@ describe('TranslatePage', () => {
     const outputTexts = [repeatedText.repeat(1), repeatedText.repeat(1000), 'import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }']; // Test lenght and format
     const outputLanguages = ['java', 'python', 'javascript'];
 
-    
+
     async function handleConvertClick(inputText, inputLanguage, outputLanguage){
-      
+
       if (inputText.trim() === '') {
         return "Invalid Length";
       }
       let stat = "Not Translated";
-  
+
       const dataPayload = {
         "messages": [
           {
@@ -181,7 +182,7 @@ describe('TranslatePage', () => {
           }
         ]
       };
-  
+
       fetch('http://localhost:8910/.redwood/functions/openai', {
         mode: 'cors',
         method: 'POST',
@@ -190,7 +191,7 @@ describe('TranslatePage', () => {
         },
         body: JSON.stringify(dataPayload)
       })
-  
+
         .then(response => {
           if (response.ok) {
             return response.json();
@@ -219,11 +220,11 @@ describe('TranslatePage', () => {
             }
           });
 
-          
+
         });
 
         return true;
-  
+
     }
 
     //Call multiple requests
@@ -235,6 +236,6 @@ describe('TranslatePage', () => {
     expect(results).toEqual("Invalid Length");
 
 
-    
+
   });
 });

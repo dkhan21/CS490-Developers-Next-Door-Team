@@ -11,6 +11,8 @@ import { Metadata } from '@redwoodjs/web';
 import HistoryForm from 'src/components/History/HistoryForm';
 import { useAuth } from 'src/auth';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
+import { GraphQLHooksProvider } from '@redwoodjs/web'
+
 
 const CREATE_HISTORY_MUTATION = gql`
   mutation CreateHistoryMutation($input: CreateHistoryInput!) {
@@ -153,12 +155,13 @@ const TranslatePage = () => {
 
   const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
-      refetch;
+      refetch();
     },
     onError: (error) => {
       alert("Could not create history entry.");
     },
   });
+
   const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
 
   useEffect(() => {
@@ -183,7 +186,7 @@ const TranslatePage = () => {
     }
     let stat = "Not Translated";
     setActiveTranslations(activeTranslations + 1);
-    
+
     setLoading(true); // Show loading element
     resetErrorState();
     let timeoutId; // Initialize timeout variable
@@ -220,7 +223,7 @@ const TranslatePage = () => {
 
       .then(response => {
         setActiveTranslations(activeTranslations=>activeTranslations - 1);
-        
+
         if (response.ok) {
           setIsGreen(true);
           console.log(response)
@@ -504,8 +507,8 @@ const handleDrop = (e) => {
             </Button>
             {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
             <br></br>
-            
-            
+
+
           </div>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
