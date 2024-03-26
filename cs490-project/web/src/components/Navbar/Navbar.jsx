@@ -29,11 +29,11 @@ const Navbar = () => {
   };
 
   const handleClick2 = (event) => {
-    setAnchorEl2(event.currentTarget); 
+    setAnchorEl2(event.currentTarget);
   };
 
   const handleClose2 = (event) => {
-    setAnchorEl2(null); 
+    setAnchorEl2(null);
   }
   return (
     <Box style={{ flexGrow: 1 }}>
@@ -60,7 +60,7 @@ const Navbar = () => {
 
           <Box style={{ flexGrow: 1 }} />
             <Link to={`${routes.home()}#section-about`}>
-              <Button color="inherit" style={{
+              <Button color="inherit" sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -87,7 +87,7 @@ const Navbar = () => {
               ><p>About</p></Button>
             </Link>
             <Link to={`${routes.home()}#section-works`}>
-              <Button color="inherit" style={{
+              <Button color="inherit" sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -114,7 +114,7 @@ const Navbar = () => {
               ><p>Instructions</p></Button>
             </Link>
             <Link to={routes.translate()}>
-              <Button color="inherit" style={{
+              <Button color="inherit" sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -147,7 +147,7 @@ const Navbar = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                   onClick={handleClick1}
-                  color="inherit" style={{
+                  color="inherit" sx={{
                     color: '#E7E5DF',
                     position: 'relative',
                     '&:after': {
@@ -191,7 +191,7 @@ const Navbar = () => {
 
             {!isAuthenticated && (
               <Link to={routes.login()}>
-                <Button color="inherit" style={{
+                <Button color="inherit" sx={{
                   color: '#E7E5DF',
                   position: 'relative',
                   '&:after': {
@@ -227,7 +227,7 @@ const Navbar = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                   onClick={handleClick2}
-                  color="inherit" style={{
+                  color="inherit" sx={{
                     color: '#E7E5DF',
                     position: 'relative',
                     '&:after': {
@@ -249,7 +249,7 @@ const Navbar = () => {
                     '&:hover':{
                       color:'#E7BB41',
                     }
-                    
+
                   }}
                   aria-label="UserEmail"
                 >
@@ -266,7 +266,7 @@ const Navbar = () => {
                   style ={{width: '10%'}}
                 >
                   <Link to={routes.profile()}><MenuItem onClick={handleClose2} style={{color: 'black', padding: '8px'}}>Profile</MenuItem></Link>
-                  
+
                   <Link to={routes.home()}><MenuItem onClick={logOut} style={{color: 'black', padding: '8px'}}>Logout</MenuItem></Link>
 
                 </Menu>

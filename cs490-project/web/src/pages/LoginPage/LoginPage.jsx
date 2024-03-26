@@ -13,7 +13,7 @@ import {
 import { Link, navigate, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
-
+import Nav2 from 'src/components/Nav2'
 import { useAuth } from 'src/auth'
 
 const LoginPage = () => {
@@ -75,6 +75,9 @@ const LoginPage = () => {
   return (
     <>
       <Metadata title="Login" />
+      <header>
+        <Nav2 />
+      </header>
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
