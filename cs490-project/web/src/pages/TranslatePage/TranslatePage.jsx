@@ -186,101 +186,109 @@ const TranslatePage = () => {
 
 
   const handleConvertClick = () => {
-    if (activeTranslations >= 3) {
-      addError("- Too many request")
-      return false;;
-    }
-    if (inputText.trim() === '') {
-      addError("- No input text to convert")
-      return false;;
-    }
-    let stat = "Not Translated";
-    setActiveTranslations(activeTranslations + 1);
 
-    setLoading(true); // Show loading element
-    resetErrorState();
-    let timeoutId; // Initialize timeout variable
-    setisStatus500(false);
-
-    const timeoutPromise = new Promise((resolve, reject) => {
-      timeoutId = setTimeout(() => {
-        if (!isStatus500) {
-          addError("- Please wait API rate limit reached. Translation will be here shortly!");
-          setIsGreen(false);
+    try{
+        if (activeTranslations >= 3) {
+          addError("- Too many request")
+          return false;;
         }
-      }, 4000); // Set timeout to 4 seconds
-    });
-
-    const dataPayload = {
-      "messages": [
-        {
-          "role": "system",
-          "content": inputText,
-          "source": inputLanguage,
-          "target": outputLanguage
+        if (inputText.trim() === '') {
+          addError("- No input text to convert")
+          return false;;
         }
-      ]
-    };
+        let stat = "Not Translated";
+        setActiveTranslations(activeTranslations + 1);
 
-    fetch('http://localhost:8910/.redwood/functions/openai', {
-      mode: 'cors',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataPayload)
-    })
-
-      .then(response => {
-        setActiveTranslations(activeTranslations => activeTranslations - 1);
-
-        if (response.ok) {
-          setIsGreen(true);
-          return response.json();
-        }
-        else {
-          if (response.status === 500) {
-            setIsGreen(false);
-            setisStatus500(true);
-            addError("API Currently Down. Please try again later")
-          } else {
-            console.log(response)
-            addError(response.statusText)
-          }
-        }
-      })
-      .then(data => {
-        console.log(data.completion)
+        setLoading(true); // Show loading element
         resetErrorState();
-        clearTimeout(timeoutId);
-        setOutputText(data.completion);
-        if (data.completion.length > 0) {
-          stat = "Successfully Translated";
-        }
-        createHistory({
-          variables: {
-            input: {
-              inputLanguage,
-              outputLanguage,
-              inputText,
-              outputText: data.completion,
-              userId: currentUser.id,
-              status: stat,
-            },
-          },
-        }).then(() => {
-          refetch();
-        }).catch((error) => {
-          console.error('Error creating history:', error);
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        let timeoutId; // Initialize timeout variable
+        setisStatus500(false);
 
-    if (activeTranslations < 0) {
-      setActiveTranslations(0);
-    }
+        const timeoutPromise = new Promise((resolve, reject) => {
+          timeoutId = setTimeout(() => {
+            if (!isStatus500) {
+              addError("- Please wait API rate limit reached. Translation will be here shortly!");
+              setIsGreen(false);
+            }
+          }, 4000); // Set timeout to 4 seconds
+        });
+
+        const dataPayload = {
+          "messages": [
+            {
+              "role": "system",
+              "content": inputText,
+              "source": inputLanguage,
+              "target": outputLanguage
+            }
+          ]
+        };
+
+        fetch('http://localhost:8910/.redwood/functions/openai', {
+          mode: 'cors',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataPayload)
+        })
+
+          .then(response => {
+            setActiveTranslations(activeTranslations => activeTranslations - 1);
+
+            if (response.ok) {
+              setIsGreen(true);
+              return response.json();
+            }
+            else {
+              if (response.status === 500) {
+                setIsGreen(false);
+                setisStatus500(true);
+                addError("API Currently Down. Please try again later")
+              } else {
+                console.log(response)
+                addError(response.statusText)
+              }
+            }
+          })
+          .then(data => {
+            console.log(data.completion)
+            resetErrorState();
+            clearTimeout(timeoutId);
+            setOutputText(data.completion);
+            if (data.completion.length > 0) {
+              stat = "Successfully Translated";
+            }
+            createHistory({
+              variables: {
+                input: {
+                  inputLanguage,
+                  outputLanguage,
+                  inputText,
+                  outputText: data.completion,
+                  userId: currentUser.id,
+                  status: stat,
+                },
+              },
+            }).then(() => {
+              refetch();
+            }).catch((error) => {
+              console.error('Error creating history:', error);
+            });
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+
+        if (activeTranslations < 0) {
+          setActiveTranslations(0);
+        }
+    }  catch (error) {
+      // Log the error
+      console.error('Error in translation API:', error);
+      // Rethrow the error for further handling in application code
+      throw error;
+  }
   };
 
   const handleInputLanguageChange = (e) => {

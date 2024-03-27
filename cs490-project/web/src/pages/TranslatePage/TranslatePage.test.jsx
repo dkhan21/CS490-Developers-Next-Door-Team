@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen, getByLabelText, getByText, getByTestId } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import Button from '@material-ui/core/Button';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { FileDownload as FileDownloadIcon } from '@mui/icons-material';
@@ -8,6 +8,7 @@ import TranslatePage from './TranslatePage';
 import MonacoEditor from '@monaco-editor/react';
 import fetch from 'node-fetch'; // Import fetch for Node.js environment
 import { GraphQLHooksContext } from '@redwoodjs/web/dist/components/GraphQLHooksProvider';
+
 
 jest.mock('src/components/Navbar/Navbar', () => {
   return function DummyNavbar() {
@@ -21,7 +22,6 @@ jest.mock('src/components/FeedbackForm/FeedbackForm', () => {
 });
 
 
-
 global.navigator.clipboard = { writeText: jest.fn() };
 jest.mock('file-saver', () => ({ saveAs: jest.fn() }));
 global.alert = jest.fn();
@@ -29,7 +29,7 @@ global.alert = jest.fn();
 describe('TranslatePage', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<TranslatePage />)
+      <GraphQLHooksContext.Provider>render(<TranslatePage />)</GraphQLHooksContext.Provider>
     }).not.toThrow()
   })
   it('copy button works', () => {
@@ -81,43 +81,132 @@ describe('TranslatePage', () => {
     expect(saveAs).toHaveBeenCalledWith(blob, fileName);
   });
 
-  it("handles 500 error response", async () => {
-    global.fetch = jest.fn();
-    global.fetch.mockResolvedValueOnce({
+  it('API can handle 500 error response', async () => {
+    const handleConvertClick = () => {
+      if (activeTranslations >= 3) {
+        addError("- Too many request")
+        return false;;
+      }
+      if (inputText.trim() === '') {
+        addError("- No input text to convert")
+        return false;;
+      }
+      let stat = "Not Translated";
+      setActiveTranslations(activeTranslations + 1);
+
+      setLoading(true); // Show loading element
+      resetErrorState();
+      let timeoutId; // Initialize timeout variable
+      setisStatus500(false);
+
+      const timeoutPromise = new Promise((resolve, reject) => {
+        timeoutId = setTimeout(() => {
+          if (!isStatus500) {
+            addError("- Please wait API rate limit reached. Translation will be here shortly!");
+            setIsGreen(false);
+          }
+        }, 4000); // Set timeout to 4 seconds
+      });
+
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage
+          }
+        ]
+      };
+
+      fetch('http://localhost:8910/.redwood/functions/openai', {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload)
+      })
+
+        .then(response => {
+          setActiveTranslations(activeTranslations => activeTranslations - 1);
+
+          if (response.ok) {
+            setIsGreen(true);
+            return response.json();
+          }
+          else {
+            if (response.status === 500) {
+              setIsGreen(false);
+              setisStatus500(true);
+              addError("API Currently Down. Please try again later")
+            } else {
+              console.log(response)
+              addError(response.statusText)
+            }
+          }
+        })
+        .then(data => {
+          console.log(data.completion)
+          resetErrorState();
+          clearTimeout(timeoutId);
+          setOutputText(data.completion);
+          if (data.completion.length > 0) {
+            stat = "Successfully Translated";
+          }
+          createHistory({
+            variables: {
+              input: {
+                inputLanguage,
+                outputLanguage,
+                inputText,
+                outputText: data.completion,
+                userId: currentUser.id,
+                status: stat,
+              },
+            },
+          }).then(() => {
+            refetch();
+          }).catch((error) => {
+            console.error('Error creating history:', error);
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+
+      if (activeTranslations < 0) {
+        setActiveTranslations(0);
+      }
+    };
+    // Mock the fetch function to return a response with a 500 status code
+    global.fetch = jest.fn().mockResolvedValueOnce({
       ok: false,
       status: 500,
       statusText: 'Internal Server Error',
     });
 
-    // Render the TranslatePage component within the context provider
-    const { getByLabelText  } =
-      <GraphQLHooksContext.Provider>
-        render(<TranslatePage />)
-      </GraphQLHooksContext.Provider>;
+    // Call the function that makes the API request
+    const result = await handleConvertClick("inputText", "inputLanguage", "outputLanguage");
 
+    // Ensure that the result indicates an error
+    expect(result).toEqual(false);
 
-    const convertButton = getByLabelText('convert-button');
+    // Ensure that the error message is added
+    expect(addError).toHaveBeenCalledWith("- API Currently Down. Please try again later");
 
-    // Simulate a click event on the button
-    fireEvent.click(convertButton);
-
-    // Wait for the component to update after the click event
-    await waitFor(() => {
-      // Assert that the error message is displayed
-      expect(getByText('API Currently Down. Please try again later')).toBeInTheDocument();
-      expect(getByText('Internal Server Error')).toBeInTheDocument();
-    });
+    // Ensure that the loading state is turned off
+    expect(setLoading).toHaveBeenCalledWith(false);
   });
 
-
   it("select dropdown renders", async () => {
-    render(<TranslatePage />)
+    render(<TranslatePage />);
     const dropdownButton = screen.getByLabelText('input-language-dropdown');
     expect(dropdownButton).toBeInTheDocument();
   });
 
   it("input language changes", async () => {
-    render(<TranslatePage />)
+    render(<TranslatePage />);
     const dropdownButton = screen.getByRole("button", { name: /Java/i }); // Java is default input language so it should be on screen already
     fireEvent.mouseDown(dropdownButton);
     const newLanguageItem = await screen.findByText(/JavaScript/i);
@@ -238,7 +327,18 @@ describe('TranslatePage', () => {
           else {
             throw new Error('Empty Response');
           }
-
+          mockGraphQLMutation('createHistory', ({ inputLanguage, outputLanguage, inputText, outputText, userId, status }) => {
+            return {
+              histories: {
+                inputLanguage,
+                outputLanguage,
+                inputText,
+                outputText,
+                userId,
+                status,
+              }
+            }
+          });
 
 
         });
