@@ -11,13 +11,19 @@ import { Metadata } from '@redwoodjs/web';
 import HistoryForm from 'src/components/History/HistoryForm';
 import { useAuth } from 'src/auth';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
-import { GraphQLHooksProvider } from '@redwoodjs/web'
 
 
 const CREATE_HISTORY_MUTATION = gql`
   mutation CreateHistoryMutation($input: CreateHistoryInput!) {
     createHistory(input: $input) {
       id
+      inputLanguage
+      outputLanguage
+      inputText
+      outputText
+      status
+      createdAt
+      userId
     }
   }
 `;
@@ -124,8 +130,8 @@ const useStyles = makeStyles((theme) => ({
     transition: 'background-color 0.3s ease', // Smooth transition on hover
   },
   uploadButtonDragOver: {
-  backgroundColor: '#536dfe', // Change the background color to indicate drag over
-},
+    backgroundColor: '#536dfe', // Change the background color to indicate drag over
+  },
 }));
 
 const languageToFileExtension = {
@@ -180,6 +186,10 @@ const TranslatePage = () => {
 
 
   const handleConvertClick = () => {
+    if (activeTranslations >= 3) {
+      addError("- Too many request")
+      return false;;
+    }
     if (inputText.trim() === '') {
       addError("- No input text to convert")
       return false;;
@@ -222,7 +232,7 @@ const TranslatePage = () => {
     })
 
       .then(response => {
-        setActiveTranslations(activeTranslations=>activeTranslations - 1);
+        setActiveTranslations(activeTranslations => activeTranslations - 1);
 
         if (response.ok) {
           setIsGreen(true);
@@ -244,7 +254,7 @@ const TranslatePage = () => {
         resetErrorState();
         clearTimeout(timeoutId);
         setOutputText(data.completion);
-        if(data.completion.length > 0){
+        if (data.completion.length > 0) {
           stat = "Successfully Translated";
         }
         createHistory({
@@ -268,9 +278,9 @@ const TranslatePage = () => {
         setLoading(false);
       });
 
-      if(activeTranslations < 0){
-        setActiveTranslations(0);
-      }
+    if (activeTranslations < 0) {
+      setActiveTranslations(0);
+    }
   };
 
   const handleInputLanguageChange = (e) => {
@@ -363,23 +373,23 @@ const TranslatePage = () => {
     setIsGreen(prevState => !prevState);
   };
 
-const [isDragOver, setIsDragOver] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
-const handleDragOver = (e) => {
-  e.preventDefault();
-  setIsDragOver(true);
-};
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
 
-const handleDragLeave = () => {
-  setIsDragOver(false);
-};
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
 
-const handleDrop = (e) => {
-  e.preventDefault();
-  setIsDragOver(false);
-  const file = e.dataTransfer.files[0];
-  handleFileChange({ target: { files: [file] } });
-};
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const file = e.dataTransfer.files[0];
+    handleFileChange({ target: { files: [file] } });
+  };
 
 
   const [errorFound, setErrorFound] = useState(false);
@@ -399,7 +409,7 @@ const handleDrop = (e) => {
 
   return (
     <>
-    <Metadata title="Translate" description="Translate" />
+      <Metadata title="Translate" description="Translate" />
       <header>
         <Navbar />
       </header>
@@ -407,7 +417,7 @@ const handleDrop = (e) => {
         <div className={classes.convertContainer}>
           <div className={classes.editorContainer}>
             <div className={classes.buttonContainer}>
-            <Button
+              <Button
                 variant="contained"
                 className={`${classes.button} ${isDragOver ? classes.uploadButtonDragOver : ''}`}
                 onClick={handleUploadClick}
@@ -440,25 +450,25 @@ const handleDrop = (e) => {
               <div className={classes.dropdownContainer}>
                 <Select value={inputLanguage} onChange={handleInputLanguageChange} style={{ color: '#fff' }}
                   aria-label='input-language-dropdown'
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          backgroundColor: '#393e41', // background color of the dropdown menu
-                        },
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        backgroundColor: '#393e41', // background color of the dropdown menu
                       },
-                      MenuListProps: {
-                        style: {
-                          color: '#fff',
-                          textAlign: 'center',
-                        },
+                    },
+                    MenuListProps: {
+                      style: {
+                        color: '#fff',
+                        textAlign: 'center',
                       },
-                    }}>
-                    <MenuItem value={'java'}>Java</MenuItem>
-                    <MenuItem value={'python'}>Python</MenuItem>
-                    <MenuItem value={'c'}>C</MenuItem>
-                    <MenuItem value={'cpp'}>C++</MenuItem>
-                    <MenuItem value={'javascript'}>JavaScript</MenuItem>
-                  </Select>
+                    },
+                  }}>
+                  <MenuItem value={'java'}>Java</MenuItem>
+                  <MenuItem value={'python'}>Python</MenuItem>
+                  <MenuItem value={'c'}>C</MenuItem>
+                  <MenuItem value={'cpp'}>C++</MenuItem>
+                  <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                </Select>
               </div>
               <MonacoEditorWrapper
                 forwardedRef={inputEditor}
@@ -488,7 +498,7 @@ const handleDrop = (e) => {
               </IconButton>
 
             </Box>
-            <div style={{width: '156px', height: '60px'}}>
+            <div style={{ width: '156px', height: '60px' }}>
               {errorFound ? <Box
                 boxShadow={3}
                 style={{ backgroundColor: '#1e1e1e', color: 'red', padding: '5px', marginTop: '5px', borderRadius: '10px', width: 'fit-content' }}>Error:
@@ -500,14 +510,14 @@ const handleDrop = (e) => {
 
             <Button
               variant="contained"
+              aria-label='convert-button'
               className={classes.convertButton}
               onClick={handleConvertClick}
-              disabled={loading}
             >Convert
             </Button>
             {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
             <br></br>
-
+            <p style={{ color: 'white' }}>In Queue: {activeTranslations}</p>
 
           </div>
           <div className={classes.editorContainer}>
@@ -565,7 +575,7 @@ const handleDrop = (e) => {
             </div>
           </div>
         </div>
-        <HistoryForm setInputText={setInputText} setOutputText={setOutputText} setInputLanguage={setInputLanguage} setOutputLanguage={setOutputLanguage}/>
+        <HistoryForm setInputText={setInputText} setOutputText={setOutputText} setInputLanguage={setInputLanguage} setOutputLanguage={setOutputLanguage} />
       </div>
       <FeedbackForm ></FeedbackForm>
     </>

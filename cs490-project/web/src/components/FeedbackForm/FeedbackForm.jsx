@@ -38,13 +38,14 @@ const FeedbackForm = () => {
 
   const [hasFeedbacked, setHasFeedbacked] = useState(false)
   const formMethods = useForm()
+
+
   const [createFeedback, { loading, error }] = useMutation(CREATE, {
     onCompleted: () => {
       setHasFeedbacked(true)
       toast.success('Thank you for your Feedback!')
       formMethods.reset()
     },
-
     refetchQueries: [{ query: FeedbacksQuery }],
   })
 

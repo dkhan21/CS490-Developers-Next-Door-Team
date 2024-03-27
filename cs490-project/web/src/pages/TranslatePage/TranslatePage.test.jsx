@@ -1,12 +1,13 @@
 import React from 'react';
-import { render, fireEvent, screen  } from '@testing-library/react';
+import { render, fireEvent, screen, getByLabelText, getByText, getByTestId } from '@testing-library/react';
 import Button from '@material-ui/core/Button';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { FileDownload as FileDownloadIcon } from '@mui/icons-material';
 import { saveAs } from 'file-saver';
 import TranslatePage from './TranslatePage';
 import MonacoEditor from '@monaco-editor/react';
-
+import fetch from 'node-fetch'; // Import fetch for Node.js environment
+import { GraphQLHooksContext } from '@redwoodjs/web/dist/components/GraphQLHooksProvider';
 
 jest.mock('src/components/Navbar/Navbar', () => {
   return function DummyNavbar() {
@@ -18,6 +19,7 @@ jest.mock('src/components/FeedbackForm/FeedbackForm', () => {
     return <div />;
   };
 });
+
 
 
 global.navigator.clipboard = { writeText: jest.fn() };
@@ -79,14 +81,43 @@ describe('TranslatePage', () => {
     expect(saveAs).toHaveBeenCalledWith(blob, fileName);
   });
 
+  it("handles 500 error response", async () => {
+    global.fetch = jest.fn();
+    global.fetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
+
+    // Render the TranslatePage component within the context provider
+    const { getByLabelText  } =
+      <GraphQLHooksContext.Provider>
+        render(<TranslatePage />)
+      </GraphQLHooksContext.Provider>;
+
+
+    const convertButton = getByLabelText('convert-button');
+
+    // Simulate a click event on the button
+    fireEvent.click(convertButton);
+
+    // Wait for the component to update after the click event
+    await waitFor(() => {
+      // Assert that the error message is displayed
+      expect(getByText('API Currently Down. Please try again later')).toBeInTheDocument();
+      expect(getByText('Internal Server Error')).toBeInTheDocument();
+    });
+  });
+
+
   it("select dropdown renders", async () => {
-    render(<TranslatePage />);
+    render(<TranslatePage />)
     const dropdownButton = screen.getByLabelText('input-language-dropdown');
     expect(dropdownButton).toBeInTheDocument();
   });
 
   it("input language changes", async () => {
-    render(<TranslatePage />);
+    render(<TranslatePage />)
     const dropdownButton = screen.getByRole("button", { name: /Java/i }); // Java is default input language so it should be on screen already
     fireEvent.mouseDown(dropdownButton);
     const newLanguageItem = await screen.findByText(/JavaScript/i);
@@ -165,7 +196,7 @@ describe('TranslatePage', () => {
     const outputLanguages = ['java', 'python', 'javascript'];
 
 
-    async function handleConvertClick(inputText, inputLanguage, outputLanguage){
+    async function handleConvertClick(inputText, inputLanguage, outputLanguage) {
 
       if (inputText.trim() === '') {
         return "Invalid Length";
@@ -201,31 +232,22 @@ describe('TranslatePage', () => {
           }
         })
         .then(data => {
-          if(data.completion.length > 0){
+          if (data.completion.length > 0) {
             stat = "Successfully Translated";
           }
           else {
             throw new Error('Empty Response');
           }
-          mockGraphQLMutation('createHistory', ({ inputLanguage, outputLanguage, inputText, outputText, userId, status }) => {
-            return {
-              histories: {
-                inputLanguage,
-                outputLanguage,
-                inputText,
-                outputText,
-                userId,
-                status,
-              }
-            }
-          });
+
 
 
         });
 
-        return true;
+      return true;
 
     }
+
+
 
     //Call multiple requests
     handleConvertClick(outputTexts[0], "java", outputLanguages[0]);
