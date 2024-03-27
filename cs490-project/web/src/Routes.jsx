@@ -12,7 +12,6 @@ import {Set, PrivateSet, Router, Route } from '@redwoodjs/router'
 import ScaffoldLayout from 'src/layouts/ScaffoldLayout'
 
 import { useAuth } from './auth'
-import translatepagemock from './pages/TranslatePage/translatepagemock'
 
 const Routes = () => {
   return (
@@ -43,7 +42,6 @@ const Routes = () => {
       </Set>
       <Route path="/get-started" page={GetStartedPage} name="getStarted" />
       <Route path="/translate" page={TranslatePage} name="translate" />
-      <Route path="/translate" page={translatepagemock} name="translate" />
       <PrivateSet unauthenticated="home" roles="admin">
         <Route path="/admin-test" page={AdminTestPage} name="adminTest" />
       </PrivateSet>
