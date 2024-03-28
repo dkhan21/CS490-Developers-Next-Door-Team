@@ -30,10 +30,10 @@ export const handler = async (event, context) => {
 
     let prompt;
     if (messaged === 1) {
-      prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
+      prompt = "Translate this code ( " + code + " ) from " + sourceLanguage + " to " + targetLanguage;
     }
     if (messaged === 2) {
-      prompt = "Check if this ( " + code + " ) is in " + sourceLanguage + ". If it's return Yes. If not return No";
+      prompt = "Check if this code ( " + code + " ) is in " + sourceLanguage + ". If it's return Yes. If not return No";
     }
 
     const completion = await openai.chat.completions.create({

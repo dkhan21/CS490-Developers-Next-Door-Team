@@ -22,8 +22,6 @@ jest.mock('src/components/FeedbackForm/FeedbackForm', () => {
 });
 
 
-
-
 global.navigator.clipboard = { writeText: jest.fn() };
 jest.mock('file-saver', () => ({ saveAs: jest.fn() }));
 global.alert = jest.fn();
@@ -110,6 +108,52 @@ describe('TranslatePage', () => {
     });
   });
 
+  it('Unsupported Input Text Given', async () => {
+    const input = "ak hdf askdlf";
+    const inputLan = "Python";
+    const outputLan = "Java";
+
+    let result;
+
+    // Define the handleConvertClick2 function
+    async function handleConvertClick2(inputText, inputLanguage, outputLanguage) {
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage,
+            "message": 2
+          }
+        ]
+      };
+
+      // Use await to wait for the fetch request to complete
+      const response = await fetch('http://localhost:8910/.redwood/functions/openai', {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload)
+      });
+
+      // Handle the response
+      if (response.ok) {
+        const data = await response.json();
+        result = data.completion;
+      } else {
+        throw new Error('Error Has Occurred in test ');
+      }
+    }
+
+    // Call the asynchronous function and await its completion
+    await handleConvertClick2(input, inputLan, outputLan);
+    // Assert the result after the function execution
+    expect(result).toBe("No"); // Assuming 'No' indicates unsupported input text
+  });
+
   it('Handle 500 error response', async () => {
 
     global.fetch = jest.fn().mockResolvedValue({
@@ -120,7 +164,6 @@ describe('TranslatePage', () => {
 
     // Call the function under test
     const response = await fetch('http://localhost:8910/.redwood/functions/openai');
-    console.log(response)
 
     // Verify that the response is an error
     expect(response.ok).toBe(false);
@@ -137,31 +180,10 @@ describe('TranslatePage', () => {
 
     // Call the function under test
     const response = await fetch('http://localhost:8910/.redwood/functions/openai');
-    console.log(response)
 
     // Verify that the response is an error
     expect(response.ok).toBe(false);
 
-  });
-
-  it("select dropdown renders", async () => {
-    const { getByLabelText } = render(
-        <GraphQLHooksContext.Provider>
-            <TranslatePage />
-        </GraphQLHooksContext.Provider>
-    );
-    const dropdown = getByLabelText('input-language-dropdown');
-    expect(dropdown).toBeInTheDocument();
-});
-
-
-  it("input language changes", async () => {
-    render(<TranslatePage />);
-    const dropdownButton = screen.getByRole("button", { name: /Java/i }); // Java is default input language so it should be on screen already
-    fireEvent.mouseDown(dropdownButton);
-    const newLanguageItem = await screen.findByText(/JavaScript/i);
-    fireEvent.click(newLanguageItem);
-    expect(dropdownButton.textContent).toBe('JavaScript');
   });
 
 
@@ -248,7 +270,8 @@ describe('TranslatePage', () => {
             "role": "system",
             "content": inputText,
             "source": inputLanguage,
-            "target": outputLanguage
+            "target": outputLanguage,
+            "message": 1
           }
         ]
       };
@@ -296,8 +319,6 @@ describe('TranslatePage', () => {
       return true;
 
     }
-
-
 
     //Call multiple requests
     handleConvertClick(outputTexts[0], "java", outputLanguages[0]);

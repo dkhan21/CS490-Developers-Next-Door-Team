@@ -245,7 +245,7 @@ const TranslatePage = () => {
       console.log("Supported Input text Language")
     } else {
       addError("Unsupported Input text Language")
-      return false
+      throw new Error("Unsupported Input text Language")
     }
 
     try {
