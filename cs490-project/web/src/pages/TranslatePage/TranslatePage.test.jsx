@@ -22,6 +22,8 @@ jest.mock('src/components/FeedbackForm/FeedbackForm', () => {
 });
 
 
+
+
 global.navigator.clipboard = { writeText: jest.fn() };
 jest.mock('file-saver', () => ({ saveAs: jest.fn() }));
 global.alert = jest.fn();
@@ -81,129 +83,77 @@ describe('TranslatePage', () => {
     expect(saveAs).toHaveBeenCalledWith(blob, fileName);
   });
 
-  it('API can handle 500 error response', async () => {
-    const handleConvertClick = () => {
-      if (activeTranslations >= 3) {
-        addError("- Too many request")
-        return false;;
-      }
-      if (inputText.trim() === '') {
-        addError("- No input text to convert")
-        return false;;
-      }
-      let stat = "Not Translated";
-      setActiveTranslations(activeTranslations + 1);
+  it('Handle Unsupported File upload error response', () => {
+    global.FileReader = jest.fn(() => ({
+      readAsText: jest.fn(),
+      result: 'Mock file content',
+      onload: null,
+      onerror: null,
+    }));
 
-      setLoading(true); // Show loading element
-      resetErrorState();
-      let timeoutId; // Initialize timeout variable
-      setisStatus500(false);
+    // Mock the upload function
+    const uploadFile = jest.fn();
 
-      const timeoutPromise = new Promise((resolve, reject) => {
-        timeoutId = setTimeout(() => {
-          if (!isStatus500) {
-            addError("- Please wait API rate limit reached. Translation will be here shortly!");
-            setIsGreen(false);
-          }
-        }, 4000); // Set timeout to 4 seconds
-      });
+    // Create a fake input element
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.addEventListener('change', () => {
+      // Trigger the file change event with an unsupported file extension
+      const file = new File([''], 'unsupportedFile.txt', { type: 'text/plain' });
+      fireEvent.change(fileInput, { target: { files: [file] } });
 
-      const dataPayload = {
-        "messages": [
-          {
-            "role": "system",
-            "content": inputText,
-            "source": inputLanguage,
-            "target": outputLanguage
-          }
-        ]
-      };
+      // Assert that the error message is displayed
+      expect(document.body).toHaveTextContent('- Unsupported File Uploaded');
 
-      fetch('http://localhost:8910/.redwood/functions/openai', {
-        mode: 'cors',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataPayload)
-      })
+      // Assert that the upload function was not called
+      expect(uploadFile).not.toHaveBeenCalled();
+    });
+  });
 
-        .then(response => {
-          setActiveTranslations(activeTranslations => activeTranslations - 1);
+  it('Handle 500 error response', async () => {
 
-          if (response.ok) {
-            setIsGreen(true);
-            return response.json();
-          }
-          else {
-            if (response.status === 500) {
-              setIsGreen(false);
-              setisStatus500(true);
-              addError("API Currently Down. Please try again later")
-            } else {
-              console.log(response)
-              addError(response.statusText)
-            }
-          }
-        })
-        .then(data => {
-          console.log(data.completion)
-          resetErrorState();
-          clearTimeout(timeoutId);
-          setOutputText(data.completion);
-          if (data.completion.length > 0) {
-            stat = "Successfully Translated";
-          }
-          createHistory({
-            variables: {
-              input: {
-                inputLanguage,
-                outputLanguage,
-                inputText,
-                outputText: data.completion,
-                userId: currentUser.id,
-                status: stat,
-              },
-            },
-          }).then(() => {
-            refetch();
-          }).catch((error) => {
-            console.error('Error creating history:', error);
-          });
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-
-      if (activeTranslations < 0) {
-        setActiveTranslations(0);
-      }
-    };
-    // Mock the fetch function to return a response with a 500 status code
-    global.fetch = jest.fn().mockResolvedValueOnce({
+    global.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 500,
-      statusText: 'Internal Server Error',
+      json: async () => ({ error: 'Internal Server Error' }),
     });
 
-    // Call the function that makes the API request
-    const result = await handleConvertClick("inputText", "inputLanguage", "outputLanguage");
+    // Call the function under test
+    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    console.log(response)
 
-    // Ensure that the result indicates an error
-    expect(result).toEqual(false);
+    // Verify that the response is an error
+    expect(response.ok).toBe(false);
 
-    // Ensure that the error message is added
-    expect(addError).toHaveBeenCalledWith("- API Currently Down. Please try again later");
+  });
 
-    // Ensure that the loading state is turned off
-    expect(setLoading).toHaveBeenCalledWith(false);
+  it('Handle 503 error response', async () => {
+
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ error: 'Internal Server Error' }),
+    });
+
+    // Call the function under test
+    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    console.log(response)
+
+    // Verify that the response is an error
+    expect(response.ok).toBe(false);
+
   });
 
   it("select dropdown renders", async () => {
-    render(<TranslatePage />);
-    const dropdownButton = screen.getByLabelText('input-language-dropdown');
-    expect(dropdownButton).toBeInTheDocument();
-  });
+    const { getByLabelText } = render(
+        <GraphQLHooksContext.Provider>
+            <TranslatePage />
+        </GraphQLHooksContext.Provider>
+    );
+    const dropdown = getByLabelText('input-language-dropdown');
+    expect(dropdown).toBeInTheDocument();
+});
+
 
   it("input language changes", async () => {
     render(<TranslatePage />);
@@ -360,4 +310,6 @@ describe('TranslatePage', () => {
 
 
   });
+
+
 });

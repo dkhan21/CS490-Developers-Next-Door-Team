@@ -20,38 +20,39 @@ import OpenAI from 'openai'
 const openai = new OpenAI();
 
 export const handler = async (event, context) => {
-  //logger.info(`${event.httpMethod} ${event.path}: openai function`)
   try {
-    //const body = JSON.stringify(event.body);
-
-    //console.log("Event: ", event.body);
-
     const body = JSON.parse(event.body);
 
     const code = body.messages[0].content;
     const targetLanguage = body.messages[0].target;
     const sourceLanguage = body.messages[0].source;
+    const messaged = body.messages[0].message;
 
-    const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
-
+    let prompt;
+    if (messaged === 1) {
+      prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
+    }
+    if (messaged === 2) {
+      prompt = "Check if this ( " + code + " ) is in " + sourceLanguage + ". If it's return Yes. If not return No";
+    }
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
       model: "gpt-3.5-turbo"
     });
+
     return {
       statusCode: 200,
       headers: {
-            'Content-Type': 'application/json'
-       },
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ completion: completion.choices[0].message.content }),
     };
-
   } catch (error) {
     console.error('Error calling OpenAI API:', error);
     return {
-      statusCode: 500
-    }
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Error calling OpenAI API' }),
+    };
   }
-
 }

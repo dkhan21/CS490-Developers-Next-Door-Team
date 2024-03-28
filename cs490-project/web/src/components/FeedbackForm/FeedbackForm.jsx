@@ -63,14 +63,10 @@ const FeedbackForm = () => {
     // Assuming your rating is stored in the 'rating' state variable
 
     //Get user ID
-
     var userID = -1;
-
-
     if (isAuthenticated) {
       userID = currentUser.id;
     }
-
     const user = userID;
 
     const input = { name, rating, body: body, userId: user };

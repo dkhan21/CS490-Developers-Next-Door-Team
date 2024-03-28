@@ -159,7 +159,7 @@ const TranslatePage = () => {
   const [activeTranslations, setActiveTranslations] = useState(0);
 
 
-  const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
+  const [createHistory] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
       refetch();
     },
@@ -183,112 +183,181 @@ const TranslatePage = () => {
   }, [outputLanguage]);
 
   const [isStatus500, setisStatus500] = useState(false);
+  /*
+  const languages = [inputLanguage];
+  const detectLanguage = () => {
+      const result = hljs.highlightAuto(inputText, languages)
+      return result.language;
+  }
+*/
+  const detectLanguage = async () => {
+    try {
+      const dataPayload2 = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage,
+            "message": 2,
+          }
+        ]
+      };
+
+      const response = await fetch('http://localhost:8910/.redwood/functions/openai', {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload2)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.completion);
+        return data.completion.trim() === 'Yes';
+      } else {
+        // Handle non-ok response
+        console.error('Failed to detect language:', response.statusText);
+        return false;
+      }
+    } catch (error) {
+      // Handle fetch or other errors
+      console.error('Error in detectLanguage:', error);
+      return false;
+    }
+  };
+
+  const handleConvertClick = async () => {
+    if (activeTranslations >= 3) {
+      addError("- Too many request")
+      return false;;
+    }
+    if (inputText.trim() === '') {
+      addError("- No input text to convert");
+      return false;
+    }
+
+    const detected = await detectLanguage();
+
+    if (detected) {
+      console.log("Supported Input text Language")
+    } else {
+      addError("Unsupported Input text Language")
+      return false
+    }
+
+    try {
 
 
-  const handleConvertClick = () => {
+      let stat = "Not Translated";
+      setActiveTranslations(activeTranslations + 1);
 
-    try{
-        if (activeTranslations >= 3) {
-          addError("- Too many request")
-          return false;;
-        }
-        if (inputText.trim() === '') {
-          addError("- No input text to convert")
-          return false;;
-        }
-        let stat = "Not Translated";
-        setActiveTranslations(activeTranslations + 1);
+      setLoading(true); // Show loading element
+      resetErrorState();
+      let timeoutId; // Initialize timeout variable
+      setisStatus500(false);
 
-        setLoading(true); // Show loading element
-        resetErrorState();
-        let timeoutId; // Initialize timeout variable
-        setisStatus500(false);
+      const timeoutPromise = new Promise((resolve, reject) => {
+        timeoutId = setTimeout(() => {
+          if (!isStatus500) {
+            addError("- Please wait API rate limit reached. Translation will be here shortly!");
+            setIsGreen(false);
+          }
+        }, 4000); // Set timeout to 4 seconds
+      });
 
-        const timeoutPromise = new Promise((resolve, reject) => {
-          timeoutId = setTimeout(() => {
-            if (!isStatus500) {
-              addError("- Please wait API rate limit reached. Translation will be here shortly!");
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage,
+            "message": 1,
+          }
+        ]
+      };
+
+      fetch('http://localhost:8910/.redwood/functions/openai', {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload)
+      })
+        .then(response => {
+          setActiveTranslations(activeTranslations => activeTranslations - 1);
+
+          if (response.ok) {
+            setIsGreen(true);
+            return response.json();
+          }
+          else {
+            if (response.status === 500) {
               setIsGreen(false);
+              setisStatus500(true);
+              addError("API Currently Down. Please try again later")
+              addError(response.statusText)
             }
-          }, 4000); // Set timeout to 4 seconds
-        });
-
-        const dataPayload = {
-          "messages": [
-            {
-              "role": "system",
-              "content": inputText,
-              "source": inputLanguage,
-              "target": outputLanguage
+            if (response.status === 503) {
+              setIsGreen(false);
+              setisStatus500(true);
+              addError("API Overloaded. Please try again later")
+              addError(response.statusText)
             }
-          ]
-        };
-
-        fetch('http://localhost:8910/.redwood/functions/openai', {
-          mode: 'cors',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataPayload)
-        })
-
-          .then(response => {
-            setActiveTranslations(activeTranslations => activeTranslations - 1);
-
-            if (response.ok) {
-              setIsGreen(true);
-              return response.json();
+            if (response.status === 400) {
+              setIsGreen(false);
+              setisStatus500(true);
+              addError("Horrible Input. Please check!")
+              addError(response.statusText)
             }
             else {
-              if (response.status === 500) {
-                setIsGreen(false);
-                setisStatus500(true);
-                addError("API Currently Down. Please try again later")
-              } else {
-                console.log(response)
-                addError(response.statusText)
-              }
+              console.log(response)
+              addError(response.statusText)
             }
-          })
-          .then(data => {
-            console.log(data.completion)
-            resetErrorState();
-            clearTimeout(timeoutId);
-            setOutputText(data.completion);
-            if (data.completion.length > 0) {
-              stat = "Successfully Translated";
-            }
-            createHistory({
-              variables: {
-                input: {
-                  inputLanguage,
-                  outputLanguage,
-                  inputText,
-                  outputText: data.completion,
-                  userId: currentUser.id,
-                  status: stat,
-                },
+          }
+        })
+        .then(data => {
+          console.log(data.completion)
+          resetErrorState();
+          clearTimeout(timeoutId);
+          setOutputText(data.completion);
+          if (data.completion.length > 0) {
+            stat = "Successfully Translated";
+          }
+          createHistory({
+            variables: {
+              input: {
+                inputLanguage,
+                outputLanguage,
+                inputText,
+                outputText: data.completion,
+                userId: currentUser.id,
+                status: stat,
               },
-            }).then(() => {
-              refetch();
-            }).catch((error) => {
-              console.error('Error creating history:', error);
-            });
-          })
-          .finally(() => {
-            setLoading(false);
+            },
+          }).then(() => {
+            refetch();
+          }).catch((error) => {
+            console.error('Error creating history:', error);
           });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
 
-        if (activeTranslations < 0) {
-          setActiveTranslations(0);
-        }
-    }  catch (error) {
+      if (activeTranslations < 0) {
+        setActiveTranslations(0);
+      }
+    } catch (error) {
       // Log the error
       console.error('Error in translation API:', error);
       // Rethrow the error for further handling in application code
       throw error;
-  }
+    }
   };
 
   const handleInputLanguageChange = (e) => {
@@ -311,16 +380,6 @@ const TranslatePage = () => {
     }
   };
 
-  const handleDownloadClick = () => {
-    if (inputText.trim() === '') {
-      addError("- No input text to download")
-      return;
-    }
-    const fileExtension = languageToFileExtension[inputLanguage];
-    const fileName = `input.${fileExtension}`;
-    const blob = new Blob([inputText], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, fileName);
-  };
 
   const handleUploadClick = () => {
     inputFile.current.click();
@@ -344,15 +403,14 @@ const TranslatePage = () => {
       };
       reader.readAsText(file);
     } else {
-      addError("- Unsupported File Uploaded")
-      return;
+      throw new Error("- Unsupported File Uploaded")
     }
   };
 
   const handleCopyClick = () => {
     if (inputText.trim() === '') {
       addError("- No input text to copy")
-      return;
+      throw new Error("- No input text to copy")
     }
     navigator.clipboard.writeText(inputText);
   };
@@ -360,15 +418,26 @@ const TranslatePage = () => {
   const handleOutputCopyClick = () => {
     if (outputText.trim() === '') {
       addError("- No output text to copy")
-      return;
+      throw new Error("- No output text to copy")
     }
     navigator.clipboard.writeText(outputText);
   };
 
+  const handleDownloadClick = () => {
+    if (inputText.trim() === '') {
+      addError("- No input text to download");
+      throw new Error("- No input text to download");
+    }
+    const fileExtension = languageToFileExtension[inputLanguage];
+    const fileName = `input.${fileExtension}`;
+    const blob = new Blob([inputText], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, fileName);
+  };
+
   const handleOutputDownloadClick = () => {
     if (outputText.trim() === '') {
-      addError("- No output text to download")
-      return;
+      addError("- No output text to download");
+      throw new Error("- No output text to download");
     }
     const fileExtension = languageToFileExtension[outputLanguage];
     const fileName = `output.${fileExtension}`;
@@ -413,7 +482,6 @@ const TranslatePage = () => {
     setErrorFound(true);
     setErrors(prevErrors => [...prevErrors, error]);
   };
-
 
   return (
     <>
