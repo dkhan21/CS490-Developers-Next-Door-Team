@@ -11,6 +11,7 @@ import { Metadata } from '@redwoodjs/web';
 import HistoryForm from 'src/components/History/HistoryForm';
 import { useAuth } from 'src/auth';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
+import hljs from 'highlight.js';
 
 
 const CREATE_HISTORY_MUTATION = gql`
@@ -44,6 +45,17 @@ const GET_USER_HISTORY_QUERY = gql`
 `;
 
 const useStyles = makeStyles((theme) => ({
+  detect: {
+    marginBottom: '10px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    textAlign: 'center',
+    '& .MuiSelect-icon': {
+      color: '#32368c',
+    },
+  },
   page: { // Container for entire page
     backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', // Background gradient
     display: 'flex',
@@ -58,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
+    flexDirection: 'row',
     textAlign: 'center',
     '& .MuiSelect-icon': {
       color: '#32368c',
@@ -183,51 +195,26 @@ const TranslatePage = () => {
   }, [outputLanguage]);
 
   const [isStatus500, setisStatus500] = useState(false);
-  /*
-  const languages = [inputLanguage];
+  const[LanFound, setLanfound] = useState(false);
+  const languages = ['java', 'python', 'javascript', 'c', 'cpp'];
+  //Detect the language the text is in
   const detectLanguage = () => {
-      const result = hljs.highlightAuto(inputText, languages)
-      return result.language;
-  }
-*/
-  const detectLanguage = async () => {
-    try {
-      const dataPayload2 = {
-        "messages": [
-          {
-            "role": "system",
-            "content": inputText,
-            "source": inputLanguage,
-            "target": outputLanguage,
-            "message": 2,
-          }
-        ]
-      };
+    const result = hljs.highlightAuto(inputText, languages);
+    setDetected(true);
+    console.log(result.language)
+    if(languages.includes(result.language)){
+      setInputLanguage(result.language);
+      setDetected(false);
+      setAutoDet(false);
+      setLanfound(false);
 
-      const response = await fetch('http://localhost:8910/.redwood/functions/openai', {
-        mode: 'cors',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataPayload2)
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data.completion);
-        return data.completion.trim() === 'Yes';
-      } else {
-        // Handle non-ok response
-        console.error('Failed to detect language:', response.statusText);
-        return false;
-      }
-    } catch (error) {
-      // Handle fetch or other errors
-      console.error('Error in detectLanguage:', error);
-      return false;
     }
-  };
+    setLanfound(languages.includes(result.language));
+    return languages.includes(result.language);
+  }
+
+  const [detect, setDetected] = useState(false);
+
 
   const handleConvertClick = async () => {
     if (activeTranslations >= 3) {
@@ -239,7 +226,7 @@ const TranslatePage = () => {
       return false;
     }
 
-    const detected = await detectLanguage();
+    const detected = languages.includes(hljs.highlightAuto(inputText).language)
 
     if (detected) {
       console.log("Supported Input text Language")
@@ -359,8 +346,17 @@ const TranslatePage = () => {
       throw error;
     }
   };
-
+  const [AutoDet, setAutoDet] = useState(false);
   const handleInputLanguageChange = (e) => {
+    if (e.target.value === "AutoDetect") {
+      setAutoDet(true);
+      setInputLanguage(e.target.value);
+      return;
+    }else {
+      setAutoDet(false);
+      setLanfound(false);
+      setDetected(false);
+    }
     if (outputLanguage === e.target.value) {
       setInputLanguage(e.target.value);
       setOutputLanguage(inputLanguage);
@@ -544,7 +540,25 @@ const TranslatePage = () => {
                   <MenuItem value={'c'}>C</MenuItem>
                   <MenuItem value={'cpp'}>C++</MenuItem>
                   <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                  <MenuItem value={'AutoDetect'}>AutoDetect</MenuItem>
                 </Select>
+
+                { AutoDet ?
+                    <Button style={{
+                      backgroundColor: '#32368c',
+                      color: '#fff',
+                      '&:hover': {
+                        backgroundColor: '#303f9f',
+                      },
+                      width: '70px',
+                      height: '30px',
+                      borderRadius: '5px',
+                      marginLeft: '10px'
+                    }} onClick={detectLanguage}>Detect</Button>
+                    : null
+                }
+                {detect && AutoDet ? <p style={{ marginLeft: '10px', color: '#fff', }}> {!LanFound ? "Unrecognized" : null }</p> : null }
+
               </div>
               <MonacoEditorWrapper
                 forwardedRef={inputEditor}
@@ -560,6 +574,9 @@ const TranslatePage = () => {
                 onChange={setInputText}
                 value={inputText}
               />
+
+
+
             </div>
           </div>
           <div className={classes.loadingContainer}>
@@ -584,6 +601,7 @@ const TranslatePage = () => {
               </Box> : null}
             </div>
 
+
             <Button
               variant="contained"
               aria-label='convert-button'
@@ -593,7 +611,9 @@ const TranslatePage = () => {
             </Button>
             {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
             <br></br>
+
             <p style={{ color: 'white' }}>In Queue: {activeTranslations}</p>
+
 
           </div>
           <div className={classes.editorContainer}>
