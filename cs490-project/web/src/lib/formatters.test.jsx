@@ -82,11 +82,21 @@ describe('jsonTruncate', () => {
 })
 
 describe('timeTag', () => {
-  it('renders a date', async () => {
-    render(<div>{timeTag(new Date('1970-08-20').toUTCString())}</div>)
+  it('renders a time tag with correct dateTime and title attributes', () => {
+    // Define a sample date and time string
+    const dateTimeString = '2024-03-30T10:00:00Z';
+    //Create the output of the date here then compare and see if its render in the const object
+    const localDateTimeT = new Date(dateTimeString).toLocaleString();
+    const { getByTitle } = render(timeTag(dateTimeString));
 
-    await waitFor(() => screen.getByText(/1970.*00:00:00/))
-  })
+    // Assert that the time tag is rendered
+    const timeElement = getByTitle(localDateTimeT);
+    expect(timeElement).toBeInTheDocument();
+
+    // Assert that the time tag has the correct dateTime attribute
+    expect(timeElement).toHaveAttribute('dateTime', dateTimeString);
+  });
+
 
   it('can take an empty input string', async () => {
     expect(timeTag('')).toEqual('')

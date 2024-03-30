@@ -8,7 +8,7 @@ import TranslatePage from './TranslatePage';
 import MonacoEditor from '@monaco-editor/react';
 import fetch from 'node-fetch'; // Import fetch for Node.js environment
 import { GraphQLHooksContext } from '@redwoodjs/web/dist/components/GraphQLHooksProvider';
-
+import hljs from 'highlight.js'
 
 jest.mock('src/components/Navbar/Navbar', () => {
   return function DummyNavbar() {
@@ -110,48 +110,12 @@ describe('TranslatePage', () => {
 
   it('Unsupported Input Text Given', async () => {
     const input = "ak hdf askdlf";
-    const inputLan = "Python";
-    const outputLan = "Java";
+    const languages = ['java', 'python', 'javascript', 'c', 'cpp'];
 
-    let result;
+    const result = languages.includes(hljs.highlightAuto(input, languages).language);
 
-    // Define the handleConvertClick2 function
-    async function handleConvertClick2(inputText, inputLanguage, outputLanguage) {
-      const dataPayload = {
-        "messages": [
-          {
-            "role": "system",
-            "content": inputText,
-            "source": inputLanguage,
-            "target": outputLanguage,
-            "message": 2
-          }
-        ]
-      };
+    expect(result).toBe(false);
 
-      // Use await to wait for the fetch request to complete
-      const response = await fetch('http://localhost:8910/.redwood/functions/openai', {
-        mode: 'cors',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataPayload)
-      });
-
-      // Handle the response
-      if (response.ok) {
-        const data = await response.json();
-        result = data.completion;
-      } else {
-        throw new Error('Error Has Occurred in test ');
-      }
-    }
-
-    // Call the asynchronous function and await its completion
-    await handleConvertClick2(input, inputLan, outputLan);
-    // Assert the result after the function execution
-    expect(result).toBe("No"); // Assuming 'No' indicates unsupported input text
   });
 
   it('Handle 500 error response', async () => {

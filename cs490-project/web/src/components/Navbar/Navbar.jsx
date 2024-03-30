@@ -43,7 +43,7 @@ const Navbar = () => {
             variant="h6"
             noWrap
             component={Link}
-            to={routes.home()}
+            to={"/"}
             style={{
               mr: 2,
               fontFamily: 'monospace',
@@ -59,7 +59,7 @@ const Navbar = () => {
 
 
           <Box style={{ flexGrow: 1 }} />
-            <Link to={`${routes.home()}#section-about`}>
+            <Link to={`${"/"}#section-about`}>
               <Button color="inherit" style={{
                 color: '#E7E5DF',
                 position: 'relative',
@@ -86,7 +86,7 @@ const Navbar = () => {
               aria-label='About'
               ><p>About</p></Button>
             </Link>
-            <Link to={`${routes.home()}#section-works`}>
+            <Link to={`${"/"}#section-works`}>
               <Button color="inherit" style={{
                 color: '#E7E5DF',
                 position: 'relative',
@@ -113,7 +113,7 @@ const Navbar = () => {
               aria-label='Workings'
               ><p>Instructions</p></Button>
             </Link>
-            <Link to={routes.translate()}>
+            <Link to={'/translate'}>
               <Button color="inherit" style={{
                 color: '#E7E5DF',
                 position: 'relative',
@@ -184,13 +184,13 @@ const Navbar = () => {
                   }}
                   style ={{width: '10%'}}
                 >
-                  <Link to={routes.faq()}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>FAQs</MenuItem></Link>
-                  <Link to={routes.userGuides()}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>User Guides</MenuItem></Link>
-                  <Link to={routes.resources()}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>Resources</MenuItem></Link>
+                  <Link to={"/faq"}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>FAQs</MenuItem></Link>
+                  <Link to={"/user-guides"}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>User Guides</MenuItem></Link>
+                  <Link to={"/resources"}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>Resources</MenuItem></Link>
                 </Menu>
 
             {!isAuthenticated && (
-              <Link to={routes.login()}>
+              <Link to={"/login"}>
                 <Button color="inherit" style={{
                   color: '#E7E5DF',
                   position: 'relative',
