@@ -46,6 +46,10 @@ const UpdateProfilePage = () => {
       input.preferredProgrammingLanguage = data.preferredProgrammingLanguage
     }
 
+    if (data.preferredIDE){
+      input.preferredIDE = data.preferredIDE
+    }
+
     const variables = { input }
 
     updateUser({ variables })
@@ -73,7 +77,14 @@ const UpdateProfilePage = () => {
             name="preferredProgrammingLanguage"
             placeholder="Preferred Programming Language"
           />
+
+          <label>Preferred IDE</label>
+          <TextField 
+            name="preferredIDE"
+            placeholder="Preferred IDE"
+          />
         </div>
+
         
         <div>
           <Submit>Update Profile</Submit>

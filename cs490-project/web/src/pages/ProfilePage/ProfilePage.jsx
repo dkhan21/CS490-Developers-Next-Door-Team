@@ -20,6 +20,7 @@ const USER_QUERY = gql`
       email
       name
       preferredProgrammingLanguage
+      preferredIDE
     }
   }
 `
@@ -64,6 +65,7 @@ const ProfilePage = () => {
       <p>{data && data.user && <p>Name: {data.user.name}</p>}</p>
       <p>Preferences</p>
       <p>{data && data.user && <p>Preferred Programming Language: {data.user.preferredProgrammingLanguage}</p>}</p>
+      <p>{data && data.user && <p>Preferred IDE: {data.user.preferredIDE}</p>}</p>
       <div style={{ marginTop: '10px' }}>
         <Link to={routes.updateProfile()} style={{ color: 'black' }} onMouseOver={(e) => e.target.style.color = 'gray'}
         onMouseOut={(e) => e.target.style.color = 'black'}>
