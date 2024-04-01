@@ -4,6 +4,9 @@ import { useEffect } from 'react'
 import { useAuth } from 'src/auth'
 import { useQuery, gql, useMutation } from '@apollo/client'
 import { toast, Toaster } from '@redwoodjs/web/toast'
+import { Button, TextField, Box, Typography } from '@mui/material';
+import Sidebar from 'src/components/Sidebar/Sidebar'
+import Navbar from 'src/components/Navbar/Navbar'
 
 const DELETE_USER_MUTATION = gql`
   mutation DeleteUserMutation($id: Int!) {
@@ -59,6 +62,10 @@ const ProfilePage = () => {
   return (
     <>
       <Metadata title="Profile" description="Profile page" />
+      <Navbar/>
+      <Sidebar/>
+
+      <p>----</p>
       <p>
         Email: {currentUser.email}
       </p>
@@ -81,6 +88,24 @@ const ProfilePage = () => {
       <div>
         <button onClick={onClickDelete}>Delete Account</button>
       </div>
+
+
+
+      <Box sx={{ color: '#393E41' }}>
+      <Typography variant="h4">Profile Page</Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', '& > :not(style)': { m: 1 }}}>
+        <Typography>Email: {currentUser.email}</Typography>
+        <Typography>Name: {currentUser.name}</Typography>
+        <Typography>Preferred Programming Language: {currentUser.preferredLanguage}</Typography>
+        <Typography>Preferred IDE: {currentUser.preferredIDE}</Typography>
+        {/* <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Update Profile</Button>
+        <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Change Password</Button>
+        <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Delete Account</Button> */}
+      </Box>
+    </Box>
+
+
+
     </>
   )
   
