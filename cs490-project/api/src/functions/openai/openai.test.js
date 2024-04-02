@@ -8,7 +8,6 @@ import { handler } from './openai'
 
 describe('openai function', () => {
   it('Authenticates and receives successful response', async () => {
-
     const simulatedPayload = {
       method: 'POST',
       headers: {
@@ -27,7 +26,7 @@ describe('openai function', () => {
 
     const response = await handler(simulatedPayload, null)
 
-    const responseBody = JSON.parse(response.body) 
+    const responseBody = JSON.parse(response.body)
 
     expect(response.statusCode).toBe(200)
     expect(responseBody.completion).toBe("print('Hello')")
@@ -64,15 +63,9 @@ describe('openai function', () => {
       "messages": [
         {
           "role": "system",
-          "content": "a",
-          "source": "b",
-          "target": "c"
         }
       ]
     };
-
-
-
 
     const httpEvent = mockHttpEvent({
       queryStringParameters: {

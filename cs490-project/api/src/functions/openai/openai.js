@@ -34,10 +34,9 @@ export const handler = async (event, context) => {
 
     const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
 
-
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
-      model: "gpt-3.5-turbo"
+      // model: "gpt-3.5-turbo"
     });
     return {
       statusCode: 200,
@@ -48,8 +47,26 @@ export const handler = async (event, context) => {
     };
 
   } catch (error) {
+    let code = 500;
+    let errorMessage = 'An Error Occurred.'
     console.error('Error calling OpenAI API:', error);
+    console.log(error);
+    if(error.message == 'Invalid Authentication'){
+      errorMessage = 'Invalid Authentication';
+      code = 401;
+    }
+    else if(error.message = 'Incorrect API key provided'){
+      errorMessage = 'Incorrect API key provided';
+      code = 401;
+    }
+    else if(error.message = 'Country, region, or territory not supported'){
+      errorMessage = 403;
+    }
+    else if(error.message == 'The engine is currently overloaded, please try again later'){
+      errorMessage = 503;
+    }
     return {
+      error: error.message,
       statusCode: 500
     }
   }
