@@ -2,6 +2,7 @@ import { Link, routes } from '@redwoodjs/router'
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import { useState } from 'react'; 
 
 const Sidebar = () => {
@@ -34,6 +35,14 @@ const Sidebar = () => {
         <VpnKeyOutlinedIcon style={styles.icon}/>
         Password
       </Link>
+      <Link 
+        // to={routes.changePassword()} 
+        onMouseEnter={() => setHoverIndex(4)}
+        onMouseLeave={() => setHoverIndex(null)}
+        style={hoverIndex === 4 ? styles.linkHover : styles.link}>
+        <HighlightOffOutlinedIcon style={styles.icon}/>
+        Delete My Account
+      </Link>
     </div>
   )
 }
@@ -44,7 +53,7 @@ const styles = {
     top: 0,
     left: 0,
     height: '100%',
-    width: '200px',
+    width: '270px',
     backgroundColor: '#D3D0CB',
     padding: '20px',
     display: 'flex',
@@ -56,13 +65,13 @@ const styles = {
     color: '#393E41',
     textDecoration: 'none',
     marginBottom: '1rem',
-    marginLeft: '20px',
+    marginLeft: '30px',
   },
   linkHover: {
     color: '#E7BB41', 
     textDecoration: 'underline', 
     marginBottom: '1rem', 
-    marginLeft: '20px'
+    marginLeft: '30px'
   },
   hr: {
     width: '1rem', 
@@ -70,7 +79,7 @@ const styles = {
     // marginBottom: '20px', 
     marginTop: '.5rem', 
     borderBottom: 'solid .125rem #393E41',
-    marginLeft: '20px',
+    marginLeft: '30px',
     marginBottom: '2rem'
   },
   icon: {

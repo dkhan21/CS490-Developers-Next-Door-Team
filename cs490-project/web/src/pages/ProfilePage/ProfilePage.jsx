@@ -60,53 +60,43 @@ const ProfilePage = () => {
   }
 
   return (
-    <>
+    <Box>
       <Metadata title="Profile" description="Profile page" />
       <Navbar/>
-      <Sidebar/>
 
-      <p>----</p>
-      <p>
-        Email: {currentUser.email}
-      </p>
-      <p>{data && data.user && <p>Name: {data.user.name}</p>}</p>
-      <p>Preferences</p>
-      <p>{data && data.user && <p>Preferred Programming Language: {data.user.preferredProgrammingLanguage}</p>}</p>
-      <p>{data && data.user && <p>Preferred IDE: {data.user.preferredIDE}</p>}</p>
-      <div style={{ marginTop: '10px' }}>
-        <Link to={routes.updateProfile()} style={{ color: 'black' }} onMouseOver={(e) => e.target.style.color = 'gray'}
-        onMouseOut={(e) => e.target.style.color = 'black'}>
-          Update Profile
-        </Link>
-      </div>
-      <div>
-        <Link to={routes.changePassword()} style={{ color: 'black' }} onMouseOver={(e) => e.target.style.color = 'gray'}
-        onMouseOut={(e) => e.target.style.color = 'black'}>
-          Change Password
-        </Link>
-      </div>
       <div>
         <button onClick={onClickDelete}>Delete Account</button>
       </div>
 
+      <Box sx={{ display: 'flex', height: '100vh' }}>
+        <Sidebar/>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: '100%' }}> 
+          <Box sx={{ color: '#393E41' }}>
+          <Typography variant="h4">PROFILE</Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', '& > :not(style)': { m: 1 }}}>
+            {/* Email */}
+            <Typography>Email: {currentUser.email}</Typography>
+            {/* Name */}
+            {data && data.user && <Typography>Name: {data.user.name} </Typography>}
+
+            {/* Preferred Programming Language */}
+            <Typography>Preferences</Typography>
+            {data && data.user && <Typography>Preferred Programming Language: {data.user.preferredProgrammingLanguage}</Typography>}
+            {/* Preferred IDE */}
+            {data && data.user && <Typography>Preferred IDE: {data.user.preferredIDE}</Typography>}
 
 
-      <Box sx={{ color: '#393E41' }}>
-      <Typography variant="h4">Profile Page</Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', '& > :not(style)': { m: 1 }}}>
-        <Typography>Email: {currentUser.email}</Typography>
-        <Typography>Name: {currentUser.name}</Typography>
-        <Typography>Preferred Programming Language: {currentUser.preferredLanguage}</Typography>
-        <Typography>Preferred IDE: {currentUser.preferredIDE}</Typography>
-        {/* <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Update Profile</Button>
-        <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Change Password</Button>
-        <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Delete Account</Button> */}
+            {/* <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Update Profile</Button>
+            <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Change Password</Button>
+            <Button variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>Delete Account</Button> */}
+          </Box>
+        </Box>
+
+
+
+        </Box>
       </Box>
     </Box>
-
-
-
-    </>
   )
   
 }
