@@ -2,7 +2,8 @@ export const schema = gql`
     type User {
         id: Int! 
         name: String 
-        email: String! 
+        email: String!
+        resetTokenExpiresAt: DateTime
         preferredProgrammingLanguage: String 
     }
 

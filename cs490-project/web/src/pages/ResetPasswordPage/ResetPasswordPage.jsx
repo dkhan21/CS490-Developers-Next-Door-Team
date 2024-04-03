@@ -11,6 +11,7 @@ const GET_USER_QUERY = gql`
     userbytoken(resetToken: $resetToken) {
       id
       email
+      resetTokenExpiresAt
     }
   }
 `;
@@ -47,6 +48,13 @@ const ResetPasswordPage = () => {
       if (data && data.userbytoken) {
         setId(data.userbytoken.id);
         setEmail(data.userbytoken.email);
+        console.log("TIME: ", data.userbytoken);
+        const expiresAt = new Date(data.userbytoken.resetTokenExpiresAt);
+
+        const now = new Date();
+        if (expiresAt < now) {
+          toast.error('The password reset link has expired. Please request a new one.');
+        }
       } else {
         toast.error('Invalid Token. Request a new password reset link.');
       }
