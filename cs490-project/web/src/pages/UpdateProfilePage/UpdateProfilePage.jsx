@@ -1,12 +1,12 @@
 import { Link, routes, navigate } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
 import { useAuth } from 'src/auth'
-// import { Form, Submit,  TextField } from '@redwoodjs/forms'
 import { gql, useMutation } from '@apollo/client'
 import { useState } from 'react'
 import { toast, Toaster } from '@redwoodjs/web/toast'
- import { Button, Box, TextField, Typography, Divider, Grid } from '@mui/material';
- import { makeStyles } from '@material-ui/core/styles';
+import { Button, Box, TextField, Typography, Divider, Grid } from '@mui/material';
+import { makeStyles } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles({
   textField: {
@@ -35,14 +35,10 @@ const UpdateProfilePage = () => {
     },
   })
 
-  // const [name, setName] = useState(currentUser.name)
-  //  
-  //each field -------------------------
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [preferredProgrammingLanguage, setPreferredProgrammingLanguage] = useState('')
   const [preferredIDE, setPreferredIDE] = useState('')
-  //---------------------
 
   const onSubmit = (event) => {
     event.preventDefault()
@@ -70,10 +66,11 @@ const UpdateProfilePage = () => {
             <TextField
               label="Email"
               name="email"
-              value={email}
+              value={currentUser.email}
               onChange={(event) => setEmail(event.target.value)}
               fullWidth
               margin="normal"
+              disabled
             />
           </Grid>
           <Grid item className={classes.textField}>
@@ -117,9 +114,6 @@ const UpdateProfilePage = () => {
         </form>
       </Grid>
     </Grid>
-
-
-
   )
   
 }
