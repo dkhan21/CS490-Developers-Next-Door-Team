@@ -2,18 +2,16 @@ import { DbAuthHandler } from '@redwoodjs/auth-dbauth-api'
 import { cookieName } from 'src/lib/auth'
 import { db } from 'src/lib/db'
 import sgMail from '@sendgrid/mail'
-import SENDGRID_API_KEY from '**/.env'; //sendgrid.env
-// Set SendGrid API key
+import SENDGRID_API_KEY from '**/.env';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-console.log('SENDGRID_API_KEY:', SENDGRID_API_KEY)
+
 function generateResetToken() {
-  // Generate a random token
   return Math.random().toString(36).slice(2);
 }
-// Define email sending function
+
 const sendResetPasswordEmail = async (email, resetToken) => {
   console.log('Sending reset password email to:', email, 'with API:', SENDGRID_API_KEY)
-  const resetUrl = `localhost:8910/reset-password?token=${resetToken}`;
+  const resetUrl = `http://localhost:8910/reset-password?token=${resetToken}`;
   const msg = {
     to: email,
     from: 'kas23@njit.edu',
@@ -28,17 +26,14 @@ export const handler = async (event, context) => {
   const forgotPasswordOptions = {
     handler: async (user) => {
       try {
-        // Generate reset token
         const resetToken = generateResetToken();
-        // Set reset token in the user record
         await db.user.update({
           where: { email: user.email },
           data: {
             resetToken,
-            resetTokenExpiresAt: new Date(Date.now() + 60 * 60 * 1000) // 1 hour expiry
+            resetTokenExpiresAt: new Date(Date.now() + 60 * 60 * 24 * 7) // 1 hour expiry
           }
         });
-        // Send reset password email
         await sendResetPasswordEmail(user.email, resetToken);
         return { email: user.email };
       } catch (error) {
@@ -97,7 +92,6 @@ export const handler = async (event, context) => {
           email: username,
           hashedPassword: hashedPassword,
           salt: salt,
-          // name: userAttributes.name
         },
       })
     },
@@ -107,14 +101,12 @@ export const handler = async (event, context) => {
     },
 
     errors: {
-      // `field` will be either "username" or "password"
       fieldMissing: '${field} is required',
       usernameTaken: 'Email `${username}` already in use',
     },
   }
 
   const authHandler = new DbAuthHandler(event, context, {
-    // Provide prisma db client
     db: db,
 
     authModelAccessor: 'user',

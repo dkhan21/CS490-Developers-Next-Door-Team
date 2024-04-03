@@ -23,7 +23,7 @@ model User {
   email               String    @unique
   hashedPassword      String
   salt                String
-  resetToken          String?
+  resetToken          String?    @unique
   resetTokenExpiresAt DateTime?
   preferredProgrammingLanguage String?
 

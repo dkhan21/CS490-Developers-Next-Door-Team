@@ -8,6 +8,7 @@ export const schema = gql`
 
     type Query{
         user(id: Int!): User @requireAuth 
+        userbytoken(resetToken: String!): User @skipAuth
     }
 
     input UpdateUserInput {
@@ -21,6 +22,7 @@ export const schema = gql`
         updateUser(input: UpdateUserInput!): User! @requireAuth
         deleteUser(id: Int!): User @requireAuth
         changePassword(email: String!, newPassword: String!): User! @requireAuth
+        changePassword2(email: String!, newPassword: String!): User! @skipAuth
+        resetTokenAndExpiresAtNull(id: Int!): User! @skipAuth
     }
-
 `

@@ -4,12 +4,12 @@ import { Form, Label, TextField, Submit, FieldError } from '@redwoodjs/forms';
 import { navigate, routes } from '@redwoodjs/router';
 import { Metadata } from '@redwoodjs/web';
 import { toast, Toaster } from '@redwoodjs/web/toast';
-
+import Nav2 from 'src/components/Nav2/nav2'
 import { useAuth } from 'src/auth';
 
 const ForgotPasswordPage = () => {
   const { isAuthenticated, forgotPassword } = useAuth();
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -23,23 +23,27 @@ const ForgotPasswordPage = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    setLoading(true); // Set loading to true when submitting
-    toast.error("Attempting to send forgot password email", data.username);
+    setLoading(true);
     console.log(data.username);
     const response = await forgotPassword(data.username);
     console.log(response);
     if (response?.error === 'Username not found') {
       toast.error('Email address not found. Please check and try again.');
     } else if (response?.email) {
-      navigate(routes.login());
+      toast.success('Password reset email sent. Please check your email.');
+      setTimeout(() => {
+        navigate(routes.login());
+      }, 2000);
     }
-    setLoading(false); // Set loading to false after handling response
+    setLoading(false);
   };
 
   return (
     <>
       <Metadata title="Forgot Password" />
-
+      <header>
+        <Nav2 />
+      </header>
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
