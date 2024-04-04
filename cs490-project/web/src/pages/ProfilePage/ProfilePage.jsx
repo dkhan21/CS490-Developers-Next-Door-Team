@@ -58,10 +58,13 @@ const ProfilePage = () => {
             <Grid item xs={12} container justifyContent="center">
               <Grid item style={{ maxWidth: '400px', width: '100%', marginBottom: '13px' }}>
                 <Typography>Email: {currentUser.email}</Typography>
-                {data && data.user && <Typography>Name: {data.user.name} </Typography>}
+                {/* {data && data.user && <Typography>Name: {data.user.name} </Typography>} */}
+                <Typography>Name: {data && data.user && data.user.name ? data.user.name : "Not set. Update your profile to add this information."}</Typography>
                 <h3>Preferences</h3>
-                {data && data.user && <Typography>Preferred Programming Language: {data.user.preferredProgrammingLanguage}</Typography>}
-                {data && data.user && <Typography>Preferred IDE: {data.user.preferredIDE}</Typography>}
+                {/* {data && data.user && <Typography>Preferred Programming Language: {data.user.preferredProgrammingLanguage}</Typography>} */}
+                <Typography>Preferred Programming Language: {data && data.user && data.user.preferredProgrammingLanguage ? data.user.preferredProgrammingLanguage : "Not set. Update your profile to add this information."}</Typography>
+                {/* {data && data.user && <Typography>Preferred IDE: {data.user.preferredIDE}</Typography>} */}
+                <Typography>Preferred IDE: {data && data.user && data.user.preferredIDE ? data.user.preferredIDE : "Not set. Update your profile to add this information."}</Typography>
               </Grid>
             </Grid>
           </Grid>

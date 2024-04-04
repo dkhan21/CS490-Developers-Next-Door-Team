@@ -41,8 +41,8 @@ const UpdateProfilePage = () => {
   const classes = useStyles()
   const [updateUser, {loading: updating, error: updateError}] = useMutation(UPDATE_USER_MUTATION, {
     onCompleted: (response) => {
-      // toast.success('Profile updated successfully')
-      navigate(routes.profile())
+      toast.success('Profile updated successfully')
+      // navigate(routes.profile())
     },
   })
 
@@ -50,9 +50,32 @@ const UpdateProfilePage = () => {
   const [name, setName] = useState('')
   const [preferredProgrammingLanguage, setPreferredProgrammingLanguage] = useState('')
   const [preferredIDE, setPreferredIDE] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [languageError, setLanguageError] = useState('')
+  const [ideError, setIdeError] = useState('')
 
   const onSubmit = (event) => {
     event.preventDefault()
+
+    //reset error messages 
+    setNameError('')
+    setLanguageError('')
+    setIdeError('')
+
+    //validation 
+    if (name && name.length > 50){
+      setNameError('Name is too long. Please enter a name that is 50 characters or less.')
+      return 
+    }else if(!/^[A-Za-z\s-]*$/.test(name)){
+      setNameError("Name contains invalid characters. Pleaser enter a name that only contains letters, spaces, and hyphens.")
+      return
+    }else if (preferredProgrammingLanguage && preferredProgrammingLanguage.length > 50){
+      setLanguageError('Preferred Programming Langauge is too long. Please enter a language that is 50 characters or less.')
+      return 
+    }else if (preferredIDE && preferredIDE.length > 50){
+      setIdeError('Preferred IDE is too long. Please enter an IDE that is 50 characters or less.')
+      return
+    }
 
     const input = {
       id: currentUser.id,
@@ -63,7 +86,15 @@ const UpdateProfilePage = () => {
     }
 
     const variables = { input }
-    updateUser({ variables }).then(reauthenticate)
+    // updateUser({ variables }).then(reauthenticate)
+    updateUser({ variables }).then(() => {
+      reauthenticate()
+      toast.success("Profile updated succesfully")
+      //clear the form 
+      setName('')
+      setPreferredProgrammingLanguage('')
+      setPreferredIDE('')
+    })
   }
 
   return (
@@ -81,7 +112,7 @@ const UpdateProfilePage = () => {
               <form onSubmit={onSubmit}>
                 <Grid item xs={12} style={{ maxWidth: '400px', width: '100%', marginBottom: '-10px' }}>
                   <TextField
-                    label="Email"
+                    label="Email*"
                     name="email"
                     value={currentUser.email}
                     onChange={(event) => setEmail(event.target.value)}
@@ -98,6 +129,8 @@ const UpdateProfilePage = () => {
                     onChange={(event) => setName(event.target.value)}
                     fullWidth
                     margin="normal"
+                    error={!!nameError}
+                    helperText={nameError}
                   />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: 'left', marginTop: '20px' }}>
@@ -111,6 +144,8 @@ const UpdateProfilePage = () => {
                     onChange={(event) => setPreferredProgrammingLanguage(event.target.value)}
                     fullWidth
                     margin="normal"
+                    error={!!languageError}
+                    helperText={languageError}
                   />
                 </Grid>
                 <Grid item className={classes.textField}>
