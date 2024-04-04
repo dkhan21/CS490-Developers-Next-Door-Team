@@ -167,7 +167,7 @@ const TranslatePage = () => {
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
-  const { currentUser } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
   const [activeTranslations, setActiveTranslations] = useState(0);
 
 
@@ -195,28 +195,94 @@ const TranslatePage = () => {
   }, [outputLanguage]);
 
   const [isStatus500, setisStatus500] = useState(false);
-  const[LanFound, setLanfound] = useState(false);
+  const [LanFound, setLanfound] = useState(false);
   const languages = ['java', 'python', 'javascript', 'c', 'cpp'];
   //Detect the language the text is in
-  const detectLanguage = () => {
-    const result = hljs.highlightAuto(inputText, languages);
-    setDetected(true);
-    console.log(result.language)
-    if(languages.includes(result.language)){
-      setInputLanguage(result.language);
-      setDetected(false);
-      setAutoDet(false);
-      setLanfound(false);
 
-    }
-    setLanfound(languages.includes(result.language));
-    return languages.includes(result.language);
-  }
 
   const [detect, setDetected] = useState(false);
 
+  const handleDetect = () => {
+    return new Promise((resolve, reject) => {
+      if (activeTranslations >= 3) {
+        addError("- Too many requests");
+        reject(new Error("Too many requests"));
+        return;
+      }
+      if (inputText.trim() === '') {
+        addError("- No input text to convert");
+        reject(new Error("No input text to convert"));
+        return;
+      }
+
+
+      try {
+
+        const dataPayload2 = {
+          "messages": [
+            {
+              "role": "system",
+              "content": inputText,
+              "source": inputLanguage,
+              "target": outputLanguage,
+              "promptNum": 2
+            }
+          ]
+        };
+
+        fetch('http://localhost:8910/.redwood/functions/openai', {
+          mode: 'cors',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataPayload2)
+        })
+        .then(response => {
+          if (response.ok) {
+            setIsGreen(true);
+            return response.json();
+          } else {
+            console.log(response);
+            addError(response.statusText);
+            throw new Error('Failed to fetch');
+          }
+        })
+        .then(data => {
+          const lan = data.completion.toLowerCase();
+          if (languages.includes(lan)) {
+            console.log(lan + " found");
+            setInputLanguage(lan);
+            setLanfound(true);
+            setDetected(false);
+            setAutoDet(false);
+            resetErrorState();
+            resolve(true);
+          } else {
+            setDetected(true);
+            setLanfound(false);
+            resolve(false);
+          }
+        })
+        .catch(error => {
+          console.error('Error handling translation response:', error);
+          reject(error);
+        })
+        .finally(() => {
+        });
+      } catch (error) {
+        // Log the error
+        console.error('Error in detecting Language: ', error);
+        // Rethrow the error for further handling in application code
+        reject(error);
+      }
+    });
+  };
+
+
 
   const handleConvertClick = async () => {
+
     if (activeTranslations >= 3) {
       addError("- Too many request")
       return false;;
@@ -226,23 +292,23 @@ const TranslatePage = () => {
       return false;
     }
 
-    const detected = languages.includes(hljs.highlightAuto(inputText).language)
-
-    if (detected) {
-      console.log("Supported Input text Language")
-    } else {
-      addError("Unsupported Input text Language")
-      throw new Error("Unsupported Input text Language")
+    const res = await handleDetect();
+    if (!res) {
+      console.log(AutoDet);
+      console.log(detect);
+      console.log(LanFound);
+      setDetected(false);
+      addError("Unsupported Language");
+      throw new Error("Are you stupid or retarted or borat?")
     }
+
 
     try {
 
-
       let stat = "Not Translated";
       setActiveTranslations(activeTranslations + 1);
-
-      setLoading(true); // Show loading element
       resetErrorState();
+      setLoading(true); // Show loading element
       let timeoutId; // Initialize timeout variable
       setisStatus500(false);
 
@@ -262,7 +328,7 @@ const TranslatePage = () => {
             "content": inputText,
             "source": inputLanguage,
             "target": outputLanguage,
-            "message": 1,
+            "promptNum": 1,
           }
         ]
       };
@@ -315,22 +381,24 @@ const TranslatePage = () => {
           if (data.completion.length > 0) {
             stat = "Successfully Translated";
           }
-          createHistory({
-            variables: {
-              input: {
-                inputLanguage,
-                outputLanguage,
-                inputText,
-                outputText: data.completion,
-                userId: currentUser.id,
-                status: stat,
+          (isAuthenticated ?
+            createHistory({
+              variables: {
+                input: {
+                  inputLanguage,
+                  outputLanguage,
+                  inputText,
+                  outputText: data.completion,
+                  userId: currentUser.id,
+                  status: stat,
+                },
               },
-            },
-          }).then(() => {
-            refetch();
-          }).catch((error) => {
-            console.error('Error creating history:', error);
-          });
+            }) : null)
+            .then(() => {
+              refetch();
+            }).catch((error) => {
+              console.error('Error creating history:', error);
+            });
         })
         .finally(() => {
           setLoading(false);
@@ -352,7 +420,7 @@ const TranslatePage = () => {
       setAutoDet(true);
       setInputLanguage(e.target.value);
       return;
-    }else {
+    } else {
       setAutoDet(false);
       setLanfound(false);
       setDetected(false);
@@ -543,21 +611,21 @@ const TranslatePage = () => {
                   <MenuItem value={'AutoDetect'}>AutoDetect</MenuItem>
                 </Select>
 
-                { AutoDet ?
-                    <Button style={{
-                      backgroundColor: '#32368c',
-                      color: '#fff',
-                      '&:hover': {
-                        backgroundColor: '#303f9f',
-                      },
-                      width: '70px',
-                      height: '30px',
-                      borderRadius: '5px',
-                      marginLeft: '10px'
-                    }} onClick={detectLanguage}>Detect</Button>
-                    : null
+                {AutoDet ?
+                  <Button style={{
+                    backgroundColor: '#32368c',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#303f9f',
+                    },
+                    width: '70px',
+                    height: '30px',
+                    borderRadius: '5px',
+                    marginLeft: '10px'
+                  }} onClick={handleDetect}>Detect</Button>
+                  : null
                 }
-                {detect && AutoDet ? <p style={{ marginLeft: '10px', color: '#fff', }}> {!LanFound ? "Unrecognized" : null }</p> : null }
+                {detect && AutoDet ? <p style={{ marginLeft: '10px', color: 'red', }}> {!LanFound ? "Unrecognized" : null}</p> : null}
 
               </div>
               <MonacoEditorWrapper
