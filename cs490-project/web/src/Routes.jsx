@@ -18,6 +18,7 @@ const Routes = () => {
   return (
 
     <Router useAuth={useAuth}>
+      <Route path="/delete-account" page={DeleteAccountPage} name="deleteAccount" />
       <Route path="/resources" page={ResourcesPage} name="resources" />
       <Route path="/requesting-features" page={RequestingFeaturesPage} name="requestingFeatures" />
       <Route path="/reporting-bugs" page={ReportingBugsPage} name="reportingBugs" />

@@ -42,11 +42,11 @@ const Sidebar = () => {
         Password
       </Link>
       <Link 
-        // to={routes.changePassword()} 
+        to={routes.deleteAccount()} 
         onMouseEnter={() => setHoverIndex(4)}
         onMouseLeave={() => setHoverIndex(null)}
         // style={hoverIndex === 4 ? styles.linkHover : styles.link}>
-        style={(isActive(routes.profile()) || hoverIndex === 4) ? styles.linkHover : styles.link}>
+        style={(isActive(routes.deleteAccount()) || hoverIndex === 4) ? styles.linkHover : styles.link}>
         <HighlightOffOutlinedIcon style={styles.icon}/>
         Delete My Account
       </Link>
