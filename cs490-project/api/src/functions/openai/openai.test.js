@@ -2,6 +2,7 @@ import { mockHttpEvent } from '@redwoodjs/testing/api'
 import { handler } from './openai'
 
 describe('openai function', () => {
+
   it('Authenticates and receives successful response', async () => {
     const simulatedPayload = {
       httpMethod: 'POST',
@@ -14,7 +15,7 @@ describe('openai function', () => {
             content: "printf('Hello');",
             target: "Python",
             source: "C",
-            message: 1
+            promptNum: 1
           }
         ]
       }),
@@ -41,7 +42,7 @@ describe('openai function', () => {
               content: "printf('Hello');",
               target: "Python",
               source: "C",
-              message: 1
+              promptNum: 1
             }
           ]
       }),
@@ -62,7 +63,7 @@ describe('openai function', () => {
           content: "a",
           source: "b",
           target: "c",
-          message: 1
+          promptNum: 1
         }
       ]
     };

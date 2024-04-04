@@ -31,16 +31,12 @@ export const handler = async (event, context) => {
     let prompt;
 
     if(promptNumber === 1){
-      console.log("p1");
       prompt = "Translate this code ( " + code + " ) from " + sourceLanguage + " to " + targetLanguage;
     }
 
     if(promptNumber === 2){
-      console.log("p2");
-      prompt = "Detect what programming lanuage this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return only Java, Python, C++, C, Javascript, or Unrecognized.   " + code;
+      prompt = "Detect what programming language this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return only Java, Python, C++, C, Javascript, or Unrecognized.   " + code;
     }
-
-
 
 
     const completion = await openai.chat.completions.create({

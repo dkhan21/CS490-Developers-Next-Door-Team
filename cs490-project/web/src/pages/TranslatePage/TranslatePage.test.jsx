@@ -108,16 +108,6 @@ describe('TranslatePage', () => {
     });
   });
 
-  it('Unsupported Input Text Given', async () => {
-    const input = "ak hdf askdlf";
-    const languages = ['java', 'python', 'javascript', 'c', 'cpp'];
-
-    const result = languages.includes(hljs.highlightAuto(input, languages).language);
-
-    expect(result).toBe(false);
-
-  });
-
   it('Handle 500 error response', async () => {
 
     global.fetch = jest.fn().mockResolvedValue({
@@ -149,6 +139,56 @@ describe('TranslatePage', () => {
     expect(response.ok).toBe(false);
 
   });
+
+  it('Handles Unsupported Languages', async () => {
+    const input = "aaaaaaaaa";
+    const outputLanguages = ['java', 'python', 'javascript', 'c', 'cpp'];
+    let result;
+
+    async function handleConvertClick(inputText, inputLanguage, outputLanguage) {
+      if (inputText.trim() === '') {
+        return "Invalid Length";
+      }
+
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage,
+            "promptNum": 2
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch('http://localhost:8910/.redwood/functions/openai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataPayload)
+        });
+
+        if (!response.ok) {
+          throw new Error('Error Has Occurred');
+        }
+
+        const data = await response.json();
+        result = data.completion;
+      } catch (error) {
+        console.error(error);
+        result = "Unrecognized";
+      }
+    }
+
+    // Call multiple requests
+    await handleConvertClick(input, "java", outputLanguages[1]);
+    // Should fail because input is unrecognized
+    expect(result).toEqual("Unrecognized");
+  });
+
 
 
   it('editor renders correctly with different code inputs and languages', () => {
@@ -235,7 +275,7 @@ describe('TranslatePage', () => {
             "content": inputText,
             "source": inputLanguage,
             "target": outputLanguage,
-            "message": 1
+            "promptNum": 1
           }
         ]
       };

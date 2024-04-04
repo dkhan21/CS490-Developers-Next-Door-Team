@@ -293,13 +293,13 @@ const TranslatePage = () => {
     }
 
     const res = await handleDetect();
+    if(!res && inputLanguage === 'AutoDetect'){
+      return false;
+    }
     if (!res) {
-      console.log(AutoDet);
-      console.log(detect);
-      console.log(LanFound);
       setDetected(false);
-      addError("Unsupported Language");
-      throw new Error("Are you stupid or retarted or borat?")
+      addError("Input code is not " + inputLanguage);
+      throw new Error("Are you stupid or retarted?");
     }
 
 
