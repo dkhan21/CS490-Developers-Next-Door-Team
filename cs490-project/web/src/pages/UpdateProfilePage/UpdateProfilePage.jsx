@@ -41,7 +41,7 @@ const UpdateProfilePage = () => {
   const classes = useStyles()
   const [updateUser, {loading: updating, error: updateError}] = useMutation(UPDATE_USER_MUTATION, {
     onCompleted: (response) => {
-      toast.success('Profile updated successfully')
+      // toast.success('Profile updated successfully')
       // navigate(routes.profile())
     },
   })
@@ -100,6 +100,7 @@ const UpdateProfilePage = () => {
   return (
     <>
       <Navbar/>
+      <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
       <div style={{ display: 'flex' }}>
       <Sidebar/>
       <div style = {{ flex: 1, marginRight: "300px" }}>
