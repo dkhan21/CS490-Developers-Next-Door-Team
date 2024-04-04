@@ -60,6 +60,7 @@ const styles = {
     flexDirection: 'column',
     justifyContent: 'flex-start',
     paddingTop: '200px',
+    marginLeft: "25px"
   },
   link: {
     color: '#393E41',

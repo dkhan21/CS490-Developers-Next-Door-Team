@@ -6,6 +6,8 @@ import { useState } from 'react'
 import { toast, Toaster } from '@redwoodjs/web/toast'
 import { Button, Box, TextField, Typography, Divider, Grid } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
+import Navbar from 'src/components/Navbar/Navbar'
+import Sidebar from 'src/components/Sidebar/Sidebar'
 
 
 const useStyles = makeStyles({
@@ -56,64 +58,72 @@ const UpdateProfilePage = () => {
   }
 
   return (
-    <Grid container direction="column" alignItems="center" justifyContent="center" style={{ minHeight: '100vh' }}>
-      <Grid item xs={12} style={{ textAlign: 'center', marginBottom: "20px "}}>
-        <h1>Update Profile</h1>
-      </Grid>
-      <Grid item xs={12} container justifyContent="center">
-        <form onSubmit={onSubmit}>
-          <Grid item xs={12} style={{ maxWidth: '400px', width: '100%', marginBottom: '-10px' }}>
-            <TextField
-              label="Email"
-              name="email"
-              value={currentUser.email}
-              onChange={(event) => setEmail(event.target.value)}
-              fullWidth
-              margin="normal"
-              disabled
-            />
+    <>
+      <Navbar/>
+      <div style={{ display: 'flex' }}>
+      <Sidebar/>
+      <div style = {{ flex: 1, marginRight: "300px" }}>
+        <Grid container direction="column" alignItems="center" justifyContent="center" style={{ minHeight: '100vh'}}>
+          <Grid item xs={12} style={{ textAlign: 'center', marginBottom: "20px "}}>
+            <h1>Update Profile</h1>
           </Grid>
-          <Grid item className={classes.textField}>
-            <TextField
-              label="Name"
-              name="name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              fullWidth
-              margin="normal"
-            />
+          <Grid item xs={12} container justifyContent="center">
+            <form onSubmit={onSubmit}>
+              <Grid item xs={12} style={{ maxWidth: '400px', width: '100%', marginBottom: '-10px' }}>
+                <TextField
+                  label="Email"
+                  name="email"
+                  value={currentUser.email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  fullWidth
+                  margin="normal"
+                  disabled
+                />
+              </Grid>
+              <Grid item className={classes.textField}>
+                <TextField
+                  label="Name"
+                  name="name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item xs={12} style={{ textAlign: 'left', marginTop: '20px' }}>
+                <h3>Preferences</h3>
+              </Grid>
+              <Grid item xs={12} style={{ maxWidth: '300px', width: '100%', marginBottom: '-10px' }}>
+                <TextField
+                  label="Preferred Programming Language"
+                  name="preferredProgrammingLanguage"
+                  value={preferredProgrammingLanguage}
+                  onChange={(event) => setPreferredProgrammingLanguage(event.target.value)}
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item className={classes.textField}>
+                <TextField
+                  label="Preferred IDE"
+                  name="preferredIDE"
+                  value={preferredIDE}
+                  onChange={(event) => setPreferredIDE(event.target.value)}
+                  fullWidth
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item xs={12} style={{ textAlign: 'center' }}>
+                <Button type="submit" variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>
+                  Update Profile
+                </Button>
+              </Grid>
+            </form>
           </Grid>
-          <Grid item xs={12} style={{ textAlign: 'left', marginTop: '20px' }}>
-            <h3>Preferences</h3>
-          </Grid>
-          <Grid item xs={12} style={{ maxWidth: '300px', width: '100%', marginBottom: '-10px' }}>
-            <TextField
-              label="Preferred Programming Language"
-              name="preferredProgrammingLanguage"
-              value={preferredProgrammingLanguage}
-              onChange={(event) => setPreferredProgrammingLanguage(event.target.value)}
-              fullWidth
-              margin="normal"
-            />
-          </Grid>
-          <Grid item className={classes.textField}>
-            <TextField
-              label="Preferred IDE"
-              name="preferredIDE"
-              value={preferredIDE}
-              onChange={(event) => setPreferredIDE(event.target.value)}
-              fullWidth
-              margin="normal"
-            />
-          </Grid>
-          <Grid item xs={12} style={{ textAlign: 'center' }}>
-            <Button type="submit" variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>
-              Update Profile
-            </Button>
-          </Grid>
-        </form>
-      </Grid>
-    </Grid>
+        </Grid>
+        </div>
+      </div>
+    </>
   )
   
 }
