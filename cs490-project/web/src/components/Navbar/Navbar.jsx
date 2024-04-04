@@ -60,7 +60,9 @@ const Navbar = () => {
 
           <Box style={{ flexGrow: 1 }} />
             <Link to={`${routes.home()}#section-about`}>
-              <Button color="inherit" style={{
+              <Button
+               style={{color: 'white'}}
+               sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -87,7 +89,9 @@ const Navbar = () => {
               ><p>About</p></Button>
             </Link>
             <Link to={`${routes.home()}#section-works`}>
-              <Button color="inherit" style={{
+              <Button
+              style={{color: 'white'}}
+              sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -114,7 +118,9 @@ const Navbar = () => {
               ><p>Instructions</p></Button>
             </Link>
             <Link to={routes.translate()}>
-              <Button color="inherit" style={{
+              <Button
+               style={{color: 'white'}}
+               sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -147,7 +153,8 @@ const Navbar = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                   onClick={handleClick1}
-                  color="inherit" style={{
+                  style={{color: 'white'}}
+                  sx={{
                     color: '#E7E5DF',
                     position: 'relative',
                     '&:after': {
@@ -191,7 +198,9 @@ const Navbar = () => {
 
             {!isAuthenticated && (
               <Link to={routes.login()}>
-                <Button color="inherit" style={{
+                <Button
+                 style={{color: 'white'}}
+                 sx={{
                   color: '#E7E5DF',
                   position: 'relative',
                   '&:after': {
@@ -227,7 +236,8 @@ const Navbar = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                   onClick={handleClick2}
-                  color="inherit" style={{
+                  style={{color: 'white'}}
+                  sx={{
                     color: '#E7E5DF',
                     position: 'relative',
                     '&:after': {
