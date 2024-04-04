@@ -14,6 +14,8 @@ import FeedbacksCell from 'src/components/FeedbacksCell';
 import { QUERY as FeedbacksQuery } from 'src/components/FeedbacksCell'
 import Example from 'src/components/FeedbackForm/EncryptButton';
 import Filter from 'bad-words';
+import { FaAngry } from 'react-icons/fa';
+
 
 
 const CREATE = gql`
@@ -60,7 +62,6 @@ const FeedbackForm = () => {
     paddingTop: '110px', // Add space above the text
   };
   const filter = new Filter();
-  const [profanityFound, setProfanityFound] = useState(false);
 
   const onSubmit = (data) => {
     const { name, body } = data;
@@ -75,18 +76,22 @@ const FeedbackForm = () => {
 
     if (filter.isProfane(body)) {
       console.log("Profanity found!");
-      setProfanityFound(true);
       return false;
     } else {
       console.log("No profanity found.");
-      setProfanityFound(false);
     }
 
     const input = { name, rating, body: body, userId: user };
     createFeedback({ variables: { input } });
   };
 
-
+  const profanityCheck = (value) => {
+    if (filter.isProfane(value)) {
+      const angryFace = String.fromCodePoint(0x1F621);
+    return `Profanity Found! ${angryFace}`;
+    }
+    return true;
+  };
 
   return (
     <>
@@ -103,12 +108,13 @@ const FeedbackForm = () => {
               <Label name="name" className="name" style={{
                 fontFamily: 'Open Sans, sans-serif', fontSize: '26px', fontWeight: 400, color: 'white', textAlign: 'center',
               }}>Name</Label>
-              <TextAreaField name="name" required aria-label="Name"
+              <TextAreaField name="name" aria-label="name"
                 className="name"
-                validation={{ required: true }}
+                validation={{ required: true, validate: profanityCheck }}
                 style={{ borderRadius: '10px', padding: '5px', border: '2px solid black', resize: 'none', width: '200px', height: '35px', fontSize: '16px' }}
               />
-              <FieldError name="names" />
+              <FieldError name="name" style={{ color: 'red', marginTop: '5px', marginLeft: '5px' }} />
+
             </div>
             <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
               <Label name="rating" className="ratings" style={{
@@ -150,11 +156,11 @@ const FeedbackForm = () => {
                 errorClassName="input error"
                 validation={{
                   required: true,
+                  validate: profanityCheck
                 }}
                 style={{ borderRadius: '10px', padding: '3px', border: '2px solid black', height: '35px', width: '300px', fontFamily: 'Open Sans, sans-serif', fontSize: '16px', fontWeight: 400 }}
               />
-              <FieldError name="body" className="Profanity Found!"/>
-              {profanityFound ? <span style={{ color: 'red', marginTop:'5px', marginLeft: '5px' }}>Profanity found! Please remove.</span> : null}
+              <FieldError name="body" style={{ color: 'red', marginTop: '5px', marginLeft: '5px' }} />
             </div>
 
 

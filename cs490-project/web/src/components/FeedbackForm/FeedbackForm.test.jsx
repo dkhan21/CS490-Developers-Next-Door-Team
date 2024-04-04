@@ -24,8 +24,7 @@ describe('FeedbackForm', () => {
   it("Handle Inappropiate words", async () => {
 
     render(<FeedbackForm />);
-
-    const nameInput = 'John Doe';
+    const nameInput = 'John Bitch';
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: nameInput } });
 
     // Simulate user input for rating
@@ -36,10 +35,10 @@ describe('FeedbackForm', () => {
     fireEvent.change(screen.getByLabelText('Feedback'), { target: { value: profanityText } });
 
     fireEvent.click(screen.getByText('Submit'));
-
+    const res = 'Profanity Found! 😡';
     // Check if profanity error message is displayed
     await waitFor(() => {
-      expect(screen.getByText('Profanity found! Please remove.')).toBeInTheDocument();
+      expect(screen.queryAllByText(res)).toHaveLength(2);
     });
   });
 })
