@@ -1,4 +1,4 @@
-import { Link, routes } from '@redwoodjs/router'
+import { Link, routes, useLocation } from '@redwoodjs/router'
 import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
@@ -7,6 +7,9 @@ import { useState } from 'react';
 
 const Sidebar = () => {
   const [hoverIndex, setHoverIndex] = useState(null); 
+  const location = useLocation()
+
+  const isActive = (path) => location.pathname === path 
 
   return (
     <div style={styles.sidebar}>
@@ -15,7 +18,8 @@ const Sidebar = () => {
         to={routes.profile()} 
         onMouseEnter={() => setHoverIndex(1)}
         onMouseLeave={() => setHoverIndex(null)}
-        style={hoverIndex === 1 ? styles.linkHover : styles.link}>
+        // style={hoverIndex === 1 ? styles.linkHover : styles.link}>
+        style={(isActive(routes.profile()) || hoverIndex === 1) ? styles.linkHover : styles.link}>
         <Person2OutlinedIcon style={styles.icon}/>
         Profile
       </Link>
@@ -23,7 +27,8 @@ const Sidebar = () => {
         to={routes.updateProfile()} 
         onMouseEnter={() => setHoverIndex(2)}
         onMouseLeave={() => setHoverIndex(null)}
-        style={hoverIndex === 2 ? styles.linkHover : styles.link}>
+        // style={hoverIndex === 2 ? styles.linkHover : styles.link}>
+        style={(isActive(routes.updateProfile()) || hoverIndex === 2) ? styles.linkHover : styles.link}>
         <ManageAccountsOutlinedIcon style={styles.icon}/>
         Update Profile
       </Link>
@@ -31,7 +36,8 @@ const Sidebar = () => {
         to={routes.changePassword()} 
         onMouseEnter={() => setHoverIndex(3)}
         onMouseLeave={() => setHoverIndex(null)}
-        style={hoverIndex === 3 ? styles.linkHover : styles.link}>
+        // style={hoverIndex === 3 ? styles.linkHover : styles.link}>
+        style={(isActive(routes.changePassword()) || hoverIndex === 3) ? styles.linkHover : styles.link}>
         <VpnKeyOutlinedIcon style={styles.icon}/>
         Password
       </Link>
@@ -39,7 +45,8 @@ const Sidebar = () => {
         // to={routes.changePassword()} 
         onMouseEnter={() => setHoverIndex(4)}
         onMouseLeave={() => setHoverIndex(null)}
-        style={hoverIndex === 4 ? styles.linkHover : styles.link}>
+        // style={hoverIndex === 4 ? styles.linkHover : styles.link}>
+        style={(isActive(routes.profile()) || hoverIndex === 4) ? styles.linkHover : styles.link}>
         <HighlightOffOutlinedIcon style={styles.icon}/>
         Delete My Account
       </Link>
