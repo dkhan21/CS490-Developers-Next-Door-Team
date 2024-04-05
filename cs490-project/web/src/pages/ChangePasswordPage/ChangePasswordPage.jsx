@@ -48,7 +48,7 @@ const ChangePasswordPage = () => {
   const passwordStrengthRegex = new RegExp(
     '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
   )
-  const commonPasswords = ["Password1!","Welcome1@","Admin123#", "Passw0rd$" ]
+  const commonPasswords = ["Password1!","Welcome1@","Admin123#", "Passw0rd$", "Letmein$1","TrustNo1!", "Charlie123#", "Qwerty@123"  ]
 
   const onSubmit = (event) => { 
     event.preventDefault()
