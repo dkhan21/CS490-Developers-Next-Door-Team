@@ -48,6 +48,7 @@ const ChangePasswordPage = () => {
   const passwordStrengthRegex = new RegExp(
     '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
   )
+  const commonPasswords = ["Password1!","Welcome1@","Admin123#", "Passw0rd$" ]
 
   const onSubmit = (event) => { 
     event.preventDefault()
@@ -61,6 +62,9 @@ const ChangePasswordPage = () => {
     }else if (!passwordStrengthRegex.test(newPassword)) {
       // setPasswordsMatchError('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.')
       toast.error('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.')
+      return
+    }else if (commonPasswords.includes(newPassword)){
+      toast.error("Your password is too common. Please choose a different one.")
       return
     }else{
       changePassword( { variables: { newPassword, email: currentUser.email } })
@@ -86,6 +90,7 @@ const ChangePasswordPage = () => {
                   <TextField
                     label="New Password*"
                     name="newPassword"
+                    type="password"
                     value={newPassword}
                     onChange={(event) => setNewPassword(event.target.value)}
                     // placeholder="New Password"
@@ -103,6 +108,7 @@ const ChangePasswordPage = () => {
                   <TextField
                     label="Confirm New Password*"
                     name="confirmNewPassword"
+                    type="password"
                     value={confirmNewPassword}
                     onChange={(event) => setConfirmNewPassword(event.target.value)}
                     // placeholder="Confirm New Password"
