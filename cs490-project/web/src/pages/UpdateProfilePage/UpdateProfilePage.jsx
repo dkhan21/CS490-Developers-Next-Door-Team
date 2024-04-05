@@ -89,7 +89,7 @@ const UpdateProfilePage = () => {
     // updateUser({ variables }).then(reauthenticate)
     updateUser({ variables }).then(() => {
       reauthenticate()
-      toast.success("Profile updated succesfully")
+      toast.success("Profile updated successfully")
       //clear the form 
       setName('')
       setPreferredProgrammingLanguage('')
