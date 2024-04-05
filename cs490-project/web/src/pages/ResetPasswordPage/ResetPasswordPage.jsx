@@ -34,7 +34,6 @@ const RESET_TOKEN_MUTATION = gql`
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
-  console.log("TOKEN: ", token); // Log the token to ensure it's correct
   const [email, setEmail] = useState(null);
   const [currentid, setId] = useState(null);
   const [changePassword2] = useMutation(CHANGE_PASSWORD_MUTATION);
@@ -48,9 +47,7 @@ const ResetPasswordPage = () => {
       if (data && data.userbytoken) {
         setId(data.userbytoken.id);
         setEmail(data.userbytoken.email);
-        console.log("TIME: ", data.userbytoken);
         const expiresAt = new Date(data.userbytoken.resetTokenExpiresAt);
-
         const now = new Date();
         if (expiresAt < now) {
           toast.error('The password reset link has expired. Please request a new one.');
