@@ -154,6 +154,9 @@ img {
   .userguide{
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: auto;
 }
 
   .userbox{
@@ -162,6 +165,9 @@ img {
     gap: 0px;
     justify-items: center;
     align-items: center;
+    align-content: center;
+    justify-content: center;
+    margin-right: 90px;
   }
 
 }
