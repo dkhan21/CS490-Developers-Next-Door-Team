@@ -57,7 +57,6 @@ const Navbar = () => {
             Code Harbor
           </Typography>
 
-
           <Box style={{ flexGrow: 1 }} />
             <Link to={`${routes.home()}#section-about`}>
               <Button
