@@ -10,13 +10,6 @@ import { Metadata } from '@redwoodjs/web'
 import Navbar from 'src/components/Navbar/Navbar'
 
 const UserGuidesPage = () => {
-  const style = {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '70px',
-    marginLeft: '80px',
-  }
-
   const [hoveredLink, setHoveredLink] = useState(null)
 
   const linkStyle = (link) => ({
