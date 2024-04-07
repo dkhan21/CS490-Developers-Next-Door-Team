@@ -23,7 +23,7 @@ const Sidebar = () => {
         <Person2OutlinedIcon style={styles.icon}/>
         Profile
       </Link>
-      <Link 
+      {/* <Link 
         to={routes.updateProfile()} 
         onMouseEnter={() => setHoverIndex(2)}
         onMouseLeave={() => setHoverIndex(null)}
@@ -31,7 +31,7 @@ const Sidebar = () => {
         style={(isActive(routes.updateProfile()) || hoverIndex === 2) ? styles.linkHover : styles.link}>
         <ManageAccountsOutlinedIcon style={styles.icon}/>
         Update Profile
-      </Link>
+      </Link> */}
       <Link 
         to={routes.changePassword()} 
         onMouseEnter={() => setHoverIndex(3)}

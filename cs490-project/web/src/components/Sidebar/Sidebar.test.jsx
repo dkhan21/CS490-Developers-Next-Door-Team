@@ -23,18 +23,6 @@ describe('Sidebar', () => {
     expect(window.location.pathname).toBe('/profile');
   });
 
-  it('navigates to Update Profile page when Update Profile link is clicked', () => {
-    render(
-      <MemoryRouter initialEntries={['/update-profile']}>
-        <Sidebar />
-      </MemoryRouter>
-    );
-
-    fireEvent.click(screen.getByText('Update Profile'));
-
-    expect(window.location.pathname).toBe('/update-profile');
-  });
-
   it('navigates to Password page when Password link is clicked', () => {
     render(
       <MemoryRouter initialEntries={['/change-password']}>
