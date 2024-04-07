@@ -32,7 +32,7 @@ const ChangePasswordPage = () => {
     onCompleted: () => {
       setNewPassword('')
       setConfirmNewPassword('')
-      toast.success("Password changed successfully")
+      
       // toast.success('Password changed successfully')
       // console.log(newPassword)
       // navigate('/')
@@ -68,6 +68,7 @@ const ChangePasswordPage = () => {
       return
     }else{
       changePassword( { variables: { newPassword, email: currentUser.email } })
+      toast.success("Password updated successfully")
     }
   }
 
@@ -128,7 +129,7 @@ const ChangePasswordPage = () => {
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: 'center', marginTop: '10px' }}>
                   <Button type="submit" variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>
-                    Update Profile
+                    Update Password
                   </Button>
                 </Grid>
               </form>
