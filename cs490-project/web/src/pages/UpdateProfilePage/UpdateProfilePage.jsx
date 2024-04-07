@@ -157,6 +157,8 @@ const UpdateProfilePage = () => {
                     onChange={(event) => setPreferredIDE(event.target.value)}
                     fullWidth
                     margin="normal"
+                    error={!!ideError}
+                    helperText={ideError}
                   />
                 </Grid>
                 <Grid item xs={12} style={{ textAlign: 'center' }}>
