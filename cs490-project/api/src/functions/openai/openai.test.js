@@ -1,5 +1,12 @@
 import { mockHttpEvent } from '@redwoodjs/testing/api'
 
+jest.mock("./validate", () => ({
+  validateCookie: jest.fn(() => Promise.resolve(mockValidationData)),
+}));
+const mockValidationData = {
+  id: 2
+};
+
 import { handler } from './openai'
 
 //   Improve this test with help from the Redwood Testing Doc:
@@ -8,11 +15,12 @@ import { handler } from './openai'
 
 describe('openai function', () => {
   it('Authenticates and receives successful response', async () => {
+    mockCurrentUser({ name: 'test-user', roles: ['some-role'] });
 
     const simulatedPayload = {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         messages: [
@@ -24,8 +32,11 @@ describe('openai function', () => {
         ]
       }),
     };
+    
 
     const response = await handler(simulatedPayload, null)
+
+
 
     const responseBody = JSON.parse(response.body) 
 

@@ -194,12 +194,20 @@ describe('TranslatePage', () => {
     const repeatedText = "editor renders correctly with different lengths of code\n";
     const outputTexts = [repeatedText.repeat(1), repeatedText.repeat(1000), 'import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }import java.util.Scanner; public class HelloWorld { public static void main(String[] args) { // Creates a reader instance which takes // input from standard input - keyboard Scanner reader = new Scanner(System.in); System.out.print("Enter a number: "); // nextInt() reads the next integer from the keyboard int number = reader.nextInt(); // println() prints the following line to the output screen System.out.println("You entered: " + number); } }']; // Test lenght and format
     const outputLanguages = ['java', 'python', 'javascript'];
-
-
-    async function handleConvertClick(inputText, inputLanguage, outputLanguage) {
+    const isAuthenticated = true;
+    
+    async function handleConvertClick(inputText, inputLanguage, outputLanguage, translationCount) {
 
       if (inputText.trim() === '') {
         return "Invalid Length";
+      }
+      if(!isAuthenticated){
+        return "Not logged in";
+      }
+      if(translationCount >= 100){
+        
+        //addError("You've exceeded your daily translations (100). Come back tomorrow")
+        return "Exceeded Translations";
       }
       let stat = "Not Translated";
 
@@ -224,6 +232,7 @@ describe('TranslatePage', () => {
       })
 
         .then(response => {
+          
           if (response.ok) {
             return response.json();
           }
@@ -234,6 +243,7 @@ describe('TranslatePage', () => {
         .then(data => {
           if (data.completion.length > 0) {
             stat = "Successfully Translated";
+
           }
           else {
             throw new Error('Empty Response');
@@ -250,12 +260,15 @@ describe('TranslatePage', () => {
 
 
     //Call multiple requests
-    handleConvertClick(outputTexts[0], "java", outputLanguages[0]);
-    handleConvertClick(outputTexts[1], "java", outputLanguages[1]);
-    handleConvertClick(outputTexts[2], "java", outputLanguages[2]);
+    handleConvertClick(outputTexts[0], "java", outputLanguages[0], 0);
+    handleConvertClick(outputTexts[1], "java", outputLanguages[1], 0);
+    handleConvertClick(outputTexts[2], "java", outputLanguages[2], 0);
     //Should fail because input is empty
-    let results = await handleConvertClick("", "java", "c")
+    let results = await handleConvertClick("", "java", "c", 0)
     expect(results).toEqual("Invalid Length");
+    //Should fail because there are too many translations
+    let tCountTest = await handleConvertClick("test", "java", "c", 100)
+    expect(tCountTest).toEqual("Exceeded Translations");
 
 
 

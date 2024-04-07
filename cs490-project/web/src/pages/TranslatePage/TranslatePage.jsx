@@ -209,7 +209,8 @@ const TranslatePage = () => {
     hRecount = recount;
   }
   catch(error){
-    console.log("Not logged in")
+    
+    //console.log("Not logged in")
   }
   
   /*
@@ -591,6 +592,7 @@ const TranslatePage = () => {
               aria-label='convert-button'
               className={classes.convertButton}
               onClick={handleConvertClick}
+              disabled={activeTranslations >= 3}
             >Convert
             </Button>
             {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}

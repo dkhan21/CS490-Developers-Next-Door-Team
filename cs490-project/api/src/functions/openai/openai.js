@@ -1,5 +1,6 @@
 import { logger } from 'src/lib/logger'
 import OpenAI from 'openai'
+import { validateCookie } from './validate';
 
 /**
  * The handler function is your code that processes http request events.
@@ -18,8 +19,6 @@ import OpenAI from 'openai'
  * function, and execution environment.
  */
 
-import { authDecoder, dbAuthSession, extractCookie, getSession, decryptSession } from '@redwoodjs/auth-dbauth-api'
-
 const openai = new OpenAI();
 
 
@@ -28,42 +27,19 @@ export const handler = async (event, context) => {
   
   try {
 
-    
-    //Cookie will contain dbAuth information
-    const cookie = extractCookie(event);
-    if(cookie == undefined || cookie == null){
-      console.log("Not logged in")
+
+    const val = await validateCookie(event, context);
+
+    if(val == -1){
+      console.log("Invalid session")
       return {
         statusCode: 401
       };
     }
-    if (cookie) {
-      //Obtain encrypted dbAuth string from cookie
-      const encryptedSession = getSession(cookie, "session_8911")
-      
-      if (encryptedSession) {
-        try{
-          const [session, _csrfToken] = decryptSession(encryptedSession)
-          context.currentUser = { ...session }
-          console.log(context.currentUser);
-        }
-        catch(error){
-          //Usually this means the cookie has been tampered with
-          console.error('Error decrypting session - ', error);
-          return {
-            statusCode: 401
-          }
-        }
-
-      }
-      else {
-        console.log("Invalid session")
-        return {
-          statusCode: 401
-        };
-      }
+    else {
+      //Prints out the active user id
+      console.log(val);
     }
-    
     
     
     const body = JSON.parse(event.body);
