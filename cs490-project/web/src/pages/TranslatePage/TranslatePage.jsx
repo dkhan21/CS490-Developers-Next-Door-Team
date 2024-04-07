@@ -12,6 +12,9 @@ import HistoryForm from 'src/components/History/HistoryForm';
 import { useAuth } from 'src/auth';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
 
+//import { cookieName } from 'src/lib/auth';
+
+
 
 const CREATE_HISTORY_MUTATION = gql`
   mutation CreateHistoryMutation($input: CreateHistoryInput!) {
@@ -40,6 +43,12 @@ const GET_USER_HISTORY_QUERY = gql`
       createdAt
       status
     }
+  }
+`;
+
+const GET_USER_HISTORY_COUNTS = gql`
+  query GetUserHistoryCounts($id: Int!) {
+    historyCount(id: $id)
   }
 `;
 
@@ -155,9 +164,27 @@ const TranslatePage = () => {
   const inputFile = useRef(null);
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
-  const { currentUser } = useAuth();
+  const { isAuthenticated, currentUser, getToken  } = useAuth();
   const [activeTranslations, setActiveTranslations] = useState(0);
+  const [token, setToken] = useState(null);
 
+  
+  const returnToken = async () => {
+    try {
+      const tokenVal = await getToken()
+      setToken(tokenVal);
+    } catch (error) {
+      console.error('Error getting token:', error)
+    }
+  }
+  
+  
+
+  useEffect(() => {
+    returnToken();
+  })
+  
+  
 
   const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
@@ -169,7 +196,31 @@ const TranslatePage = () => {
   });
 
   const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
+  
+  let translationCount = -1;
+  let hRecount;
 
+  try {
+    const { loading: loadings, error: err, data: counts, refetch: recount} = useQuery(GET_USER_HISTORY_COUNTS, {variables: {"id": currentUser.id}});
+    if(err){
+      console.log("History counts error: " + err);
+    }
+    translationCount = counts["historyCount"]
+    hRecount = recount;
+  }
+  catch(error){
+    console.log("Not logged in")
+  }
+  
+  /*
+  if(!loadings){
+    console.log("Translation count: " + counts["historyCount"])
+  }
+  */
+  
+  
+  
+  
   useEffect(() => {
     if (inputEditor.current) {
       monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
@@ -183,9 +234,10 @@ const TranslatePage = () => {
   }, [outputLanguage]);
 
   const [isStatus500, setisStatus500] = useState(false);
+  const [isStatus401, setisStatus401] = useState(false);
 
 
-  const handleConvertClick = () => {
+  const handleConvertClick = async() => {
     if (activeTranslations >= 3) {
       addError("- Too many request")
       return false;;
@@ -194,6 +246,20 @@ const TranslatePage = () => {
       addError("- No input text to convert")
       return false;;
     }
+    //First security measure for api access
+    if(!isAuthenticated){
+      addError("Not authenticated")
+      return false;
+    }
+
+    if(translationCount >= 100){
+      console.log("Translation count: " + translationCount)
+      addError("You've exceeded your daily translations (100). Come back tomorrow")
+      return false;
+    }
+    
+    
+
     let stat = "Not Translated";
     setActiveTranslations(activeTranslations + 1);
 
@@ -201,10 +267,11 @@ const TranslatePage = () => {
     resetErrorState();
     let timeoutId; // Initialize timeout variable
     setisStatus500(false);
+    setisStatus401(false);
 
     const timeoutPromise = new Promise((resolve, reject) => {
       timeoutId = setTimeout(() => {
-        if (!isStatus500) {
+        if (!isStatus500 && !isStatus401) {
           addError("- Please wait API rate limit reached. Translation will be here shortly!");
           setIsGreen(false);
         }
@@ -221,11 +288,14 @@ const TranslatePage = () => {
         }
       ]
     };
+    
 
     fetch('http://localhost:8910/.redwood/functions/openai', {
       mode: 'cors',
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${token}`,
+        'auth-provider': 'dbAuth',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(dataPayload)
@@ -243,7 +313,14 @@ const TranslatePage = () => {
             setIsGreen(false);
             setisStatus500(true);
             addError("API Currently Down. Please try again later")
-          } else {
+          } 
+          else if(response.status === 401){
+            setIsGreen(false);
+            setisStatus401(true);
+            addError("You must be logged in to make a request");
+            
+          }
+          else {
             console.log(response)
             addError(response.statusText)
           }
@@ -270,6 +347,7 @@ const TranslatePage = () => {
           },
         }).then(() => {
           refetch();
+          hRecount();
         }).catch((error) => {
           console.error('Error creating history:', error);
         });

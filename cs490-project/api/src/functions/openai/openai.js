@@ -1,5 +1,6 @@
 import { logger } from 'src/lib/logger'
 import OpenAI from 'openai'
+
 /**
  * The handler function is your code that processes http request events.
  * You can use return and throw to send a response or error, respectively.
@@ -17,23 +18,65 @@ import OpenAI from 'openai'
  * function, and execution environment.
  */
 
+import { authDecoder, dbAuthSession, extractCookie, getSession, decryptSession } from '@redwoodjs/auth-dbauth-api'
+
 const openai = new OpenAI();
+
 
 export const handler = async (event, context) => {
   //logger.info(`${event.httpMethod} ${event.path}: openai function`)
+  
   try {
-    //const body = JSON.stringify(event.body);
 
-    //console.log("Event: ", event.body);
+    
+    //Cookie will contain dbAuth information
+    const cookie = extractCookie(event);
+    if(cookie == undefined || cookie == null){
+      console.log("Not logged in")
+      return {
+        statusCode: 401
+      };
+    }
+    if (cookie) {
+      //Obtain encrypted dbAuth string from cookie
+      const encryptedSession = getSession(cookie, "session_8911")
+      
+      if (encryptedSession) {
+        try{
+          const [session, _csrfToken] = decryptSession(encryptedSession)
+          context.currentUser = { ...session }
+          console.log(context.currentUser);
+        }
+        catch(error){
+          //Usually this means the cookie has been tampered with
+          console.error('Error decrypting session - ', error);
+          return {
+            statusCode: 401
+          }
+        }
 
+      }
+      else {
+        console.log("Invalid session")
+        return {
+          statusCode: 401
+        };
+      }
+    }
+    
+    
+    
     const body = JSON.parse(event.body);
-
     const code = body.messages[0].content;
     const targetLanguage = body.messages[0].target;
     const sourceLanguage = body.messages[0].source;
 
-    const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
+    
 
+
+    const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
+    
+    
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
