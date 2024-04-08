@@ -32,7 +32,7 @@ const HomePage = () => {
           <h3>The Place To Convert Your Code, </h3>
           <h3>Into Other Programming Languages!</h3>
         </div>
-        <Link to={'/translate'}>
+        <Link to={routes.translate()}>
           <button id="getStarted">Get Started</button>
         </Link>
       </div>

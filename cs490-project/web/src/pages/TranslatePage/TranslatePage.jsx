@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, forwardRef } from 'react'
-
 import {
   Button,
   IconButton,
@@ -10,28 +9,22 @@ import {
   Select,
   InputLabel,
 } from '@material-ui/core'
-import { CheckCircle, HighlightOff } from '@material-ui/icons'
-import MonacoEditor from '@monaco-editor/react'
 import {
   FileCopy as FileCopyIcon,
   FileUpload as FileUploadIcon,
   FileDownload as FileDownloadIcon,
   WidthFull,
 } from '@mui/icons-material'
+import { CheckCircle, HighlightOff } from '@material-ui/icons'
 import saveAs from 'file-saver'
-
+import MonacoEditor from '@monaco-editor/react'
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
-import hljs from 'highlight.js'
-
-import { Metadata } from '@redwoodjs/web'
-import { gql, useMutation, useQuery } from '@redwoodjs/web'
-
-import { useAuth } from 'src/auth'
-import FeedbackForm from 'src/components/FeedbackForm'
-import HistoryForm from 'src/components/History/HistoryForm'
 import Navbar from 'src/components/Navbar/Navbar'
-
-//import { cookieName } from 'src/lib/auth';
+import FeedbackForm from 'src/components/FeedbackForm'
+import { Metadata } from '@redwoodjs/web'
+import HistoryForm from 'src/components/History/HistoryForm'
+import { useAuth } from 'src/auth'
+import { gql, useMutation, useQuery } from '@redwoodjs/web'
 
 const CREATE_HISTORY_MUTATION = gql`
   mutation CreateHistoryMutation($input: CreateHistoryInput!) {
@@ -63,24 +56,7 @@ const GET_USER_HISTORY_QUERY = gql`
   }
 `
 
-const GET_USER_HISTORY_COUNTS = gql`
-  query GetUserHistoryCounts($id: Int!) {
-    historyCount(id: $id)
-  }
-`
-
 const useStyles = makeStyles((theme) => ({
-  detect: {
-    marginBottom: '10px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    textAlign: 'center',
-    '& .MuiSelect-icon': {
-      color: '#32368c',
-    },
-  },
   page: {
     // Container for entire page
     backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', // Background gradient
@@ -97,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'column',
     textAlign: 'center',
     '& .MuiSelect-icon': {
       color: '#32368c',
@@ -201,10 +177,8 @@ const TranslatePage = () => {
   const inputFile = useRef(null)
   const inputEditor = useRef(null)
   const outputEditor = useRef(null)
-  const { isAuthenticated, currentUser, getToken } = useAuth()
-
+  const { currentUser } = useAuth()
   const [activeTranslations, setActiveTranslations] = useState(0)
-  const [token, setToken] = useState(null)
 
   const [createHistory, { loading: saving, error: saveError }] = useMutation(
     CREATE_HISTORY_MUTATION,
@@ -218,50 +192,12 @@ const TranslatePage = () => {
     }
   )
 
-  const returnToken = async () => {
-    try {
-      const tokenVal = await getToken()
-      setToken(tokenVal)
-    } catch (error) {
-      console.error('Error getting token:', error)
-    }
-  }
-
-  useEffect(() => {
-    returnToken()
-  })
-
   const {
     loading: histoyLoading,
     error: historyError,
     data,
     refetch,
   } = useQuery(GET_USER_HISTORY_QUERY)
-
-  let translationCount = -1
-  let hRecount
-
-  try {
-    const {
-      loading: loadings,
-      error: err,
-      data: counts,
-      refetch: recount,
-    } = useQuery(GET_USER_HISTORY_COUNTS, { variables: { id: currentUser.id } })
-    if (err) {
-      console.log('History counts error: ' + err)
-    }
-    translationCount = counts['historyCount']
-    hRecount = recount
-  } catch (error) {
-    //console.log("Not logged in")
-  }
-
-  /*
-  if(!loadings){
-    console.log("Translation count: " + counts["historyCount"])
-  }
-  */
 
   useEffect(() => {
     if (inputEditor.current) {
@@ -281,89 +217,9 @@ const TranslatePage = () => {
     }
   }, [outputLanguage])
 
-  const [isStatus401, setisStatus401] = useState(false)
+  const [isStatus500, setisStatus500] = useState(false)
 
-  const [LanFound, setLanfound] = useState(false)
-  const languages = ['java', 'python', 'javascript', 'c', 'cpp']
-  //Detect the language the text is in
-
-  const [detect, setDetected] = useState(false)
-
-  const handleDetect = () => {
-    return new Promise((resolve, reject) => {
-      if (activeTranslations >= 3) {
-        addError('- Too many requests')
-        reject(new Error('Too many requests'))
-        return
-      }
-      if (inputText.trim() === '') {
-        addError('- No input text to convert')
-        reject(new Error('No input text to convert'))
-        return
-      }
-
-      try {
-        const dataPayload2 = {
-          messages: [
-            {
-              role: 'system',
-              content: inputText,
-              source: inputLanguage,
-              target: outputLanguage,
-              promptNum: 2,
-            },
-          ],
-        }
-
-        fetch('http://localhost:8910/.redwood/functions/openai', {
-          mode: 'cors',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataPayload2),
-        })
-          .then((response) => {
-            if (response.ok) {
-              setIsGreen(true)
-              return response.json()
-            } else {
-              console.log(response)
-              addError(response.statusText)
-              throw new Error('Failed to fetch')
-            }
-          })
-          .then((data) => {
-            const lan = data.completion.toLowerCase()
-            if (languages.includes(lan)) {
-              console.log(lan + ' found')
-              setInputLanguage(lan)
-              setLanfound(true)
-              setDetected(false)
-              setAutoDet(false)
-              resetErrorState()
-              resolve(true)
-            } else {
-              setDetected(true)
-              setLanfound(false)
-              resolve(false)
-            }
-          })
-          .catch((error) => {
-            console.error('Error handling translation response:', error)
-            reject(error)
-          })
-          .finally(() => {})
-      } catch (error) {
-        // Log the error
-        console.error('Error in detecting Language: ', error)
-        // Rethrow the error for further handling in application code
-        reject(error)
-      }
-    })
-  }
-
-  const handleConvertClick = async () => {
+  const handleConvertClick = () => {
     if (activeTranslations >= 3) {
       addError('- Too many request')
       return false
@@ -372,165 +228,98 @@ const TranslatePage = () => {
       addError('- No input text to convert')
       return false
     }
+    let stat = 'Not Translated'
+    setActiveTranslations(activeTranslations + 1)
 
-    //First security measure for api access
-    if (!isAuthenticated) {
-      addError('Not authenticated')
-      return false
-    }
+    setLoading(true) // Show loading element
+    resetErrorState()
+    let timeoutId // Initialize timeout variable
+    setisStatus500(false)
 
-    if (translationCount >= 100) {
-      console.log('Translation count: ' + translationCount)
-      addError(
-        "You've exceeded your daily translations (100). Come back tomorrow"
-      )
-      return false
-    }
-
-    const res = await handleDetect()
-    if (!res && inputLanguage === 'AutoDetect') {
-      return false
-    }
-    if (!res) {
-      setDetected(false)
-      addError('Input code is not ' + inputLanguage)
-      throw new Error('Are you stupid or retarted?')
-    }
-
-    try {
-      let stat = 'Not Translated'
-      setActiveTranslations(activeTranslations + 1)
-      resetErrorState()
-      setLoading(true) // Show loading element
-      let timeoutId // Initialize timeout variable
-      setisStatus500(false)
-      setisStatus401(false)
-
-      const timeoutPromise = new Promise((resolve, reject) => {
-        timeoutId = setTimeout(() => {
-          if (!isStatus500 && !isStatus401) {
-            addError(
-              '- Please wait API rate limit reached. Translation will be here shortly!'
-            )
-            setIsGreen(false)
-          }
-        }, 4000) // Set timeout to 4 seconds
-      })
-
-      const dataPayload = {
-        messages: [
-          {
-            role: 'system',
-            content: inputText,
-            source: inputLanguage,
-            target: outputLanguage,
-            promptNum: 1,
-          },
-        ],
-      }
-
-      fetch('http://localhost:8910/.redwood/functions/openai', {
-        mode: 'cors',
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'auth-provider': 'dbAuth',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataPayload),
-      })
-        .then((response) => {
-          setActiveTranslations((activeTranslations) => activeTranslations - 1)
-
-          if (response.ok) {
-            setIsGreen(true)
-            return response.json()
-          } else {
-            if (response.status === 500) {
-              setIsGreen(false)
-              setisStatus500(true)
-              addError('API Currently Down. Please try again later')
-              addError(response.statusText)
-            }
-            if (response.status === 503) {
-              setIsGreen(false)
-              setisStatus500(true)
-              addError('API Overloaded. Please try again later')
-              addError(response.statusText)
-            }
-            if (response.status === 400) {
-              setIsGreen(false)
-              setisStatus500(true)
-              addError('Horrible Input. Please check!')
-              addError(response.statusText)
-            }
-            if (response.status === 401) {
-              setIsGreen(false)
-              setisStatus401(true)
-              addError('You must be logged in to make a request')
-            } else {
-              console.log(response)
-              addError(response.statusText)
-            }
-          }
-        })
-        .then((data) => {
-          console.log(data.completion)
-          resetErrorState()
-          clearTimeout(timeoutId)
-          setOutputText(data.completion)
-          if (data.completion.length > 0) {
-            stat = 'Successfully Translated'
-          }
-          ;(isAuthenticated
-            ? createHistory({
-                variables: {
-                  input: {
-                    inputLanguage,
-                    outputLanguage,
-                    inputText,
-                    outputText: data.completion,
-                    userId: currentUser.id,
-                    status: stat,
-                  },
-                },
-              })
-            : null
+    const timeoutPromise = new Promise((resolve, reject) => {
+      timeoutId = setTimeout(() => {
+        if (!isStatus500) {
+          addError(
+            '- Please wait API rate limit reached. Translation will be here shortly!'
           )
-            .then(() => {
-              refetch()
-              hRecount()
-            })
-            .catch((error) => {
-              console.error('Error creating history:', error)
-            })
-        })
-        .finally(() => {
-          setLoading(false)
-        })
+          setIsGreen(false)
+        }
+      }, 4000) // Set timeout to 4 seconds
+    })
 
-      if (activeTranslations < 0) {
-        setActiveTranslations(0)
-      }
-    } catch (error) {
-      // Log the error
-      console.error('Error in translation API:', error)
-      // Rethrow the error for further handling in application code
-      throw error
+    const dataPayload = {
+      messages: [
+        {
+          role: 'system',
+          content: inputText,
+          source: inputLanguage,
+          target: outputLanguage,
+        },
+      ],
+    }
+
+    fetch('http://localhost:8910/.redwood/functions/openai', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataPayload),
+    })
+      .then((response) => {
+        setActiveTranslations((activeTranslations) => activeTranslations - 1)
+
+        if (response.ok) {
+          setIsGreen(true)
+          return response.json()
+        } else {
+          if (response.status === 500) {
+            setIsGreen(false)
+            setisStatus500(true)
+            addError('API Currently Down. Please try again later')
+          } else {
+            console.log(response)
+            addError(response.statusText)
+          }
+        }
+      })
+      .then((data) => {
+        console.log(data.completion)
+        resetErrorState()
+        clearTimeout(timeoutId)
+        setOutputText(data.completion)
+        if (data.completion.length > 0) {
+          stat = 'Successfully Translated'
+        }
+        createHistory({
+          variables: {
+            input: {
+              inputLanguage,
+              outputLanguage,
+              inputText,
+              outputText: data.completion,
+              userId: currentUser.id,
+              status: stat,
+            },
+          },
+        })
+          .then(() => {
+            refetch()
+          })
+          .catch((error) => {
+            console.error('Error creating history:', error)
+          })
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+
+    if (activeTranslations < 0) {
+      setActiveTranslations(0)
     }
   }
 
-  const [AutoDet, setAutoDet] = useState(false)
   const handleInputLanguageChange = (e) => {
-    if (e.target.value === 'AutoDetect') {
-      setAutoDet(true)
-      setInputLanguage(e.target.value)
-      return
-    } else {
-      setAutoDet(false)
-      setLanfound(false)
-      setDetected(false)
-    }
     if (outputLanguage === e.target.value) {
       setInputLanguage(e.target.value)
       setOutputLanguage(inputLanguage)
@@ -546,6 +335,17 @@ const TranslatePage = () => {
     } else {
       setOutputLanguage(e.target.value)
     }
+  }
+
+  const handleDownloadClick = () => {
+    if (inputText.trim() === '') {
+      addError('- No input text to download')
+      return
+    }
+    const fileExtension = languageToFileExtension[inputLanguage]
+    const fileName = `input.${fileExtension}`
+    const blob = new Blob([inputText], { type: 'text/plain;charset=utf-8' })
+    saveAs(blob, fileName)
   }
 
   const handleUploadClick = () => {
@@ -570,14 +370,15 @@ const TranslatePage = () => {
       }
       reader.readAsText(file)
     } else {
-      throw new Error('- Unsupported File Uploaded')
+      addError('- Unsupported File Uploaded')
+      return
     }
   }
 
   const handleCopyClick = () => {
     if (inputText.trim() === '') {
       addError('- No input text to copy')
-      throw new Error('- No input text to copy')
+      return
     }
     navigator.clipboard.writeText(inputText)
   }
@@ -585,26 +386,15 @@ const TranslatePage = () => {
   const handleOutputCopyClick = () => {
     if (outputText.trim() === '') {
       addError('- No output text to copy')
-      throw new Error('- No output text to copy')
+      return
     }
     navigator.clipboard.writeText(outputText)
-  }
-
-  const handleDownloadClick = () => {
-    if (inputText.trim() === '') {
-      addError('- No input text to download')
-      throw new Error('- No input text to download')
-    }
-    const fileExtension = languageToFileExtension[inputLanguage]
-    const fileName = `input.${fileExtension}`
-    const blob = new Blob([inputText], { type: 'text/plain;charset=utf-8' })
-    saveAs(blob, fileName)
   }
 
   const handleOutputDownloadClick = () => {
     if (outputText.trim() === '') {
       addError('- No output text to download')
-      throw new Error('- No output text to download')
+      return
     }
     const fileExtension = languageToFileExtension[outputLanguage]
     const fileName = `output.${fileExtension}`
@@ -719,33 +509,7 @@ const TranslatePage = () => {
                   <MenuItem value={'c'}>C</MenuItem>
                   <MenuItem value={'cpp'}>C++</MenuItem>
                   <MenuItem value={'javascript'}>JavaScript</MenuItem>
-                  <MenuItem value={'AutoDetect'}>AutoDetect</MenuItem>
                 </Select>
-
-                {AutoDet ? (
-                  <Button
-                    style={{
-                      backgroundColor: '#32368c',
-                      color: '#fff',
-                      '&:hover': {
-                        backgroundColor: '#303f9f',
-                      },
-                      width: '70px',
-                      height: '30px',
-                      borderRadius: '5px',
-                      marginLeft: '10px',
-                    }}
-                    onClick={handleDetect}
-                  >
-                    Detect
-                  </Button>
-                ) : null}
-                {detect && AutoDet ? (
-                  <p style={{ marginLeft: '10px', color: 'red' }}>
-                    {' '}
-                    {!LanFound ? 'Unrecognized' : null}
-                  </p>
-                ) : null}
               </div>
               <MonacoEditorWrapper
                 forwardedRef={inputEditor}
@@ -811,7 +575,6 @@ const TranslatePage = () => {
               aria-label="convert-button"
               className={classes.convertButton}
               onClick={handleConvertClick}
-              disabled={activeTranslations >= 3}
             >
               Convert
             </Button>
@@ -819,7 +582,6 @@ const TranslatePage = () => {
               <CircularProgress style={{ color: 'white', marginTop: '10px' }} />
             )}
             <br></br>
-
             <p style={{ color: 'white' }}>In Queue: {activeTranslations}</p>
           </div>
           <div className={classes.editorContainer}>

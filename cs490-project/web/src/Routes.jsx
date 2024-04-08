@@ -17,7 +17,6 @@ const Routes = () => {
   return (
 
     <Router useAuth={useAuth}>
-      <Route path="/delete-account" page={DeleteAccountPage} name="deleteAccount" />
       <Route path="/resources" page={ResourcesPage} name="resources" />
       <Route path="/requesting-features" page={RequestingFeaturesPage} name="requestingFeatures" />
       <Route path="/reporting-bugs" page={ReportingBugsPage} name="reportingBugs" />
@@ -33,6 +32,7 @@ const Routes = () => {
       <Route path="/faq" page={FAQPage} name="faq" />
 
       <Route path="/change-password" page={ChangePasswordPage} name="changePassword" />
+      <Route path="/update-profile" page={UpdateProfilePage} name="updateProfile" />
 
       <Set wrap={ScaffoldLayout} title="Histories" titleTo="histories" buttonLabel="New History" buttonTo="newHistory">
         <Route path="/histories/new" page={HistoryNewHistoryPage} name="newHistory" />

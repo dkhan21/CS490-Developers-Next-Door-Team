@@ -1,21 +1,7 @@
 import { db } from 'src/lib/db'
 
-
 export const histories = () => {
   return db.history.findMany()
-}
-
-export const historyCount = ({ id }) => {
-  const day = new Date();
-  day.setDate(day.getDate() - 1);
-  return db.history.count({
-    
-    where: { userId: id,
-            createdAt: {
-              gte: day
-            }
-    },
-  })
 }
 
 export const history = ({ id }) => {

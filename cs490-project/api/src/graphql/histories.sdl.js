@@ -13,7 +13,6 @@ export const schema = gql`
   type Query {
     histories: [History!]! @requireAuth
     history(id: Int!): History @requireAuth
-    historyCount(id: Int!): Int! @skipAuth
   }
 
   input CreateHistoryInput {

@@ -1,39 +1,33 @@
 import { mockHttpEvent } from '@redwoodjs/testing/api'
 
-jest.mock("./validate", () => ({
-  validateCookie: jest.fn(() => Promise.resolve(mockValidationData)),
-}));
-const mockValidationData = {
-  id: 2
-};
-
 import { handler } from './openai'
 
-describe('openai function', () => {
+//   Improve this test with help from the Redwood Testing Doc:
+//    https://redwoodjs.com/docs/testing#testing-functions
 
+
+describe('openai function', () => {
   it('Authenticates and receives successful response', async () => {
-    mockCurrentUser({ name: 'test-user', roles: ['some-role'] });
+
     const simulatedPayload = {
-      httpMethod: 'POST',
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         messages: [
           {
             content: "printf('Hello');",
             target: "Python",
-            source: "C",
-            promptNum: 1
+            source: "C"
           }
         ]
       }),
     };
-    
 
     const response = await handler(simulatedPayload, null)
-    const responseBody = JSON.parse(response.body) 
 
+    const responseBody = JSON.parse(response.body) 
 
     expect(response.statusCode).toBe(200)
     expect(responseBody.completion).toBe("print('Hello')")
@@ -51,8 +45,7 @@ describe('openai function', () => {
             {
               content: "printf('Hello');",
               target: "Python",
-              source: "C",
-              promptNum: 1
+              source: "C"
             }
           ]
       }),
@@ -66,28 +59,41 @@ describe('openai function', () => {
   })
 
   it('Successful request', async () => {
+
     const dataPayload = {
-      messages: [
+      "messages": [
         {
-          role: "system",
-          content: "a",
-          source: "b",
-          target: "c",
-          promptNum: 1
+          "role": "system",
+          "content": "a",
+          "source": "b",
+          "target": "c"
         }
       ]
     };
 
+
+
+
     const httpEvent = mockHttpEvent({
-      httpMethod: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+      queryStringParameters: {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload),
       },
-      body: JSON.stringify(dataPayload),
     })
 
     const result = await handler(httpEvent)
+    const body = result.body
 
-    expect(result.statusCode).toBe(200)
+    expect(result.statusCode).toBe(500)
   })
+
+  // You can also use scenarios to test your api functions
+  // See guide here: https://redwoodjs.com/docs/testing#scenarios
+  //
+  // scenario('Scenario test', async () => {
+  //
+  // })
 })
