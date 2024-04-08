@@ -371,7 +371,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       </Box>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
         {filteredHistory.map((historyItem) => (
-          <Card key={historyItem.id} className={classes.card}>
+          <Card key={historyItem.id} className={classes.card} data-testid= 'history-card'>
             <CardContent className={classes.cardContent}>
               <Typography variant="subtitle1" style={{ fontSize: '1.0rem' }}> {}
               <strong>Input Language:</strong> {historyItem.inputLanguage}
