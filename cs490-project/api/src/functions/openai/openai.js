@@ -1,5 +1,7 @@
 import { logger } from 'src/lib/logger'
 import OpenAI from 'openai'
+import { validateCookie } from './validate';
+
 /**
  * The handler function is your code that processes http request events.
  * You can use return and throw to send a response or error, respectively.
@@ -19,16 +21,35 @@ import OpenAI from 'openai'
 
 const openai = new OpenAI();
 
-export const handler = async (event, context) => {
-  try {
-    const body = JSON.parse(event.body);
 
+export const handler = async (event, context) => {
+  //logger.info(`${event.httpMethod} ${event.path}: openai function`)
+  
+  try {
+
+    const val = await validateCookie(event, context);
+
+
+    if(val == -1){
+      console.log("Invalid session")
+      return {
+        statusCode: 401
+      };
+    }
+    else {
+      //Prints out the active user id
+      console.log(val);
+    }
+    
+    
+    const body = JSON.parse(event.body);
     const code = body.messages[0].content;
     const targetLanguage = body.messages[0].target;
     const sourceLanguage = body.messages[0].source;
     const promptNumber = body.messages[0].promptNum;
 
     let prompt;
+
 
     if(promptNumber === 1){
       prompt = "Translate this code ( " + code + " ) from " + sourceLanguage + " to " + targetLanguage;
@@ -38,6 +59,10 @@ export const handler = async (event, context) => {
       prompt = "Detect what programming language this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return only Java, Python, C++, C, Javascript, or Unrecognized.   " + code;
     }
 
+
+    const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
+    
+    
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
