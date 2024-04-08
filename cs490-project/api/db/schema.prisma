@@ -26,6 +26,7 @@ model User {
   resetToken          String?    @unique
   resetTokenExpiresAt DateTime?
   preferredProgrammingLanguage String?
+  preferredIDE String? 
 
   roles               String  @default("user")
   webAuthnChallenge   String? @unique

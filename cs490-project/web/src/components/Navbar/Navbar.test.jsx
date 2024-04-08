@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@redwoodjs/testing/web'
 import { routes } from '@redwoodjs/router'
 import Navbar from './Navbar'
+import { MemoryRouter } from 'react-router-dom';
 
 
 describe('Navbar', () => {
@@ -33,26 +34,31 @@ jest.mock('@redwoodjs/router', () => ({
 }))
 
 describe('Navbar', () => {
-  it('navigates to home page when logo is clicked', () => {
-    render(<Navbar />)
-    const logo = screen.getByText(/Code Harbor/i)
-    fireEvent.click(logo)
-    expect(routes.home()).toHaveBeenCalled()
-  })
+
+  it('redirects to home page when home link is clicked', async () => {
+    render(<Navbar />) // Render the Routes component with initial route '/translate'
+
+    const homeLink = screen.getByLabelText('Code Harbor');
+    homeLink.click();
+    await screen.findByText('Code Harbor');
+
+    expect(window.location.pathname).toBe('/');
+  });
 })
 
 //-----------other links------------should fail for noww
 describe('Navbar', () => {
   it('navigates to respective pages when links are clicked', () => {
     render(<Navbar />)
-    
-    const getStartedLink = screen.getByText(/Get Started/i)
-    fireEvent.click(getStartedLink)
-    expect(routes.getStarted).toHaveBeenCalled()
 
-    const loginLink = screen.getByText(/Login/i)
-    fireEvent.click(loginLink)
-    expect(routes.login).toHaveBeenCalled()
+    const getStartedLink = screen.getByLabelText("Get Started")
+    getStartedLink.click()
+    // Assert that navigation to the 'translate' route has occurred
+    expect(window.location.pathname).toBe('/translate');
+
+    const loginLink = screen.getByLabelText("Login")
+    loginLink.click();
+    expect(window.location.pathname).toBe('/login');
   })
 })
 

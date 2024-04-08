@@ -5,6 +5,7 @@ export const schema = gql`
         email: String!
         resetTokenExpiresAt: DateTime
         preferredProgrammingLanguage: String 
+        preferredIDE: String
     }
 
     type Query{
@@ -17,6 +18,7 @@ export const schema = gql`
         name: String
         email: String! 
         preferredProgrammingLanguage: String
+        preferredIDE: String
     }
 
     type Mutation {
