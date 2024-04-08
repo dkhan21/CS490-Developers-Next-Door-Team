@@ -25,6 +25,7 @@ export const updateUser = ({ input }) => {
       email: input.email,
       name: input.name,
       preferredProgrammingLanguage: input.preferredProgrammingLanguage,
+      preferredIDE: input.preferredIDE
     },
     where: { id: input.id },
   })
