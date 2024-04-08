@@ -5,6 +5,8 @@ import {
   updateFeedback,
   deleteFeedback,
 } from './feedbacks'
+import Filter from 'bad-words';
+
 
 // Generated boilerplate tests do not account for all circumstances
 // and can fail without adjustments, e.g. Float.
@@ -55,4 +57,22 @@ describe('feedbacks', () => {
 
     expect(result).toEqual(null)
   })
+
+  scenario('does not create feedback with inappropriate words', async () => {
+    const filter = new Filter();
+    const n = 'Whore';
+    const r = 1638966;
+    const b = 'Such a dog shit site';
+
+    let exam = null;
+        // Create feedback with potentially inappropriate words
+    if (!filter.isProfane(n) || !filter.isProfane(b)) {
+      exam = await createFeedback({
+        input: { id: 200, name: n, rating: r, body: b },
+      })
+    }
+    expect(exam).toBeNull();
+  });
+
+
 })
