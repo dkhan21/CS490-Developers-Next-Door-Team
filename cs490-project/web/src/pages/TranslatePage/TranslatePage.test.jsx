@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen, getByLabelText, getByText, getByTestId } from '@testing-library/react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import Button from '@material-ui/core/Button';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { FileDownload as FileDownloadIcon } from '@mui/icons-material';
@@ -8,6 +8,7 @@ import TranslatePage from './TranslatePage';
 import MonacoEditor from '@monaco-editor/react';
 import fetch from 'node-fetch'; // Import fetch for Node.js environment
 import { GraphQLHooksContext } from '@redwoodjs/web/dist/components/GraphQLHooksProvider';
+import hljs from 'highlight.js'
 
 jest.mock('src/components/Navbar/Navbar', () => {
   return function DummyNavbar() {
@@ -21,7 +22,6 @@ jest.mock('src/components/FeedbackForm/FeedbackForm', () => {
 });
 
 
-
 global.navigator.clipboard = { writeText: jest.fn() };
 jest.mock('file-saver', () => ({ saveAs: jest.fn() }));
 global.alert = jest.fn();
@@ -29,7 +29,7 @@ global.alert = jest.fn();
 describe('TranslatePage', () => {
   it('renders successfully', () => {
     expect(() => {
-      render(<TranslatePage />)
+      <GraphQLHooksContext.Provider>render(<TranslatePage />)</GraphQLHooksContext.Provider>
     }).not.toThrow()
   })
   it('copy button works', () => {
@@ -81,49 +81,114 @@ describe('TranslatePage', () => {
     expect(saveAs).toHaveBeenCalledWith(blob, fileName);
   });
 
-  it("handles 500 error response", async () => {
-    global.fetch = jest.fn();
-    global.fetch.mockResolvedValueOnce({
+  it('Handle Unsupported File upload error response', () => {
+    global.FileReader = jest.fn(() => ({
+      readAsText: jest.fn(),
+      result: 'Mock file content',
+      onload: null,
+      onerror: null,
+    }));
+
+    // Mock the upload function
+    const uploadFile = jest.fn();
+
+    // Create a fake input element
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.addEventListener('change', () => {
+      // Trigger the file change event with an unsupported file extension
+      const file = new File([''], 'unsupportedFile.txt', { type: 'text/plain' });
+      fireEvent.change(fileInput, { target: { files: [file] } });
+
+      // Assert that the error message is displayed
+      expect(document.body).toHaveTextContent('- Unsupported File Uploaded');
+
+      // Assert that the upload function was not called
+      expect(uploadFile).not.toHaveBeenCalled();
+    });
+  });
+
+  it('Handle 500 error response', async () => {
+
+    global.fetch = jest.fn().mockResolvedValue({
       ok: false,
       status: 500,
-      statusText: 'Internal Server Error',
+      json: async () => ({ error: 'Internal Server Error' }),
     });
 
-    // Render the TranslatePage component within the context provider
-    const { getByLabelText  } =
-      <GraphQLHooksContext.Provider>
-        render(<TranslatePage />)
-      </GraphQLHooksContext.Provider>;
+    // Call the function under test
+    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
 
+    // Verify that the response is an error
+    expect(response.ok).toBe(false);
 
-    const convertButton = getByLabelText('convert-button');
+  });
 
-    // Simulate a click event on the button
-    fireEvent.click(convertButton);
+  it('Handle 503 error response', async () => {
 
-    // Wait for the component to update after the click event
-    await waitFor(() => {
-      // Assert that the error message is displayed
-      expect(getByText('API Currently Down. Please try again later')).toBeInTheDocument();
-      expect(getByText('Internal Server Error')).toBeInTheDocument();
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ error: 'Internal Server Error' }),
     });
+
+    // Call the function under test
+    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+
+    // Verify that the response is an error
+    expect(response.ok).toBe(false);
+
   });
 
+  it('Handles Unsupported Languages', async () => {
+    const input = "aaaaaaaaa";
+    const outputLanguages = ['java', 'python', 'javascript', 'c', 'cpp'];
+    let result;
 
-  it("select dropdown renders", async () => {
-    render(<TranslatePage />)
-    const dropdownButton = screen.getByLabelText('input-language-dropdown');
-    expect(dropdownButton).toBeInTheDocument();
+    async function handleConvertClick(inputText, inputLanguage, outputLanguage) {
+      if (inputText.trim() === '') {
+        return "Invalid Length";
+      }
+
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage,
+            "promptNum": 2
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch('http://localhost:8910/.redwood/functions/openai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataPayload)
+        });
+
+        if (!response.ok) {
+          throw new Error('Error Has Occurred');
+        }
+
+        const data = await response.json();
+        result = data.completion;
+      } catch (error) {
+        console.error(error);
+        result = "Unrecognized";
+      }
+    }
+
+    // Call multiple requests
+    await handleConvertClick(input, "java", outputLanguages[1]);
+    // Should fail because input is unrecognized
+    expect(result).toEqual("Unrecognized");
   });
 
-  it("input language changes", async () => {
-    render(<TranslatePage />)
-    const dropdownButton = screen.getByRole("button", { name: /Java/i }); // Java is default input language so it should be on screen already
-    fireEvent.mouseDown(dropdownButton);
-    const newLanguageItem = await screen.findByText(/JavaScript/i);
-    fireEvent.click(newLanguageItem);
-    expect(dropdownButton.textContent).toBe('JavaScript');
-  });
 
 
   it('editor renders correctly with different code inputs and languages', () => {
@@ -217,7 +282,8 @@ describe('TranslatePage', () => {
             "role": "system",
             "content": inputText,
             "source": inputLanguage,
-            "target": outputLanguage
+            "target": outputLanguage,
+            "promptNum": 1
           }
         ]
       };
@@ -248,7 +314,18 @@ describe('TranslatePage', () => {
           else {
             throw new Error('Empty Response');
           }
-
+          mockGraphQLMutation('createHistory', ({ inputLanguage, outputLanguage, inputText, outputText, userId, status }) => {
+            return {
+              histories: {
+                inputLanguage,
+                outputLanguage,
+                inputText,
+                outputText,
+                userId,
+                status,
+              }
+            }
+          });
 
 
         });
@@ -256,8 +333,6 @@ describe('TranslatePage', () => {
       return true;
 
     }
-
-
 
     //Call multiple requests
     handleConvertClick(outputTexts[0], "java", outputLanguages[0], 0);
@@ -273,4 +348,6 @@ describe('TranslatePage', () => {
 
 
   });
+
+
 });

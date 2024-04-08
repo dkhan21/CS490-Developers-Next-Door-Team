@@ -11,6 +11,7 @@ import { Metadata } from '@redwoodjs/web';
 import HistoryForm from 'src/components/History/HistoryForm';
 import { useAuth } from 'src/auth';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
+import hljs from 'highlight.js';
 
 //import { cookieName } from 'src/lib/auth';
 
@@ -53,6 +54,17 @@ const GET_USER_HISTORY_COUNTS = gql`
 `;
 
 const useStyles = makeStyles((theme) => ({
+  detect: {
+    marginBottom: '10px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    textAlign: 'center',
+    '& .MuiSelect-icon': {
+      color: '#32368c',
+    },
+  },
   page: { // Container for entire page
     backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', // Background gradient
     display: 'flex',
@@ -67,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'column',
+    flexDirection: 'row',
     textAlign: 'center',
     '& .MuiSelect-icon': {
       color: '#32368c',
@@ -165,6 +177,7 @@ const TranslatePage = () => {
   const inputEditor = useRef(null);
   const outputEditor = useRef(null);
   const { isAuthenticated, currentUser, getToken  } = useAuth();
+
   const [activeTranslations, setActiveTranslations] = useState(0);
   const [token, setToken] = useState(null);
 
@@ -186,7 +199,7 @@ const TranslatePage = () => {
   
   
 
-  const [createHistory, { loading: saving, error: saveError }] = useMutation(CREATE_HISTORY_MUTATION, {
+  const [createHistory] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
       refetch();
     },
@@ -235,18 +248,110 @@ const TranslatePage = () => {
   }, [outputLanguage]);
 
   const [isStatus500, setisStatus500] = useState(false);
+
   const [isStatus401, setisStatus401] = useState(false);
 
 
   const handleConvertClick = async() => {
+
+  const [LanFound, setLanfound] = useState(false);
+  const languages = ['java', 'python', 'javascript', 'c', 'cpp'];
+  //Detect the language the text is in
+
+
+  const [detect, setDetected] = useState(false);
+
+  const handleDetect = () => {
+    return new Promise((resolve, reject) => {
+      if (activeTranslations >= 3) {
+        addError("- Too many requests");
+        reject(new Error("Too many requests"));
+        return;
+      }
+      if (inputText.trim() === '') {
+        addError("- No input text to convert");
+        reject(new Error("No input text to convert"));
+        return;
+      }
+
+
+      try {
+
+        const dataPayload2 = {
+          "messages": [
+            {
+              "role": "system",
+              "content": inputText,
+              "source": inputLanguage,
+              "target": outputLanguage,
+              "promptNum": 2
+            }
+          ]
+        };
+
+        fetch('http://localhost:8910/.redwood/functions/openai', {
+          mode: 'cors',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataPayload2)
+        })
+        .then(response => {
+          if (response.ok) {
+            setIsGreen(true);
+            return response.json();
+          } else {
+            console.log(response);
+            addError(response.statusText);
+            throw new Error('Failed to fetch');
+          }
+        })
+        .then(data => {
+          const lan = data.completion.toLowerCase();
+          if (languages.includes(lan)) {
+            console.log(lan + " found");
+            setInputLanguage(lan);
+            setLanfound(true);
+            setDetected(false);
+            setAutoDet(false);
+            resetErrorState();
+            resolve(true);
+          } else {
+            setDetected(true);
+            setLanfound(false);
+            resolve(false);
+          }
+        })
+        .catch(error => {
+          console.error('Error handling translation response:', error);
+          reject(error);
+        })
+        .finally(() => {
+        });
+      } catch (error) {
+        // Log the error
+        console.error('Error in detecting Language: ', error);
+        // Rethrow the error for further handling in application code
+        reject(error);
+      }
+    });
+  };
+
+
+
+  const handleConvertClick = async () => {
+
+
     if (activeTranslations >= 3) {
       addError("- Too many request")
       return false;;
     }
     if (inputText.trim() === '') {
-      addError("- No input text to convert")
-      return false;;
+      addError("- No input text to convert");
+      return false;
     }
+
     //First security measure for api access
     if(!isAuthenticated){
       addError("Not authenticated")
@@ -261,108 +366,152 @@ const TranslatePage = () => {
     
     
 
-    let stat = "Not Translated";
-    setActiveTranslations(activeTranslations + 1);
 
-    setLoading(true); // Show loading element
-    resetErrorState();
-    let timeoutId; // Initialize timeout variable
-    setisStatus500(false);
-    setisStatus401(false);
+    const res = await handleDetect();
+    if(!res && inputLanguage === 'AutoDetect'){
+      return false;
+    }
+    if (!res) {
+      setDetected(false);
+      addError("Input code is not " + inputLanguage);
+      throw new Error("Are you stupid or retarted?");
+    }
 
-    const timeoutPromise = new Promise((resolve, reject) => {
-      timeoutId = setTimeout(() => {
-        if (!isStatus500 && !isStatus401) {
-          addError("- Please wait API rate limit reached. Translation will be here shortly!");
-          setIsGreen(false);
-        }
-      }, 4000); // Set timeout to 4 seconds
-    });
 
-    const dataPayload = {
-      "messages": [
-        {
-          "role": "system",
-          "content": inputText,
-          "source": inputLanguage,
-          "target": outputLanguage
-        }
-      ]
-    };
-    
+    try {
 
-    fetch('http://localhost:8910/.redwood/functions/openai', {
-      mode: 'cors',
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'auth-provider': 'dbAuth',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataPayload)
-    })
-
-      .then(response => {
-        setActiveTranslations(activeTranslations => activeTranslations - 1);
-
-        if (response.ok) {
-          setIsGreen(true);
-          return response.json();
-        }
-        else {
-          if (response.status === 500) {
+      let stat = "Not Translated";
+      setActiveTranslations(activeTranslations + 1);
+      resetErrorState();
+      setLoading(true); // Show loading element
+      let timeoutId; // Initialize timeout variable
+      setisStatus500(false);
+       setisStatus401(false);
+      
+      const timeoutPromise = new Promise((resolve, reject) => {
+        timeoutId = setTimeout(() => {
+          if (!isStatus500 && !isStatus401) {
+            addError("- Please wait API rate limit reached. Translation will be here shortly!");
             setIsGreen(false);
-            setisStatus500(true);
-            addError("API Currently Down. Please try again later")
-          } 
-          else if(response.status === 401){
+          }
+        }, 4000); // Set timeout to 4 seconds
+      });
+
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": inputText,
+            "source": inputLanguage,
+            "target": outputLanguage,
+            "promptNum": 1,
+          }
+        ]
+      };
+
+      fetch('http://localhost:8910/.redwood/functions/openai', {
+        mode: 'cors',
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+           'auth-provider': 'dbAuth',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload)
+      })
+
+        .then(response => {
+          setActiveTranslations(activeTranslations => activeTranslations - 1);
+
+          if (response.ok) {
+            setIsGreen(true);
+            return response.json();
+          }
+          else {
+            if (response.status === 500) {
+              setIsGreen(false);
+              setisStatus500(true);
+              addError("API Currently Down. Please try again later")
+              addError(response.statusText)
+            }
+            if (response.status === 503) {
+              setIsGreen(false);
+              setisStatus500(true);
+              addError("API Overloaded. Please try again later")
+              addError(response.statusText)
+            }
+            if (response.status === 400) {
+              setIsGreen(false);
+              setisStatus500(true);
+              addError("Horrible Input. Please check!")
+              addError(response.statusText)
+            }
+            if (response.status === 401){
             setIsGreen(false);
             setisStatus401(true);
             addError("You must be logged in to make a request");
-            
           }
-          else {
-            console.log(response)
-            addError(response.statusText)
+            else {
+              console.log(response)
+              addError(response.statusText)
+            }
           }
-        }
-      })
-      .then(data => {
-        console.log(data.completion)
-        resetErrorState();
-        clearTimeout(timeoutId);
-        setOutputText(data.completion);
-        if (data.completion.length > 0) {
-          stat = "Successfully Translated";
-        }
-        createHistory({
-          variables: {
-            input: {
-              inputLanguage,
-              outputLanguage,
-              inputText,
-              outputText: data.completion,
-              userId: currentUser.id,
-              status: stat,
-            },
-          },
-        }).then(() => {
-          refetch();
-          hRecount();
-        }).catch((error) => {
-          console.error('Error creating history:', error);
+        })
+        .then(data => {
+          console.log(data.completion)
+          resetErrorState();
+          clearTimeout(timeoutId);
+          setOutputText(data.completion);
+          if (data.completion.length > 0) {
+            stat = "Successfully Translated";
+          }
+          (isAuthenticated ?
+            createHistory({
+              variables: {
+                input: {
+                  inputLanguage,
+                  outputLanguage,
+                  inputText,
+                  outputText: data.completion,
+                  userId: currentUser.id,
+                  status: stat,
+                },
+              },
+            }) : null)
+            .then(() => {
+              refetch();
+            hRecount();
+            }).catch((error) => {
+              console.error('Error creating history:', error);
+            });
+        })
+        .finally(() => {
+          setLoading(false);
+k
         });
-      })
-      .finally(() => {
-        setLoading(false);
-      });
 
-    if (activeTranslations < 0) {
-      setActiveTranslations(0);
+      if (activeTranslations < 0) {
+        setActiveTranslations(0);
+      }
+    } catch (error) {
+      // Log the error
+      console.error('Error in translation API:', error);
+      // Rethrow the error for further handling in application code
+      throw error;
     }
   };
-
+            
+  const [AutoDet, setAutoDet] = useState(false);
   const handleInputLanguageChange = (e) => {
+    if (e.target.value === "AutoDetect") {
+      setAutoDet(true);
+      setInputLanguage(e.target.value);
+      return;
+    } else {
+      setAutoDet(false);
+      setLanfound(false);
+      setDetected(false);
+    }
     if (outputLanguage === e.target.value) {
       setInputLanguage(e.target.value);
       setOutputLanguage(inputLanguage);
@@ -382,16 +531,6 @@ const TranslatePage = () => {
     }
   };
 
-  const handleDownloadClick = () => {
-    if (inputText.trim() === '') {
-      addError("- No input text to download")
-      return;
-    }
-    const fileExtension = languageToFileExtension[inputLanguage];
-    const fileName = `input.${fileExtension}`;
-    const blob = new Blob([inputText], { type: 'text/plain;charset=utf-8' });
-    saveAs(blob, fileName);
-  };
 
   const handleUploadClick = () => {
     inputFile.current.click();
@@ -415,15 +554,14 @@ const TranslatePage = () => {
       };
       reader.readAsText(file);
     } else {
-      addError("- Unsupported File Uploaded")
-      return;
+      throw new Error("- Unsupported File Uploaded")
     }
   };
 
   const handleCopyClick = () => {
     if (inputText.trim() === '') {
       addError("- No input text to copy")
-      return;
+      throw new Error("- No input text to copy")
     }
     navigator.clipboard.writeText(inputText);
   };
@@ -431,15 +569,26 @@ const TranslatePage = () => {
   const handleOutputCopyClick = () => {
     if (outputText.trim() === '') {
       addError("- No output text to copy")
-      return;
+      throw new Error("- No output text to copy")
     }
     navigator.clipboard.writeText(outputText);
   };
 
+  const handleDownloadClick = () => {
+    if (inputText.trim() === '') {
+      addError("- No input text to download");
+      throw new Error("- No input text to download");
+    }
+    const fileExtension = languageToFileExtension[inputLanguage];
+    const fileName = `input.${fileExtension}`;
+    const blob = new Blob([inputText], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, fileName);
+  };
+
   const handleOutputDownloadClick = () => {
     if (outputText.trim() === '') {
-      addError("- No output text to download")
-      return;
+      addError("- No output text to download");
+      throw new Error("- No output text to download");
     }
     const fileExtension = languageToFileExtension[outputLanguage];
     const fileName = `output.${fileExtension}`;
@@ -484,7 +633,6 @@ const TranslatePage = () => {
     setErrorFound(true);
     setErrors(prevErrors => [...prevErrors, error]);
   };
-
 
   return (
     <>
@@ -547,7 +695,25 @@ const TranslatePage = () => {
                   <MenuItem value={'c'}>C</MenuItem>
                   <MenuItem value={'cpp'}>C++</MenuItem>
                   <MenuItem value={'javascript'}>JavaScript</MenuItem>
+                  <MenuItem value={'AutoDetect'}>AutoDetect</MenuItem>
                 </Select>
+
+                {AutoDet ?
+                  <Button style={{
+                    backgroundColor: '#32368c',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#303f9f',
+                    },
+                    width: '70px',
+                    height: '30px',
+                    borderRadius: '5px',
+                    marginLeft: '10px'
+                  }} onClick={handleDetect}>Detect</Button>
+                  : null
+                }
+                {detect && AutoDet ? <p style={{ marginLeft: '10px', color: 'red', }}> {!LanFound ? "Unrecognized" : null}</p> : null}
+
               </div>
               <MonacoEditorWrapper
                 forwardedRef={inputEditor}
@@ -563,6 +729,9 @@ const TranslatePage = () => {
                 onChange={setInputText}
                 value={inputText}
               />
+
+
+
             </div>
           </div>
           <div className={classes.loadingContainer}>
@@ -587,6 +756,7 @@ const TranslatePage = () => {
               </Box> : null}
             </div>
 
+
             <Button
               variant="contained"
               aria-label='convert-button'
@@ -597,7 +767,9 @@ const TranslatePage = () => {
             </Button>
             {loading && <CircularProgress style={{ color: 'white', marginTop: '10px' }} />}
             <br></br>
+
             <p style={{ color: 'white' }}>In Queue: {activeTranslations}</p>
+
 
           </div>
           <div className={classes.editorContainer}>

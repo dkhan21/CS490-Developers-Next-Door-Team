@@ -10076,6 +10076,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bad-words@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "bad-words@npm:3.0.4"
+  dependencies:
+    badwords-list: "npm:^1.0.0"
+  checksum: 10c0/f7e2cd6593461b06777c012bbd280e5e69d25262126906dcffd2911e36b6e24217d5e7dc8d0be30ef5067537c6716d7ac391c39e7728d2546bddc9741434c92b
+  languageName: node
+  linkType: hard
+
+"badwords-list@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "badwords-list@npm:1.0.0"
+  checksum: 10c0/06196ee0d4a66a48f4feba0bcb9eda7642889b2dd8c07af95929101d6fb65412f2af1c1f35f27f2909e3060ef835646fe3cee5857d171d2c3825b0c73ff16312
+  languageName: node
+  linkType: hard
+
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -22289,6 +22305,7 @@ __metadata:
     "@redwoodjs/auth-dbauth-web": "npm:^7.0.7"
     "@redwoodjs/cli-storybook": "npm:6.6.4"
     "@redwoodjs/core": "npm:6.6.4"
+    bad-words: "npm:^3.0.4"
     brace: "npm:^0.11.1"
     filbert: "npm:^0.1.20"
     file-saver: "npm:^2.0.5"

@@ -27,8 +27,8 @@ export const handler = async (event, context) => {
   
   try {
 
-
     const val = await validateCookie(event, context);
+
 
     if(val == -1){
       console.log("Invalid session")
@@ -46,8 +46,18 @@ export const handler = async (event, context) => {
     const code = body.messages[0].content;
     const targetLanguage = body.messages[0].target;
     const sourceLanguage = body.messages[0].source;
+    const promptNumber = body.messages[0].promptNum;
 
-    
+    let prompt;
+
+
+    if(promptNumber === 1){
+      prompt = "Translate this code ( " + code + " ) from " + sourceLanguage + " to " + targetLanguage;
+    }
+
+    if(promptNumber === 2){
+      prompt = "Detect what programming language this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return only Java, Python, C++, C, Javascript, or Unrecognized.   " + code;
+    }
 
 
     const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
@@ -58,19 +68,19 @@ export const handler = async (event, context) => {
       messages: [{ role: "system", content: prompt }],
       model: "gpt-3.5-turbo"
     });
+
     return {
       statusCode: 200,
       headers: {
-            'Content-Type': 'application/json'
-       },
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ completion: completion.choices[0].message.content }),
     };
-
   } catch (error) {
     console.error('Error calling OpenAI API:', error);
     return {
-      statusCode: 500
-    }
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Error calling OpenAI API' }),
+    };
   }
-
 }
