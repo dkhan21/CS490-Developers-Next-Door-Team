@@ -23,6 +23,7 @@ describe('users', () => {
         salt: 'String',
         name: 'Test User',
         preferredProgrammingLanguage: 'JavaScript',
+        preferredIDE: 'VSCode'
       },
     })
 
@@ -31,6 +32,7 @@ describe('users', () => {
     expect(result.salt).toEqual('String')
     expect(result.name).toEqual('Test User')
     expect(result.preferredProgrammingLanguage).toEqual('JavaScript')
+    expect(result.preferredIDE).toEqual("VSCode")
   })
 
   scenario('updates user profile', async (scenario) => {
@@ -44,6 +46,7 @@ describe('users', () => {
         email: 'new-email@example.com',
         name: 'Updated User', 
         preferredProgrammingLanguage: 'Python',
+        preferredIDE: 'IntelliJ'
       },
     })
 
@@ -52,6 +55,7 @@ describe('users', () => {
     expect(result.email).toEqual('new-email@example.com')
     expect(result.name).toEqual('Updated User')
     expect(result.preferredProgrammingLanguage).toEqual('Python')
+    expect(result.preferredIDE).toEqual('IntelliJ')
   })
 
   scenario('deletes a user', async (scenario) => {
