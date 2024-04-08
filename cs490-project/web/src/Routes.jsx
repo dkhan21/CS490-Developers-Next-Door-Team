@@ -34,7 +34,6 @@ const Routes = () => {
       <Route path="/faq" page={FAQPage} name="faq" />
 
       <Route path="/change-password" page={ChangePasswordPage} name="changePassword" />
-      <Route path="/update-profile" page={UpdateProfilePage} name="updateProfile" />
 
       <Set wrap={ScaffoldLayout} title="Histories" titleTo="histories" buttonLabel="New History" buttonTo="newHistory">
         <Route path="/histories/new" page={HistoryNewHistoryPage} name="newHistory" />

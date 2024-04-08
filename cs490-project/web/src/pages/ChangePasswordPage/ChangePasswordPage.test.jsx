@@ -64,7 +64,7 @@ describe('ChangePasswordPage', () => {
     const { getByLabelText, getByText, findAllByText } = render(<ChangePasswordPage />)
     const newPasswordInput = getByLabelText('New Password*')
     const confirmNewPasswordInput = getByLabelText('Confirm New Password*')
-    const submitButton = getByText('Update Profile')
+    const submitButton = getByText('Update Password')
   
     fireEvent.change(newPasswordInput, { target: { value: 'Password1!' } })
     fireEvent.change(confirmNewPasswordInput, { target: { value: 'Password2!' } })

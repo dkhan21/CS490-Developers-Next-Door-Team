@@ -3,6 +3,7 @@ import { MemoryRouter } from 'react-router-dom';
 
 import Sidebar from './Sidebar'
 
+window.scrollTo = jest.fn();
 
 describe('Sidebar', () => {
   it('renders successfully', () => {
