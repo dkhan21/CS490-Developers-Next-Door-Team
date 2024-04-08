@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
   card: {
     display: 'flex',
     flexDirection: 'column',
-    height: 'auto',
     marginBottom: '20px',
     marginRight: '20px',
     background: '#222',
@@ -21,8 +20,8 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #444',
     borderRadius: '10px',
     boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.5)',
-    maxWidth: '270px',
-    maxHeight: '300px'
+    width: '270px',
+    height: '270px',
   },
   cardContent: {
     flex: '1 0 auto',
@@ -101,9 +100,8 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   const [endDate, setEndDate] = useState('');
   const [searchText, setSearchText] = useState('');
   const classes = useStyles();
-
+  const [sortBy, setSortBy] = useState('newest');
   const { loading, error, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
-
   const [deleteHistory] = useMutation(DELETE_HISTORY_MUTATION, {
     refetchQueries: [{ query: GET_USER_HISTORY_QUERY }],
   });
@@ -114,18 +112,26 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     }
   }, [data]);
 
-  const handleDelete = async (id) => {
-    console.log("Deleting history with ID:", id);
-    try {
-      await deleteHistory({ variables: { id } });
-      toast.success('History entry deleted successfully');
-    } catch (error) {
-      toast.error('An error occurred while deleting history entry');
-    }
+  const handleSortByChange = (e) => {
+    setSortBy(e.target.value);
+    setPage(1);
+  };
+  
+  const handleInputLanguageFilterChange = (e) => {
+    const inputValue = e.target.value;
+    setInputLanguageFilter(inputValue === 'C++' ? 'cpp' : inputValue);
+    setPage(1);
+  };
+  
+  const handleOutputLanguageFilterChange = (e) => {
+    const outputValue = e.target.value;
+    setOutputLanguageFilter(outputValue === 'C++' ? 'cpp' : outputValue);
+    setPage(1); 
   };
 
-  const onPageChange = (event, newPage) => {
-    setPage(newPage);
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+    setPage(1);
   };
 
   const handleStartDateChange = (date) => {
@@ -148,6 +154,20 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     setPage(1);
   };
 
+  const handleDelete = async (id) => {
+    console.log("Deleting history with ID:", id);
+    try {
+      await deleteHistory({ variables: { id } });
+      toast.success('History entry deleted successfully');
+    } catch (error) {
+      toast.error('An error occurred while deleting history entry');
+    }
+  };
+
+  const onPageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
   if (!currentUser) {
     return (
       <Typography variant="h1" className={classes.signInMessage}>
@@ -158,20 +178,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-  let filteredHistory = data.histories
-    .filter((historyItem) => historyItem.userId === currentUser.id);
-
-  const handleInputLanguageFilterChange = (e) => {
-    const inputValue = e.target.value;
-    setInputLanguageFilter(inputValue === 'C++' ? 'cpp' : inputValue);
-    setPage(1);
-  };
-  
-  const handleOutputLanguageFilterChange = (e) => {
-    const outputValue = e.target.value;
-    setOutputLanguageFilter(outputValue === 'C++' ? 'cpp' : outputValue);
-    setPage(1); 
-  };
+  let filteredHistory = data.histories.filter((historyItem) => historyItem.userId === currentUser.id);
     
   if (inputLanguageFilter && inputLanguageFilter !== 'All') {
     filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage === inputLanguageFilter.toLowerCase());
@@ -190,10 +197,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       return historyDate >= startDateObj && historyDate <= endDateObj;
     });
   }
-  const handleSearchTextChange = (text) => {
-    setSearchText(text);
-    setPage(1);
-  };
+
   if (searchText) {
     const searchTextLowerCase = searchText.replace(/\n/g, '').toLowerCase();
     filteredHistory = filteredHistory.filter((historyItem) => {
@@ -211,10 +215,6 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     setPage(totalPages);
   }
 
-  filteredHistory = filteredHistory
-    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice((page - 1) * 5, page * 5);
-
   const handleCopyHistory = (historyItem) => {
     setInputText(historyItem.inputText);
     setOutputText(historyItem.outputText);
@@ -225,11 +225,56 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       behavior: 'smooth'
     });
   };
+  
+  if (sortBy === 'newest') {
+    filteredHistory = filteredHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  }
+  else if (sortBy === 'oldest') {
+    filteredHistory = filteredHistory.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+  }
+  else if (sortBy === 'shortest') {
+    filteredHistory = filteredHistory
+    .sort((a, b) => a.inputText.length - b.inputText.length)
+  }
+  else if (sortBy === 'longest') {
+    filteredHistory = filteredHistory.sort((a, b) => b.inputText.length - a.inputText.length)
+  }
+  filteredHistory = filteredHistory.slice((page - 1) * 5, page * 5);
 
   return (
     <div> {}
       {/* Search elements */}
       <Box className={classes.searchContainer}>
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ color: 'white', marginRight: '25px', }}>Sort By</div>
+          <Select
+            className={classes.searchField}
+            value={sortBy}
+            onChange={handleSortByChange}
+            style={{ color: '#fff' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  backgroundColor: '#393e41',
+                },
+              },
+              MenuListProps: {
+                style: {
+                  color: '#fff',
+                  textAlign: 'center',
+                },
+              },
+            }}>
+            <MenuItem value="newest">Newest</MenuItem>
+            <MenuItem value="oldest">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span>Oldest</span>
+              </div>
+            </MenuItem>  
+            <MenuItem value="shortest">Shortest</MenuItem>
+            <MenuItem value="longest">Longest</MenuItem>
+          </Select>
+        </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ color: 'white', marginRight: '25px', }}>Input Language</div>
             <Select
@@ -326,7 +371,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       </Box>
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
         {filteredHistory.map((historyItem) => (
-          <Card key={historyItem.id} className={classes.card}>
+          <Card key={historyItem.id} className={classes.card} data-testid= 'history-card'>
             <CardContent className={classes.cardContent}>
               <Typography variant="subtitle1" style={{ fontSize: '1.0rem' }}> {}
               <strong>Input Language:</strong> {historyItem.inputLanguage}
