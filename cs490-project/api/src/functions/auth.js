@@ -2,14 +2,28 @@ import { DbAuthHandler } from '@redwoodjs/auth-dbauth-api'
 import { cookieName } from 'src/lib/auth'
 import { db } from 'src/lib/db'
 import sgMail from '@sendgrid/mail'
-import SENDGRID_API_KEY from '**/.env';
+import SENDGRID_API_KEY from '**/.env'
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
-function generateResetToken() {
-  return Math.random().toString(36).slice(2);
+export async function generateResetToken() {
+  let token = '';
+  while (token.length < 20) {
+      token += Math.random().toString(36).slice(2);
+  }
+  token = token.slice(0, 20);
+  let user = await db.user.findUnique({ where: { resetToken: token } })
+  while (user != null) { // ensure token is unique
+    token = '';
+    while (token.length < 20) {
+        token += Math.random().toString(36).slice(2);
+    }
+    token = token.slice(0, 20);
+    user = await db.user.findUnique({ where: { resetToken: token } })
+  }
+  return token;
 }
 
-const sendResetPasswordEmail = async (email, resetToken) => {
+export const sendResetPasswordEmail = async (email, resetToken) => {
   console.log('Sending reset password email to:', email, 'with API:', SENDGRID_API_KEY)
   const resetUrl = `http://localhost:8910/reset-password?token=${resetToken}`;
   const msg = {
@@ -26,7 +40,7 @@ export const handler = async (event, context) => {
   const forgotPasswordOptions = {
     handler: async (user) => {
       try {
-        const resetToken = generateResetToken();
+        const resetToken = await generateResetToken();
         await db.user.update({
           where: { email: user.email },
           data: {

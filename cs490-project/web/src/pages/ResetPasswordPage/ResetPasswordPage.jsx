@@ -4,7 +4,7 @@ import { useParams, navigate, routes } from '@redwoodjs/router';
 import { Metadata } from '@redwoodjs/web';
 import { toast, Toaster } from '@redwoodjs/web/toast';
 import { useQuery, useMutation, gql } from '@apollo/client';
-import Nav2 from 'src/components/Nav2/nav2'
+import Navbar from 'src/components/Navbar/Navbar'
 
 const GET_USER_QUERY = gql`
   query FindUserByToken($resetToken: String!) {
@@ -57,9 +57,11 @@ const ResetPasswordPage = () => {
       }
     },
   });
+
   const passwordStrengthRegex = new RegExp(
     '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
   );
+  
   const onSubmit = async (data) => {
     if (data.password !== data.confirmPassword){
       toast.error('Passwords do not match!');
@@ -87,7 +89,7 @@ const ResetPasswordPage = () => {
     <>
       <Metadata title="Reset Password" />
       <header>
-        <Nav2 />
+        <Navbar/>
       </header>
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />

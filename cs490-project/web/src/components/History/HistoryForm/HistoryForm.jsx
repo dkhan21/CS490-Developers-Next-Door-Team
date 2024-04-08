@@ -247,29 +247,33 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       <Box className={classes.searchContainer}>
       <div style={{ textAlign: 'center' }}>
         <div style={{ color: 'white', marginRight: '25px', }}>Sort By</div>
-        <Select
-          className={classes.searchField}
-          value={sortBy}
-          onChange={handleSortByChange}
-          style={{ color: '#fff' }}
-          MenuProps={{
-            PaperProps: {
-              style: {
-                backgroundColor: '#393e41',
+          <Select
+            className={classes.searchField}
+            value={sortBy}
+            onChange={handleSortByChange}
+            style={{ color: '#fff' }}
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  backgroundColor: '#393e41',
+                },
               },
-            },
-            MenuListProps: {
-              style: {
-                color: '#fff',
-                textAlign: 'center',
+              MenuListProps: {
+                style: {
+                  color: '#fff',
+                  textAlign: 'center',
+                },
               },
-            },
-          }}>
-          <MenuItem value="newest">Newest</MenuItem>
-          <MenuItem value="oldest">Oldest</MenuItem>
-          <MenuItem value="shortest">Shortest</MenuItem>
-          <MenuItem value="longest">Longest</MenuItem>
-        </Select>
+            }}>
+            <MenuItem value="newest">Newest</MenuItem>
+            <MenuItem value="oldest">
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <span>Oldest</span>
+              </div>
+            </MenuItem>  
+            <MenuItem value="shortest">Shortest</MenuItem>
+            <MenuItem value="longest">Longest</MenuItem>
+          </Select>
         </div>
         <div style={{ textAlign: 'center' }}>
           <div style={{ color: 'white', marginRight: '25px', }}>Input Language</div>
