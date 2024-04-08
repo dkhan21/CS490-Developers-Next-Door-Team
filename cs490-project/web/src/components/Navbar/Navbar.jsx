@@ -1,95 +1,88 @@
+import * as React from 'react'
 
-import * as React from 'react';
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import { styled } from '@mui/material/styles'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+
 import { Link, routes } from '@redwoodjs/router'
-import { styled } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
+
 import { useAuth } from 'src/auth'
-import MenuItem from '@mui/material/MenuItem';
 
 const Navbar = () => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
 
-  const [anchorEl1, setAnchorEl1] = React.useState(null);
-  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [anchorEl1, setAnchorEl1] = React.useState(null)
+  const [anchorEl2, setAnchorEl2] = React.useState(null)
 
   // const open = Boolean(anchorEl);
 
   const handleClick1 = (event) => {
-    setAnchorEl1(event.currentTarget);
-  };
+    setAnchorEl1(event.currentTarget)
+  }
 
   const handleClose1 = () => {
-    setAnchorEl1(null);
-  };
+    setAnchorEl1(null)
+  }
 
   const handleClick2 = (event) => {
-    setAnchorEl2(event.currentTarget);
-  };
+    setAnchorEl2(event.currentTarget)
+  }
 
   const handleClose2 = (event) => {
-    setAnchorEl2(null);
+    setAnchorEl2(null)
   }
   return (
     <Box style={{ flexGrow: 1 }}>
-      <AppBar position="fixed" component="nav" style={{backgroundColor: '#393E41'}}>
-        <Toolbar>
+      <AppBar
+        position="fixed"
+        component="nav"
+        style={{ backgroundColor: '#393E41' }}
+      >
+        <Toolbar className="navbar-whole">
           <Typography
             variant="h6"
             noWrap
             component={Link}
             to={routes.home()}
-            style={{
-              mr: 2,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+            sx={{
               color: '#E7E5DF',
               textDecoration: 'none',
+              position: 'relative',
+              '&:after': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: '1px',
+                backgroundColor: 'currentColor',
+                transform: 'scaleX(0)',
+                transformOrigin: 'left',
+                transition: 'transform 0.5s ease-in-out',
+              },
+              '&:hover:after': {
+                transform: 'scaleX(1)',
+                color: '#E7BB41',
+              },
+              '&:hover': {
+                color: '#E7BB41',
+              },
             }}
-            aria-label='Code Harbor'
+            aria-label="Code Harbor"
           >
             Code Harbor
           </Typography>
 
           <Box style={{ flexGrow: 1 }} />
-            <Link to={`${routes.home()}#section-about`}>
-              <Button
-               style={{color: 'white'}}
-               sx={{
-                color: '#E7E5DF',
-                position: 'relative',
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  height: '1px',
-                  backgroundColor: 'currentColor',
-                  transform: 'scaleX(0)',
-                  transformOrigin: 'left',
-                  transition: 'transform 0.5s ease-in-out',
-                },
-                '&:hover:after': {
-                  transform: 'scaleX(1)',
-                  color: '#E7BB41',
-                },
-                '&:hover':{
-                  color:'#E7BB41',
-                }
-              }}
-              aria-label='About'
-              ><p>About</p></Button>
-            </Link>
-            <Link to={`${routes.home()}#section-works`}>
-              <Button
-              style={{color: 'white'}}
+          <Link to={`${routes.home()}#section-about`}>
+            <Button
+              style={{ color: 'white' }}
               sx={{
                 color: '#E7E5DF',
                 position: 'relative',
@@ -109,17 +102,19 @@ const Navbar = () => {
                   transform: 'scaleX(1)',
                   color: '#E7BB41',
                 },
-                '&:hover':{
-                  color:'#E7BB41',
-                }
+                '&:hover': {
+                  color: '#E7BB41',
+                },
               }}
-              aria-label='Workings'
-              ><p>Instructions</p></Button>
-            </Link>
-            <Link to={routes.translate()}>
-              <Button
-               style={{color: 'white'}}
-               sx={{
+              aria-label="About"
+            >
+              <p>About</p>
+            </Button>
+          </Link>
+          <Link to={`${routes.home()}#section-works`}>
+            <Button
+              style={{ color: 'white' }}
+              sx={{
                 color: '#E7E5DF',
                 position: 'relative',
                 '&:after': {
@@ -138,68 +133,122 @@ const Navbar = () => {
                   transform: 'scaleX(1)',
                   color: '#E7BB41',
                 },
-                '&:hover':{
-                  color:'#E7BB41',
-                }
+                '&:hover': {
+                  color: '#E7BB41',
+                },
+              }}
+              aria-label="Workings"
+            >
+              <p>Instructions</p>
+            </Button>
+          </Link>
+          <Link to={routes.translate()}>
+            <Button
+              style={{ color: 'white' }}
+              sx={{
+                color: '#E7E5DF',
+                position: 'relative',
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: '1px',
+                  backgroundColor: 'currentColor',
+                  transform: 'scaleX(0)',
+                  transformOrigin: 'left',
+                  transition: 'transform 0.5s ease-in-out',
+                },
+                '&:hover:after': {
+                  transform: 'scaleX(1)',
+                  color: '#E7BB41',
+                },
+                '&:hover': {
+                  color: '#E7BB41',
+                },
               }}
               aria-label="Get Started"
-              >Get Started</Button>
+            >
+              Get Started
+            </Button>
+          </Link>
+
+          <Button
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick1}
+            style={{ color: 'white' }}
+            sx={{
+              color: '#E7E5DF',
+              position: 'relative',
+              '&:after': {
+                content: '""',
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: '1px',
+                backgroundColor: 'currentColor',
+                transform: 'scaleX(0)',
+                transformOrigin: 'left',
+                transition: 'transform 0.5s ease-in-out',
+              },
+              '&:hover:after': {
+                transform: 'scaleX(1)',
+                color: '#E7BB41',
+              },
+              '&:hover': {
+                color: '#E7BB41',
+              },
+            }}
+            aria-label="UserEmail"
+          >
+            Help
+          </Button>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl1}
+            open={Boolean(anchorEl1)}
+            onClose={handleClose1}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            style={{ width: '50%' }}
+          >
+            <Link to={routes.faq()}>
+              <MenuItem
+                onClick={handleClose1}
+                style={{ color: 'black', padding: '8px' }}
+              >
+                FAQs
+              </MenuItem>
             </Link>
+            <Link to={routes.userGuides()}>
+              <MenuItem
+                onClick={handleClose1}
+                style={{ color: 'black', padding: '8px' }}
+              >
+                User Guides
+              </MenuItem>
+            </Link>
+            <Link to={routes.resources()}>
+              <MenuItem
+                onClick={handleClose1}
+                style={{ color: 'black', padding: '8px' }}
+              >
+                Resources
+              </MenuItem>
+            </Link>
+          </Menu>
 
-            <Button
-                  id="basic-button"
-                  aria-controls={open ? 'basic-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
-                  onClick={handleClick1}
-                  style={{color: 'white'}}
-                  sx={{
-                    color: '#E7E5DF',
-                    position: 'relative',
-                    '&:after': {
-                      content: '""',
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      height: '1px',
-                      backgroundColor: 'currentColor',
-                      transform: 'scaleX(0)',
-                      transformOrigin: 'left',
-                      transition: 'transform 0.5s ease-in-out',
-                    },
-                    '&:hover:after': {
-                      transform: 'scaleX(1)',
-                      color: '#E7BB41',
-                    },
-                    '&:hover':{
-                      color:'#E7BB41',
-                    }
-                  }}
-                  aria-label="UserEmail"
-                >
-                  Help
-                </Button>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl1}
-                  open={Boolean(anchorEl1)}
-                  onClose={handleClose1}
-                  MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                  }}
-                  style ={{width: '10%'}}
-                >
-                  <Link to={routes.faq()}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>FAQs</MenuItem></Link>
-                  <Link to={routes.userGuides()}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>User Guides</MenuItem></Link>
-                  <Link to={routes.resources()}><MenuItem onClick={handleClose1} style={{color: 'black', padding: '8px'}}>Resources</MenuItem></Link>
-                </Menu>
-
-            {!isAuthenticated && (
-              <Link to={routes.login()}>
-                <Button
-                 style={{color: 'white'}}
-                 sx={{
+          {!isAuthenticated && (
+            <Link to={routes.login()}>
+              <Button
+                style={{ color: 'white' }}
+                sx={{
                   color: '#E7E5DF',
                   position: 'relative',
                   '&:after': {
@@ -218,69 +267,83 @@ const Navbar = () => {
                     transform: 'scaleX(1)',
                     color: '#E7BB41',
                   },
-                  '&:hover':{
-                    color:'#E7BB41',
-                  }
+                  '&:hover': {
+                    color: '#E7BB41',
+                  },
                 }}
                 aria-label="Login"
-                >Login</Button>
-              </Link>
-            )}
+              >
+                Login
+              </Button>
+            </Link>
+          )}
 
-            {isAuthenticated && (
-              <>
-                <Button
-                  id="basic-button"
-                  aria-controls={open ? 'basic-menu' : undefined}
-                  aria-haspopup="true"
-                  aria-expanded={open ? 'true' : undefined}
-                  onClick={handleClick2}
-                  style={{color: 'white'}}
-                  sx={{
-                    color: '#E7E5DF',
-                    position: 'relative',
-                    '&:after': {
-                      content: '""',
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      height: '1px',
-                      backgroundColor: 'currentColor',
-                      transform: 'scaleX(0)',
-                      transformOrigin: 'left',
-                      transition: 'transform 0.5s ease-in-out',
-                    },
-                    '&:hover:after': {
-                      transform: 'scaleX(1)',
-                      color: '#E7BB41',
-                    },
-                    '&:hover':{
-                      color:'#E7BB41',
-                    }
+          {isAuthenticated && (
+            <>
+              <Button
+                id="basic-button"
+                aria-controls={open ? 'basic-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick2}
+                style={{ color: 'white' }}
+                sx={{
+                  color: '#E7E5DF',
+                  position: 'relative',
+                  '&:after': {
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    height: '1px',
+                    backgroundColor: 'currentColor',
+                    transform: 'scaleX(0)',
+                    transformOrigin: 'left',
+                    transition: 'transform 0.5s ease-in-out',
+                  },
+                  '&:hover:after': {
+                    transform: 'scaleX(1)',
+                    color: '#E7BB41',
+                  },
+                  '&:hover': {
+                    color: '#E7BB41',
+                  },
+                }}
+                aria-label="UserEmail"
+              >
+                {currentUser.email}
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl2}
+                open={Boolean(anchorEl2)}
+                onClose={handleClose2}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+                style={{ width: '10%' }}
+              >
+                <Link to={routes.profile()}>
+                  <MenuItem
+                    onClick={handleClose2}
+                    style={{ color: 'black', padding: '8px' }}
+                  >
+                    Profile
+                  </MenuItem>
+                </Link>
 
-                  }}
-                  aria-label="UserEmail"
-                >
-                  {currentUser.email}
-                </Button>
-                <Menu
-                  id="basic-menu"
-                  anchorEl={anchorEl2}
-                  open={Boolean(anchorEl2)}
-                  onClose={handleClose2}
-                  MenuListProps={{
-                    'aria-labelledby': 'basic-button',
-                  }}
-                  style ={{width: '10%'}}
-                >
-                  <Link to={routes.profile()}><MenuItem onClick={handleClose2} style={{color: 'black', padding: '8px'}}>Profile</MenuItem></Link>
-
-                  <Link to={routes.home()}><MenuItem onClick={logOut} style={{color: 'black', padding: '8px'}}>Logout</MenuItem></Link>
-
-                </Menu>
-              </>
-            )}
+                <Link to={routes.home()}>
+                  <MenuItem
+                    onClick={logOut}
+                    style={{ color: 'black', padding: '8px' }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Link>
+              </Menu>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

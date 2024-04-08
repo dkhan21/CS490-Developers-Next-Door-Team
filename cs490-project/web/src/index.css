@@ -1,127 +1,136 @@
-html{
+html {
   scroll-behavior: smooth;
 }
 
-*{
+* {
   margin: 0;
   padding: 0;
   font-family: Helvetica, sans-serif;
   box-sizing: border-box;
 }
-body{
+body {
   background-color: #d3d0cb;
 }
-a { text-decoration: none;
-color: #E7E5DF; } /* Globally */
+a {
+  text-decoration: none;
+  color: #e7e5df;
+} /* Globally */
 
 /* Each state */
 
-a:visited { text-decoration: none; color:#E7E5DF; }
-a:hover { text-decoration: none; color:#E7E5DF; }
-a:focus { text-decoration: none; color:#E7E5DF; }
-a:hover, a:active { text-decoration: none; color:#E7BB41 }
+a:visited {
+  text-decoration: none;
+  color: #e7e5df;
+}
+a:hover {
+  text-decoration: none;
+  color: #e7e5df;
+}
+a:focus {
+  text-decoration: none;
+  color: #e7e5df;
+}
+a:hover,
+a:active {
+  text-decoration: none;
+  color: #e7bb41;
+}
 
-.container{
+.container {
   margin-top: 100px;
   display: flex;
   align-items: center;
   padding: 25px;
   line-height: 30px;
-  border:5px solid #393E41;
+  border: 5px solid #393e41;
   border-radius: 20px;
 }
 /*-----Image Sizes-----*/
 img {
   max-width: 50%;
-  max-height:40%;
+  max-height: 40%;
   border-radius: 20px;
 }
 
 /*-----welcome banner-----*/
-#welcome{
-  width:100%;
+#welcome {
+  width: 100%;
   height: 100vh;
-  background-image: url("/pages/images/boat.jpg");
+  background-image: url('/pages/images/boat.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  color: #E7E5DF;
+  color: #e7e5df;
   border-radius: 20px;
   line-height: 30px;
 }
 
-#welcome-text{
+#welcome-text {
   text-align: center;
   -webkit-text-stroke: 1px black;
 }
 
-
 /*-----The Button-----*/
-#getStarted{
-  background-color: #44BBA4; /* Green */
+#getStarted {
+  background-color: #44bba4; /* Green */
   border-radius: 20px;
-  color: #E7E5DF;
+  color: #e7e5df;
   padding: 15px 32px;
   font-size: 16px;
   border-radius: 12px;
   transition-duration: 0.4s;
-
 }
 
-#getStarted:hover{
+#getStarted:hover {
   cursor: pointer;
-  color: #E7BB41;
-  box-shadow: 0 0 5px #E7BB41;
-  text-shadow: 0 0 5px #E7BB41;
+  color: #e7bb41;
+  box-shadow: 0 0 5px #e7bb41;
+  text-shadow: 0 0 5px #e7bb41;
 }
 
-#getStarted:hover::before{
+#getStarted:hover::before {
   transform: scale(1.1);
-  box-shadow: 0 0 15px #E7BB41;
+  box-shadow: 0 0 15px #e7bb41;
 }
 
-#getStarted:active{
+#getStarted:active {
   transform: scale(0.9);
-  color: #E7BB41;
-  box-shadow: 0 0 5px #E7BB41;
-  text-shadow: 0 0 5px #E7BB41;
+  color: #e7bb41;
+  box-shadow: 0 0 5px #e7bb41;
+  text-shadow: 0 0 5px #e7bb41;
 }
-
 
 /*-----About Section-----*/
-#about{
+#about {
   padding: 20px;
-  color: #393E41;
-  border:5px solid #393E41;
+  color: #393e41;
+  border: 5px solid #393e41;
   border-radius: 20px;
   margin-right: 20px;
   padding: 40px;
 }
-#section-about{
-  background-color: #E7BB41;
+#section-about {
+  background-color: #e7bb41;
 }
 
-
-
 /*------How it works-------*/
-#workings{
+#workings {
   padding-left: 50px;
-  color: #393E41;
-  border:5px solid #393E41;
+  color: #393e41;
+  border: 5px solid #393e41;
   border-radius: 20px;
   margin: 20px;
   padding: 40px;
-
 }
-#section-works{
-  background-color: #44BBA4;
+#section-works {
+  background-color: #44bba4;
 }
 
 /* This adjusts User Guide page */
-.userguide{
+.userguide {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,36 +138,42 @@ img {
   margin-top: 120px;
 }
 
-.userbox{
+.userbox {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 70px;
   margin-left: 80px;
 }
 
- /* This adjusts resources page */
- .resource-whole{
+/* This adjusts resources page */
+.resource-whole {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 120px;
- }
+}
 
- .resource-body{
+.resource-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
- }
+}
 
-@media only screen and (max-width: 600px){
+/* This adjusts navBar page */
+.navbar-whole {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 600px) {
   /* This adjusts home page */
   body {
     font-size: 14px;
   }
-  .container{
+  .container {
     flex-direction: column;
     justify-items: center;
     align-items: center;
@@ -168,15 +183,15 @@ img {
   }
 
   /* This adjusts user guide page */
-  .userguide{
+  .userguide {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     max-width: auto;
-}
+  }
 
-  .userbox{
+  .userbox {
     display: flex;
     flex-direction: column;
     gap: 0px;
@@ -186,25 +201,32 @@ img {
     justify-content: center;
     margin-right: 90px;
   }
-   /* This adjusts resources page */
- .resource-whole{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-  margin-top: 120px;
- }
+  /* This adjusts resources page */
+  .resource-whole {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    margin-top: 120px;
+  }
 
- .resource-body{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
- }
+  .resource-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  /* This adjusts navBar page */
+  .navbar-whole {
+    display: block;
+    flex-direction: column;
+  }
 
-
+  .sidemenu{
+    color: red;
+  }
 }
 
 /*
