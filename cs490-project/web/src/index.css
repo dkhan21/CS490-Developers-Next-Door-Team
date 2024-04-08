@@ -220,13 +220,9 @@ img {
   }
   /* This adjusts navBar page */
   .navbar-whole {
-    max-height: 0; /* Set max-height to 0 to hide the element */
-    overflow: hidden;
+    display: block;
+    flex-direction: column;
   }
-
-  /* .sidemenu{
-    clip-path: inset(100% 0 0 0);
-  } */
 }
 
 /*
