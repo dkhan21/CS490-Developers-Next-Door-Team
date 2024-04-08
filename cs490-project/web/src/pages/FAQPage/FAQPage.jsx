@@ -1,17 +1,20 @@
-import { Link, routes } from '@redwoodjs/router'
-import { Metadata } from '@redwoodjs/web'
-import Navbar from 'src/components/Navbar/Navbar'
+import React, { useState } from 'react'
+
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
   TextField,
 } from '@material-ui/core'
-import React, { useState } from 'react'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import Button from '@mui/material/Button'
-import { Typography } from '@mui/material'
 import { createTheme, ThemeProvider } from '@material-ui/core/styles'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import { Typography } from '@mui/material'
+import Button from '@mui/material/Button'
+
+import { Link, routes } from '@redwoodjs/router'
+import { Metadata } from '@redwoodjs/web'
+
+import Navbar from 'src/components/Navbar/Navbar'
 
 const faqData = [
   {
@@ -103,9 +106,6 @@ const FaqPage = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <header>
-        <Navbar />
-      </header>
       <div
         style={{
           display: 'flex',
@@ -115,6 +115,9 @@ const FaqPage = () => {
           marginTop: '120px',
         }}
       >
+        <header>
+          <Navbar />
+        </header>
         <h1 style={{ marginBottom: '20px ' }}>Frequently Asked Questions</h1>
         <p style={{ marginBottom: '40px ' }}>
           Find answers to our most frequently asked questions below. If you
@@ -204,7 +207,7 @@ const FaqPage = () => {
             Collapse All
           </Button>
         </div>
-
+        {/* issue is below */}
         {filteredFAQ.map((entry, index) => (
           <Accordion
             key={index}
@@ -218,6 +221,8 @@ const FaqPage = () => {
               width: '65%',
             }}
           >
+            {/* issue is here*/}
+
               <Typography variant="body1" style={{ fontWeight: 'bold' }}>
                 {entry.question}
               </Typography>

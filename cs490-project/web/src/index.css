@@ -219,10 +219,10 @@ img {
     text-align: center;
   }
   /* This adjusts navBar page */
-  .navbar-whole {
+  /* .navbar-whole {
     display: block;
     flex-direction: column;
-  }
+  } */
 
   .sidemenu{
     color: red;

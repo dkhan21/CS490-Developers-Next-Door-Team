@@ -1,18 +1,15 @@
 import * as React from 'react'
-
+import { Link, routes } from '@redwoodjs/router'
+import { styled } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
+import IconButton from '@mui/material/IconButton'
+import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-
-import { Link, routes } from '@redwoodjs/router'
-
+import Menu from '@mui/material/Menu'
 import { useAuth } from 'src/auth'
+import MenuItem from '@mui/material/MenuItem'
 
 const Navbar = () => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
@@ -44,44 +41,27 @@ const Navbar = () => {
         component="nav"
         style={{ backgroundColor: '#393E41' }}
       >
-        <Toolbar className="navbar-whole">
+        <Toolbar>
           <Typography
             variant="h6"
             noWrap
             component={Link}
-            to={routes.home()}
+            to={'/'}
             sx={{
+              mr: 2,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
               color: '#E7E5DF',
               textDecoration: 'none',
-              position: 'relative',
-              '&:after': {
-                content: '""',
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                bottom: 0,
-                height: '1px',
-                backgroundColor: 'currentColor',
-                transform: 'scaleX(0)',
-                transformOrigin: 'left',
-                transition: 'transform 0.5s ease-in-out',
-              },
-              '&:hover:after': {
-                transform: 'scaleX(1)',
-                color: '#E7BB41',
-              },
-              '&:hover': {
-                color: '#E7BB41',
-              },
             }}
             aria-label="Code Harbor"
           >
             Code Harbor
           </Typography>
 
-
           <Box style={{ flexGrow: 1 }} />
-          <Link to={`${routes.home()}#section-about`}>
+          <Link to={`${'/'}#section-about`}>
             <Button
               style={{ color: 'white' }}
               sx={{
@@ -112,7 +92,7 @@ const Navbar = () => {
               <p>About</p>
             </Button>
           </Link>
-          <Link to={`${routes.home()}#section-works`}>
+          <Link to={`${'/'}#section-works`}>
             <Button
               style={{ color: 'white' }}
               sx={{
@@ -143,7 +123,7 @@ const Navbar = () => {
               <p>Instructions</p>
             </Button>
           </Link>
-          <Link to={routes.translate()}>
+          <Link to={'/translate'}>
             <Button
               style={{ color: 'white' }}
               sx={{
@@ -219,7 +199,7 @@ const Navbar = () => {
             }}
             style={{ width: '50%' }}
           >
-            <Link to={routes.faq()}>
+            <Link to={'/faq'}>
               <MenuItem
                 onClick={handleClose1}
                 style={{ color: 'black', padding: '8px' }}
@@ -227,7 +207,7 @@ const Navbar = () => {
                 FAQs
               </MenuItem>
             </Link>
-            <Link to={routes.userGuides()}>
+            <Link to={'/user-guides'}>
               <MenuItem
                 onClick={handleClose1}
                 style={{ color: 'black', padding: '8px' }}
@@ -235,7 +215,7 @@ const Navbar = () => {
                 User Guides
               </MenuItem>
             </Link>
-            <Link to={routes.resources()}>
+            <Link to={'/resources'}>
               <MenuItem
                 onClick={handleClose1}
                 style={{ color: 'black', padding: '8px' }}
@@ -246,7 +226,7 @@ const Navbar = () => {
           </Menu>
 
           {!isAuthenticated && (
-            <Link to={routes.login()}>
+            <Link to={'/login'}>
               <Button
                 style={{ color: 'white' }}
                 sx={{
@@ -323,7 +303,7 @@ const Navbar = () => {
                 MenuListProps={{
                   'aria-labelledby': 'basic-button',
                 }}
-                style={{ width: '10%' }}
+                style={{ width: '50%' }}
               >
                 <Link to={routes.profile()}>
                   <MenuItem
