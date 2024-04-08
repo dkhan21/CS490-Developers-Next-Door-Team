@@ -24,7 +24,7 @@ const openai = new OpenAI();
 
 export const handler = async (event, context) => {
   //logger.info(`${event.httpMethod} ${event.path}: openai function`)
-  
+
   try {
 
     const val = await validateCookie(event, context);
@@ -40,8 +40,8 @@ export const handler = async (event, context) => {
       //Prints out the active user id
       console.log(val);
     }
-    
-    
+
+
     const body = JSON.parse(event.body);
     const code = body.messages[0].content;
     const targetLanguage = body.messages[0].target;
@@ -49,7 +49,6 @@ export const handler = async (event, context) => {
     const promptNumber = body.messages[0].promptNum;
 
     let prompt;
-
 
     if(promptNumber === 1){
       prompt = "Translate this code ( " + code + " ) from " + sourceLanguage + " to " + targetLanguage;
@@ -59,10 +58,6 @@ export const handler = async (event, context) => {
       prompt = "Detect what programming language this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return only Java, Python, C++, C, Javascript, or Unrecognized.   " + code;
     }
 
-
-    const prompt = "Translate " + code + " from " + sourceLanguage + " to " + targetLanguage;
-    
-    
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],

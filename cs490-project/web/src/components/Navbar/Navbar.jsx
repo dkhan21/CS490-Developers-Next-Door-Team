@@ -14,10 +14,6 @@ import MenuItem from '@mui/material/MenuItem';
 
 const Navbar = () => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
-  if (isAuthenticated) {
-    const userEmail = currentUser.email;
-    // Proceed with rendering or operations involving userEmail
-  }
 
   const [anchorEl1, setAnchorEl1] = React.useState(null);
   const [anchorEl2, setAnchorEl2] = React.useState(null);

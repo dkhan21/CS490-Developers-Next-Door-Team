@@ -181,7 +181,7 @@ const TranslatePage = () => {
   const [activeTranslations, setActiveTranslations] = useState(0);
   const [token, setToken] = useState(null);
 
-  
+
   const returnToken = async () => {
     try {
       const tokenVal = await getToken()
@@ -190,14 +190,14 @@ const TranslatePage = () => {
       console.error('Error getting token:', error)
     }
   }
-  
-  
+
+
 
   useEffect(() => {
     returnToken();
   })
-  
-  
+
+
 
   const [createHistory] = useMutation(CREATE_HISTORY_MUTATION, {
     onCompleted: () => {
@@ -209,7 +209,7 @@ const TranslatePage = () => {
   });
 
   const { loading: histoyLoading, error: historyError, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
-  
+
   let translationCount = -1;
   let hRecount;
 
@@ -222,19 +222,19 @@ const TranslatePage = () => {
     hRecount = recount;
   }
   catch(error){
-    
+
     //console.log("Not logged in")
   }
-  
+
   /*
   if(!loadings){
     console.log("Translation count: " + counts["historyCount"])
   }
   */
-  
-  
-  
-  
+
+
+
+
   useEffect(() => {
     if (inputEditor.current) {
       monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
@@ -252,7 +252,7 @@ const TranslatePage = () => {
   const [isStatus401, setisStatus401] = useState(false);
 
 
-  const handleConvertClick = async() => {
+
 
   const [LanFound, setLanfound] = useState(false);
   const languages = ['java', 'python', 'javascript', 'c', 'cpp'];
@@ -363,9 +363,6 @@ const TranslatePage = () => {
       addError("You've exceeded your daily translations (100). Come back tomorrow")
       return false;
     }
-    
-    
-
 
     const res = await handleDetect();
     if(!res && inputLanguage === 'AutoDetect'){
@@ -387,7 +384,7 @@ const TranslatePage = () => {
       let timeoutId; // Initialize timeout variable
       setisStatus500(false);
        setisStatus401(false);
-      
+
       const timeoutPromise = new Promise((resolve, reject) => {
         timeoutId = setTimeout(() => {
           if (!isStatus500 && !isStatus401) {
@@ -487,7 +484,6 @@ const TranslatePage = () => {
         })
         .finally(() => {
           setLoading(false);
-k
         });
 
       if (activeTranslations < 0) {
@@ -500,7 +496,7 @@ k
       throw error;
     }
   };
-            
+
   const [AutoDet, setAutoDet] = useState(false);
   const handleInputLanguageChange = (e) => {
     if (e.target.value === "AutoDetect") {
