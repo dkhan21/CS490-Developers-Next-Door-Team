@@ -10,9 +10,9 @@ const mockValidationData = {
 import { handler } from './openai'
 
 describe('openai function', () => {
-
   it('Authenticates and receives successful response', async () => {
     mockCurrentUser({ name: 'test-user', roles: ['some-role'] });
+
     const simulatedPayload = {
       httpMethod: 'POST',
       headers: {
@@ -32,9 +32,8 @@ describe('openai function', () => {
     
 
     const response = await handler(simulatedPayload, null)
+
     const responseBody = JSON.parse(response.body) 
-
-
     expect(response.statusCode).toBe(200)
     expect(responseBody.completion).toBe("print('Hello')")
   })
@@ -69,11 +68,12 @@ describe('openai function', () => {
     const dataPayload = {
       messages: [
         {
-          role: "system",
+         role: "system",
           content: "a",
           source: "b",
           target: "c",
           promptNum: 1
+
         }
       ]
     };

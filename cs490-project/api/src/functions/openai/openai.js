@@ -58,10 +58,9 @@ export const handler = async (event, context) => {
       prompt = "Detect what programming language this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return only Java, Python, C++, C, Javascript, or Unrecognized.   " + code;
     }
 
-
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
-      model: "gpt-3.5-turbo"
+      // model: "gpt-3.5-turbo"
     });
 
     return {
@@ -72,10 +71,27 @@ export const handler = async (event, context) => {
       body: JSON.stringify({ completion: completion.choices[0].message.content }),
     };
   } catch (error) {
+    let code = 500;
+    let errorMessage = 'An Error Occurred.'
     console.error('Error calling OpenAI API:', error);
+    console.log(error);
+    if(error.message == 'Invalid Authentication'){
+      errorMessage = 'Invalid Authentication';
+      code = 401;
+    }
+    else if(error.message = 'Incorrect API key provided'){
+      errorMessage = 'Incorrect API key provided';
+      code = 401;
+    }
+    else if(error.message = 'Country, region, or territory not supported'){
+      errorMessage = 403;
+    }
+    else if(error.message == 'The engine is currently overloaded, please try again later'){
+      errorMessage = 503;
+    }
     return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Error calling OpenAI API' }),
-    };
+      error: error.message,
+      statusCode: 500
+    }
   }
 }
