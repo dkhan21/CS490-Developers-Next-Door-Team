@@ -368,16 +368,19 @@ const TranslatePage = () => {
     setActiveTranslations(activeTranslations + 1)
     if (activeTranslations >= 3) {
       addError('- Too many request')
+      setActiveTranslations((activeTranslations) => activeTranslations - 1)
       return false
     }
     if (inputText.trim() === '') {
       addError('- No input text to convert')
+      setActiveTranslations((activeTranslations) => activeTranslations - 1)
       return false
     }
 
     //First security measure for api access
     if (!isAuthenticated) {
       addError('Not authenticated')
+      setActiveTranslations((activeTranslations) => activeTranslations - 1)
       return false
     }
 
@@ -386,16 +389,19 @@ const TranslatePage = () => {
       addError(
         "You've exceeded your daily translations (100). Come back tomorrow"
       )
+      setActiveTranslations((activeTranslations) => activeTranslations - 1)
       return false
     }
 
     const res = await handleDetect()
     if (!res && inputLanguage === 'AutoDetect') {
+      setActiveTranslations((activeTranslations) => activeTranslations - 1)
       return false
     }
     if (!res) {
       setDetected(false)
       addError('Input code is not ' + inputLanguage)
+      setActiveTranslations((activeTranslations) => activeTranslations - 1)
       throw new Error('Are you stupid or retarted?')
     }
 
@@ -412,7 +418,7 @@ const TranslatePage = () => {
         timeoutId = setTimeout(() => {
           if (!isStatus500 && !isStatus401) {
             addError(
-              '- Please wait API rate limit reached. Translation will be here shortly!'
+              '- Please wait, Translation will be here shortly!'
             )
             setIsGreen(false)
           }
