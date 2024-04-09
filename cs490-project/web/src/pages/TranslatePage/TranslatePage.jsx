@@ -412,7 +412,7 @@ const TranslatePage = () => {
         timeoutId = setTimeout(() => {
           if (!isStatus500 && !isStatus401) {
             addError(
-              '- Please wait API rate limit reached. Translation will be here shortly!'
+              '- Please wait, Translation will be here shortly!'
             )
             setIsGreen(false)
           }
