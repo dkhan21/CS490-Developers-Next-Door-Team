@@ -132,7 +132,7 @@ const Feedback = ({ feedback, onSave }) => {
     <div  style={{
       backgroundColor: 'white',
       border: '3px solid black', borderRadius: '20px',
-      padding: '5px', flexDirection: 'column', marginLeft: '50px', width: '1400px', background: 'linear-gradient(180deg, #b6b4e8, #eae9f9)'
+      padding: '5px', flexDirection: 'column', marginLeft: '50px', width: '1400px', background: 'linear-gradient(180deg, #44bba4, #eae9f9)'
     }}>
 
       <header className="flex justify-between">
@@ -182,7 +182,7 @@ const Feedback = ({ feedback, onSave }) => {
         {isEditing ? (
           <EditFeedback feedback={feedback} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
         ) : (
-          <p>{feedback.body}</p>
+          <p style={{fontFamily: "initial", fontSize: '18px'}}>{feedback.body}</p>
         )}
       </div>
 
