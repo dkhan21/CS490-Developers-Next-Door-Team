@@ -23,9 +23,10 @@ model User {
   email               String    @unique
   hashedPassword      String
   salt                String
-  resetToken          String?
+  resetToken          String?    @unique
   resetTokenExpiresAt DateTime?
   preferredProgrammingLanguage String?
+  preferredIDE String? 
 
   roles               String  @default("user")
   webAuthnChallenge   String? @unique

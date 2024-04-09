@@ -1,11 +1,23 @@
 import { Link, routes, navigate} from '@redwoodjs/router'
-import { Metadata } from '@redwoodjs/web'
-import { Form, Label, TextField, Submit, FieldError } from '@redwoodjs/forms'
-import { toast } from '@redwoodjs/web/toast'
+import { toast, Toaster  } from '@redwoodjs/web/toast'
 import { useAuth } from 'src/auth'
 import { useMutation } from '@redwoodjs/web'
+import Navbar from 'src/components/Navbar/Navbar'
+import Sidebar from 'src/components/Sidebar/Sidebar'
+import { createTheme, ThemeProvider } from '@mui/material';
+import { Button, Box, TextField, Typography, Divider, Grid } from '@mui/material';
+import InputLabel from '@material-ui/core/InputLabel';
+import { useState } from 'react'
 
-const CHANGE_PASSWORD_MUTATION = gql`
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#44BBA4',
+    },
+  },
+});
+
+const CHANGE_PASSWORD_MUTATION2 = gql`
   mutation ChangePasswordMutation($email: String!, $newPassword: String!) {
     changePassword(email: $email, newPassword: $newPassword) {
       email
@@ -16,48 +28,118 @@ const CHANGE_PASSWORD_MUTATION = gql`
 
 const ChangePasswordPage = () => {
   const { currentUser } = useAuth()
-  const [changePassword, { loading, error }] = useMutation(CHANGE_PASSWORD_MUTATION, {
+  const [changePassword, { loading, error }] = useMutation(CHANGE_PASSWORD_MUTATION2, {
     onCompleted: () => {
-      toast.success('Password changed successfully')
-      navigate('/')
-    }, 
+      setNewPassword('')
+      setConfirmNewPassword('')
+
+      // toast.success('Password changed successfully')
+      // console.log(newPassword)
+      // navigate('/')
+    },
     onError: (error) => {
       toast.error(error.message)
     },
   })
 
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmNewPassword, setConfirmNewPassword] = useState('')
+  const [passwordsMatchError, setPasswordsMatchError] = useState('');
+  const passwordStrengthRegex = new RegExp(
+    '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
+  )
+  const commonPasswords = ["Password1!","Welcome1@","Admin123#", "Passw0rd$", "Letmein$1","TrustNo1!", "Charlie123#", "Qwerty@123"  ]
 
-  const onSubmit = (data) => {
-    if (data.newPassword !== data.confirmNewPassword){
-      alert('Passwords do not match!')
+  const onSubmit = (event) => {
+    event.preventDefault()
+
+    //reset error message
+    setPasswordsMatchError('')
+
+    if (newPassword !== confirmNewPassword){
+      setPasswordsMatchError('Passwords do not match.')
+      return
+    }else if (!passwordStrengthRegex.test(newPassword)) {
+      // setPasswordsMatchError('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.')
+      toast.error('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.')
+      return
+    }else if (commonPasswords.includes(newPassword)){
+      toast.error("Your password is too common. Please choose a different one.")
+      return
     }else{
-      changePassword( { variables: { ...data, email: currentUser.email } })
+      changePassword( { variables: { newPassword, email: currentUser.email } })
+      toast.success("Password updated successfully")
     }
-    
   }
 
   return (
-    <div >
-      <Form onSubmit={onSubmit} >
-        <Label name="newPassword" errorClassName="error">New Password</Label>
-        <TextField
-          name="newPassword"
-          placeholder="New Password"
-          validation={{ required: true }}
-          errorClassName='error'
-        />
-        <Label name="confirmNewPassword" errorClassName="error">Confirm New Password</Label>
-        <TextField
-          name="confirmNewPassword"
-          placeholder="Confirm New Password"
-          validation={{ required: true }}
-          errorClassName='error'
-        />
-        <Submit disabled={loading}>Change Password</Submit>
+      <>
+      <Navbar/>
+      <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
+      <div style={{ display: 'flex' }}>
+      <Sidebar/>
+      <div style = {{ flex: 1, marginRight: "300px" }}>
+        <ThemeProvider theme={theme}>
+          <Grid container direction="column" alignItems="center" justifyContent="center" style={{ minHeight: '100vh'}}>
+            <Grid item xs={12} style={{ textAlign: 'center', marginBottom: "20px "}}>
+              <h1>Change Password</h1>
+            </Grid>
+            <Grid item xs={12} container justifyContent="center">
+              <form onSubmit={onSubmit}>
+                <Grid item style={{ width: '100%', marginBottom: '13px' }}>
+                  {/* <InputLabel name="newPassword" errorClassName="error">New Password</InputLabel> */}
+                  <TextField
+                    label="New Password*"
+                    name="newPassword"
+                    type="password"
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    // placeholder="New Password"
+                    validation={{ required: true }}
+                    // errorclassName='error'
+                    InputProps={{ style: { width: '300px' } }}
+                    error={newPassword !== confirmNewPassword}
+                    helperText={
+                      newPassword !== confirmNewPassword ? 'Passwords do not match': ''
+                    }
+                  />
+                </Grid>
+                <Grid item >
+                  {/* <InputLabel name="confirmNewPassword" errorClassName="error">Confirm New Password</InputLabel> */}
+                  <TextField
+                    label="Confirm New Password*"
+                    name="confirmNewPassword"
+                    type="password"
+                    value={confirmNewPassword}
+                    onChange={(event) => setConfirmNewPassword(event.target.value)}
+                    // placeholder="Confirm New Password"
+                    validation={{ required: true }}
+                    // errorclassName='error'
+                    InputProps={{ style: { width: '300px' } }}
+                    error={newPassword !== confirmNewPassword}
+                    helperText={
+                      newPassword !== confirmNewPassword ? 'Passwords do not match': ''
+                    }
 
-        {error && <div className='error'>{error.message}</div>}
-      </Form>
-    </div>
+                  />
+                  {/* {passwordsMatchError && (
+                    <p style={{ color: '#d32f2f', fontSize: '14px' }}>{passwordsMatchError}</p>
+                  )} */}
+
+                </Grid>
+                <Grid item xs={12} style={{ textAlign: 'center', marginTop: '10px' }}>
+                  <Button type="submit" variant="contained" sx={{ bgcolor: '#44BBA4', '&:hover': { bgcolor: '#E7BB41' }}}>
+                    Update Password
+                  </Button>
+                </Grid>
+              </form>
+            </Grid>
+          </Grid>
+        </ThemeProvider>
+        </div>
+      </div>
+    </>
+
   )
 }
 
