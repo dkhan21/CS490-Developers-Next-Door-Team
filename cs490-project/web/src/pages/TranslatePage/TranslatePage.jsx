@@ -477,7 +477,6 @@ const TranslatePage = () => {
           }
         })
         .then((data) => {
-          console.log(data.completion)
           resetErrorState()
           clearTimeout(timeoutId)
           setOutputText(data.completion)

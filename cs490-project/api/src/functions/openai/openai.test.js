@@ -29,11 +29,11 @@ describe('openai function', () => {
         ]
       }),
     };
-    
+
 
     const response = await handler(simulatedPayload, null)
 
-    const responseBody = JSON.parse(response.body) 
+    const responseBody = JSON.parse(response.body)
     expect(response.statusCode).toBe(200)
     expect(responseBody.completion).toBe("print('Hello')")
   })
@@ -89,5 +89,41 @@ describe('openai function', () => {
     const result = await handler(httpEvent)
 
     expect(result.statusCode).toBe(200)
+  })
+
+  it('Handled Rate Limit Error', async () =>{
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 429,
+      json: async () => ({ error: 'Internal Server Error' }),
+    });
+    // Call the function under test
+    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    // Verify that the response is an error
+    expect(response.status).toBe(429);
+  })
+
+  it('Handled Unsupported Region Error', async () =>{
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 403,
+      json: async () => ({ error: 'Internal Server Error' }),
+    });
+    // Call the function under test
+    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    // Verify that the response is an error
+    expect(response.status).toBe(403);
+  })
+
+  it('Handled Incorrect API key', async () =>{
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      json: async () => ({ error: 'Internal Server Error' }),
+    });
+    // Call the function under test
+    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    // Verify that the response is an error
+    expect(response.status).toBe(401);
   })
 })

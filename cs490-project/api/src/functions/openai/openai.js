@@ -89,6 +89,9 @@ export const handler = async (event, context) => {
     else if(error.message == 'The engine is currently overloaded, please try again later'){
       errorMessage = 503;
     }
+    else if(error.message == 'Rate limit reached for requests'){
+      errorMessage = 429;
+    }
     return {
       error: error.message,
       statusCode: 500
