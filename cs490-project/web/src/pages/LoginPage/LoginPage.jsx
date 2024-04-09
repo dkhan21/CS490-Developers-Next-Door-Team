@@ -15,10 +15,19 @@ import { Metadata } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
 
 import { useAuth } from 'src/auth'
+import Nav2 from 'src/components/Nav2/nav2'
 
 const LoginPage = () => {
   const { isAuthenticated, logIn } = useAuth()
   const [rememberMe, setRememberMe] = useState(false)
+  useEffect(() => {
+    if (localStorage.getItem('rememberMe') === 'true') {
+      const rememberedUsername = localStorage.getItem('username')
+      if (usernameRef.current) {
+        usernameRef.current.value = rememberedUsername
+      }
+    }
+  }, [])
   useEffect(() => {
     if (isAuthenticated) {
       navigate(routes.home())
@@ -31,24 +40,45 @@ const LoginPage = () => {
   }, [])
 
   const onSubmit = async (data) => {
+    const expires = rememberMe ? 60 * 60 * 24 * 30 * 3 : 60 * 60 * 24
     const response = await logIn({
       username: data.username,
       password: data.password,
       rememberMe,
+      expires,
     })
 
-    if (response.message) {
-      toast(response.message)
-    } else if (response.error) {
-      toast.error(response.error)
+    // Check if the response is defined
+    if (response) {
+      if (!response.error) {
+        if (rememberMe) {
+          localStorage.setItem('rememberMe', 'true')
+          localStorage.setItem('username', data.username)
+        } else {
+          localStorage.removeItem('rememberMe')
+          localStorage.removeItem('username')
+        }
+      }
+
+      if (response.message) {
+        toast(response.message)
+      } else if (response.error) {
+        toast.error(response.error)
+      } else {
+        toast.success('Welcome back!')
+      }
     } else {
-      toast.success('Welcome back!')
+      // Handle the case where the response is undefined
+      toast.error('An error occurred during login.')
     }
   }
 
   return (
     <>
       <Metadata title="Login" />
+      <header>
+        <Nav2 />
+      </header>
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">

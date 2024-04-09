@@ -128,10 +128,11 @@ const Feedback = ({ feedback, onSave }) => {
   }
 
   return (
-    <div className="bg-gray-200 p-8 rounded-lg" style={{
+    <div >
+    <div  style={{
       backgroundColor: 'white',
-      border: '2px solid black', borderRadius: '10px',
-      padding: '5px', flexDirection: 'column', marginBottom: '10px', marginTop: '30px'
+      border: '3px solid black', borderRadius: '20px',
+      padding: '5px', flexDirection: 'column', marginLeft: '50px', width: '1400px', background: 'linear-gradient(180deg, #44bba4, #eae9f9)'
     }}>
 
       <header className="flex justify-between">
@@ -181,7 +182,7 @@ const Feedback = ({ feedback, onSave }) => {
         {isEditing ? (
           <EditFeedback feedback={feedback} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
         ) : (
-          <p>{feedback.body}</p>
+          <p style={{fontFamily: "initial", fontSize: '18px'}}>{feedback.body}</p>
         )}
       </div>
 
@@ -189,6 +190,11 @@ const Feedback = ({ feedback, onSave }) => {
         <span style={{ opacity: 0.8, fontWeight: 300 }}>posted on</span> {formattedDate(feedback.createdAt)}
       </time>
     </div>
+
+    <div style={{height: '30px'}}> </div>
+
+    </div>
+
   );
 };
 

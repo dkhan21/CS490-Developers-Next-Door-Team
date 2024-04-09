@@ -1,54 +1,55 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'; // Added useState import
 
-import { Form, Label, TextField, Submit, FieldError } from '@redwoodjs/forms'
-import { navigate, routes } from '@redwoodjs/router'
-import { Metadata } from '@redwoodjs/web'
-import { toast, Toaster } from '@redwoodjs/web/toast'
-
-import { useAuth } from 'src/auth'
+import { Form, Label, TextField, Submit, FieldError } from '@redwoodjs/forms';
+import { navigate, routes } from '@redwoodjs/router';
+import { Metadata } from '@redwoodjs/web';
+import { toast, Toaster } from '@redwoodjs/web/toast';
+import Nav2 from 'src/components/Nav2/nav2'
+import { useAuth } from 'src/auth';
 
 const ForgotPasswordPage = () => {
-  const { isAuthenticated, forgotPassword } = useAuth()
+  const { isAuthenticated, forgotPassword } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate(routes.home())
+      navigate(routes.home());
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated]);
 
-  const usernameRef = useRef(null)
+  const usernameRef = useRef(null);
   useEffect(() => {
-    usernameRef?.current?.focus()
-  }, [])
+    usernameRef.current?.focus();
+  }, []);
 
   const onSubmit = async (data) => {
-    const response = await forgotPassword(data.username)
-
-    if (response.error) {
-      toast.error(response.error)
-    } else {
-      // The function `forgotPassword.handler` in api/src/functions/auth.js has
-      // been invoked, let the user know how to get the link to reset their
-      // password (sent in email, perhaps?)
-      toast.success(
-        'A link to reset your password was sent to ' + response.email
-      )
-      navigate(routes.login())
+    setLoading(true);
+    console.log(data.username);
+    const response = await forgotPassword(data.username);
+    console.log(response);
+    if (response?.error === 'Username not found') {
+      toast.error('Email address not found. Please check and try again.');
+    } else if (response?.email) {
+      toast.success('Password reset email sent. Please check your email.');
+      setTimeout(() => {
+        navigate(routes.login());
+      }, 2000);
     }
-  }
+    setLoading(false);
+  };
 
   return (
     <>
       <Metadata title="Forgot Password" />
-
+      <header>
+        <Nav2 />
+      </header>
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
           <div className="rw-segment">
             <header className="rw-segment-header">
-              <h2 className="rw-heading rw-heading-secondary">
-                Forgot Password
-              </h2>
+              <h2 className="rw-heading rw-heading-secondary">Forgot Password</h2>
             </header>
 
             <div className="rw-segment-main">
@@ -60,7 +61,7 @@ const ForgotPasswordPage = () => {
                       className="rw-label"
                       errorClassName="rw-label rw-label-error"
                     >
-                      Username
+                      Email
                     </Label>
                     <TextField
                       name="username"
@@ -79,7 +80,7 @@ const ForgotPasswordPage = () => {
                   </div>
 
                   <div className="rw-button-group">
-                    <Submit className="rw-button rw-button-blue">Submit</Submit>
+                    <Submit className="rw-button rw-button-blue" disabled={loading}>Submit</Submit> {/* Added disabled attribute */}
                   </div>
                 </Form>
               </div>
@@ -88,7 +89,7 @@ const ForgotPasswordPage = () => {
         </div>
       </main>
     </>
-  )
-}
+  );
+};
 
-export default ForgotPasswordPage
+export default ForgotPasswordPage;

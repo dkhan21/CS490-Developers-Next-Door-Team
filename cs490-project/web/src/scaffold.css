@@ -17,6 +17,7 @@
 }
 .rw-scaffold a {
   background-color: transparent;
+
 }
 .rw-scaffold ul {
   margin: 0;
@@ -62,6 +63,7 @@
   margin-left: 1rem;
   margin-right: 1rem;
   padding-bottom: 1rem;
+  margin-top: 10rem;
 
 }
 .rw-segment {
@@ -197,11 +199,25 @@
   color: #fff;
 }
 .rw-button.rw-button-blue {
-  background-color: #3182ce;
+  background-color: #44BBA4;
   color: #fff;
+  transition-duration: 0.4s;
 }
 .rw-button.rw-button-blue:hover {
-  background-color: #2b6cb0;
+  cursor: pointer;
+  color: #E7BB41;
+  box-shadow: 0 0 5px #E7BB41;
+  text-shadow: 0 0 5px #E7BB41;
+}
+.rw-button.rw-button-blue:hover::before {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px #E7BB41;
+}
+.rw-button.rw-button-blue:active {
+  transform: scale(0.9);
+  color: #E7BB41;
+  box-shadow: 0 0 5px #E7BB41;
+  text-shadow: 0 0 5px #E7BB41;
 }
 .rw-button.rw-button-red {
   background-color: #e53e3e;

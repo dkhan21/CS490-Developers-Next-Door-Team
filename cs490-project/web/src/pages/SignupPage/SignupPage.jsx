@@ -14,6 +14,7 @@ import { Metadata } from '@redwoodjs/web'
 import { toast, Toaster } from '@redwoodjs/web/toast'
 
 import { useAuth } from 'src/auth'
+import Nav2 from 'src/components/Nav2/nav2'
 
 const SignupPage = () => {
   const { isAuthenticated, signUp } = useAuth()
@@ -35,9 +36,13 @@ const SignupPage = () => {
       toast.error('Password confirmation does not match password')
       return
     }
-    const passwordStrengthRegex = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})');
+    const passwordStrengthRegex = new RegExp(
+      '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
+    )
     if (!passwordStrengthRegex.test(data.password)) {
-      toast.error('Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.')
+      toast.error(
+        'Password must contain at least one uppercase letter, one lowercase letter, one number, one special character, and be at least 8 characters long.'
+      )
       return
     }
 
@@ -60,7 +65,9 @@ const SignupPage = () => {
   return (
     <>
       <Metadata title="Signup" />
-
+      <header>
+        <Nav2 />
+      </header>
       <main className="rw-main">
         <Toaster toastOptions={{ className: 'rw-toast', duration: 6000 }} />
         <div className="rw-scaffold rw-login-container">
@@ -71,7 +78,11 @@ const SignupPage = () => {
 
             <div className="rw-segment-main">
               <div className="rw-form-wrapper">
-                <Form onSubmit={onSubmit} className="rw-form-wrapper">
+                <Form
+                  data-testid="signup-form"
+                  onSubmit={onSubmit}
+                  className="rw-form-wrapper"
+                >
                   <Label
                     name="username"
                     className="rw-label"
@@ -98,7 +109,6 @@ const SignupPage = () => {
 
                   <FieldError name="username" className="rw-field-error" />
 
-                  
                   <Label
                     name="password"
                     className="rw-label"
