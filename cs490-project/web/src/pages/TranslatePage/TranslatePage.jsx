@@ -342,7 +342,6 @@ const TranslatePage = () => {
 
   const handleConvertClick = async () => {
 
-
     if (activeTranslations >= 3) {
       addError("- Too many request")
       return false;;
@@ -462,7 +461,6 @@ const TranslatePage = () => {
           if (data.completion.length > 0) {
             stat = "Successfully Translated";
           }
-          (isAuthenticated ?
             createHistory({
               variables: {
                 input: {
@@ -474,7 +472,7 @@ const TranslatePage = () => {
                   status: stat,
                 },
               },
-            }) : null)
+            })
             .then(() => {
               refetch();
             hRecount();

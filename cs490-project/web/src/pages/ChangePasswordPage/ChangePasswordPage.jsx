@@ -17,7 +17,7 @@ const theme = createTheme({
   },
 });
 
-const CHANGE_PASSWORD_MUTATION = gql`
+const CHANGE_PASSWORD_MUTATION2 = gql`
   mutation ChangePasswordMutation($email: String!, $newPassword: String!) {
     changePassword(email: $email, newPassword: $newPassword) {
       email
@@ -28,15 +28,15 @@ const CHANGE_PASSWORD_MUTATION = gql`
 
 const ChangePasswordPage = () => {
   const { currentUser } = useAuth()
-  const [changePassword, { loading, error }] = useMutation(CHANGE_PASSWORD_MUTATION, {
+  const [changePassword, { loading, error }] = useMutation(CHANGE_PASSWORD_MUTATION2, {
     onCompleted: () => {
       setNewPassword('')
       setConfirmNewPassword('')
-      
+
       // toast.success('Password changed successfully')
       // console.log(newPassword)
       // navigate('/')
-    }, 
+    },
     onError: (error) => {
       toast.error(error.message)
     },
@@ -44,16 +44,16 @@ const ChangePasswordPage = () => {
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmNewPassword, setConfirmNewPassword] = useState('')
-  const [passwordsMatchError, setPasswordsMatchError] = useState(''); 
+  const [passwordsMatchError, setPasswordsMatchError] = useState('');
   const passwordStrengthRegex = new RegExp(
     '^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'
   )
   const commonPasswords = ["Password1!","Welcome1@","Admin123#", "Passw0rd$", "Letmein$1","TrustNo1!", "Charlie123#", "Qwerty@123"  ]
 
-  const onSubmit = (event) => { 
+  const onSubmit = (event) => {
     event.preventDefault()
 
-    //reset error message 
+    //reset error message
     setPasswordsMatchError('')
 
     if (newPassword !== confirmNewPassword){
