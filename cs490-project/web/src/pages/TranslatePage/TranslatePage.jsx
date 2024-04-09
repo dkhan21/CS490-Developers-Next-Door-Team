@@ -365,6 +365,7 @@ const TranslatePage = () => {
   }
 
   const handleConvertClick = async () => {
+    setActiveTranslations(activeTranslations + 1)
     if (activeTranslations >= 3) {
       addError('- Too many request')
       return false
@@ -400,7 +401,7 @@ const TranslatePage = () => {
 
     try {
       let stat = 'Not Translated'
-      setActiveTranslations(activeTranslations + 1)
+      //setActiveTranslations(activeTranslations + 1)
       resetErrorState()
       setLoading(true) // Show loading element
       let timeoutId // Initialize timeout variable
@@ -511,10 +512,15 @@ const TranslatePage = () => {
         setActiveTranslations(0)
       }
     } catch (error) {
+      setActiveTranslations((activeTranslations) => activeTranslations - 1)
+
       // Log the error
       console.error('Error in translation API:', error)
       // Rethrow the error for further handling in application code
       throw error
+    }
+    if (activeTranslations < 0) {
+      setActiveTranslations(0)
     }
   }
 
