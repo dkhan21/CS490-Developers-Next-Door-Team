@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GET_USER_HISTORY_QUERY = gql`
+export const GET_USER_HISTORY_QUERY = gql`
   query GetUserHistory {
     histories {
       id
@@ -116,17 +116,17 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     setSortBy(e.target.value);
     setPage(1);
   };
-  
+
   const handleInputLanguageFilterChange = (e) => {
     const inputValue = e.target.value;
     setInputLanguageFilter(inputValue === 'C++' ? 'cpp' : inputValue);
     setPage(1);
   };
-  
+
   const handleOutputLanguageFilterChange = (e) => {
     const outputValue = e.target.value;
     setOutputLanguageFilter(outputValue === 'C++' ? 'cpp' : outputValue);
-    setPage(1); 
+    setPage(1);
   };
 
   const handleSearchTextChange = (text) => {
@@ -179,7 +179,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   if (error) return <div>Error: {error.message}</div>;
 
   let filteredHistory = data.histories.filter((historyItem) => historyItem.userId === currentUser.id);
-    
+
   if (inputLanguageFilter && inputLanguageFilter !== 'All') {
     filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage === inputLanguageFilter.toLowerCase());
   }
@@ -191,7 +191,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   if (startDate && endDate) {
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
-  
+
     filteredHistory = filteredHistory.filter((historyItem) => {
       const historyDate = new Date(historyItem.createdAt);
       return historyDate >= startDateObj && historyDate <= endDateObj;
@@ -225,7 +225,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       behavior: 'smooth'
     });
   };
-  
+
   if (sortBy === 'newest') {
     filteredHistory = filteredHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   }
@@ -270,7 +270,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span>Oldest</span>
               </div>
-            </MenuItem>  
+            </MenuItem>
             <MenuItem value="shortest">Shortest</MenuItem>
             <MenuItem value="longest">Longest</MenuItem>
           </Select>
@@ -412,7 +412,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       </div>
     </div>
   );
-  
+
 };
 
 export default HistoryForm;
