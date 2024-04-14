@@ -41,7 +41,7 @@ const Feedback = ({ feedback, onSave }) => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
   var UID = -2;
   var roles = "";
-  if(isAuthenticated){
+  if (isAuthenticated) {
     UID = currentUser.id;
     roles = currentUser.roles;
   }
@@ -104,7 +104,7 @@ const Feedback = ({ feedback, onSave }) => {
         // Handle the error appropriately, e.g., show a message to the user
         return;
       }
-      const newRating = parseInt(editedFeedback.rating,10);
+      const newRating = parseInt(editedFeedback.rating, 10);
       await updateFeedback({
         variables: {
           id: feedback.id,
@@ -123,75 +123,72 @@ const Feedback = ({ feedback, onSave }) => {
 
   var canEdit = true;
 
-  if(feedback.userId === null || (UID != feedback.userId && roles != "admin")){
+  if (feedback.userId === null || (UID != feedback.userId && roles != "admin")) {
     canEdit = false;
   }
 
   return (
     <div >
-    <div  style={{
-      backgroundColor: 'white',
-      border: '3px solid black', borderRadius: '20px',
-      padding: '5px', flexDirection: 'column', marginLeft: '50px', width: '1400px', background: 'linear-gradient(180deg, #44bba4, #eae9f9)'
-    }}>
+      <div style={{
+        backgroundColor: 'white',
+        border: '3px solid black', borderRadius: '20px',
+        padding: '5px', flexDirection: 'column', marginLeft: '50px', width: '1400px', background: 'linear-gradient(180deg, #44bba4, #eae9f9)'
+      }}>
 
-      <header className="flex justify-between">
-        <div style={{ alignItems: 'center', display: 'flex' }}>
-
-          {[...Array(feedback.rating)].map((_, index) => (
-            <span key={index} style={{ color: 'gold' }}>
-              ⭐
-            </span>
-          ))}
-
-
-          {isEditing && canEdit &&
-            <div style={{ marginLeft: 'auto', display: 'flex' }}>
-              <button style={{ display: 'none',backgroundColor: 'white', marginLeft: '1450', marginRight: '5px', border: '2px solid black', borderRadius: '5px', cursor: 'pointer' }} onClick={handleCancelEdit}>Cancel</button>
+        <header className="flex justify-between">
+          <div style={{ alignItems: 'center', display: 'flex' }}>
+            <div style={{ height: '30px' }}>
+              {[...Array(feedback.rating)].map((_, index) => (
+                <span key={index} style={{ color: 'gold' }}>
+                  ⭐
+                </span>
+              ))}
             </div>
-          }
-          {!isEditing && canEdit && (
 
-            <div   style={{
-               marginLeft: 'auto', display: 'flex' }}>
-              <button className='edit-button'  onClick={handleEditClick}
 
-              >Edit</button>
+            {!isEditing && canEdit && (
 
-              <button style={{width: '45px', height: '25px', marginTop: '5px', marginRight: '5px', transition: 'background-color 0.3s, color 0.3s', backgroundColor: 'white', marginLeft: '1400', border: '2px solid black', borderRadius: '5px', cursor: 'pointer' }} onClick={() => handleDelete(feedback.id)}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = 'black';
-                  e.currentTarget.style.color = 'white';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = 'white';
-                  e.currentTarget.style.color = 'black';
-                }}
+              <div style={{
+                marginLeft: 'auto', display: 'flex'
+              }}>
+                <button style={{ width: '35px', height: '25px', marginTop: '5px', marginRight: '10px', transition: 'background-color 0.3s, color 0.3s', backgroundColor: 'white', marginLeft: '1400', border: '2px solid black', borderRadius: '5px', cursor: 'pointer' }} onClick={handleEditClick}
 
-              >Delete</button>
-            </div>
+                >Edit</button>
+
+                <button style={{ width: '45px', height: '25px', marginTop: '5px', marginRight: '5px', transition: 'background-color 0.3s, color 0.3s', backgroundColor: 'white', marginLeft: '1400', border: '2px solid black', borderRadius: '5px', cursor: 'pointer' }} onClick={() => handleDelete(feedback.id)}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = 'black';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = 'white';
+                    e.currentTarget.style.color = 'black';
+                  }}
+
+                >Delete</button>
+              </div>
+            )}
+
+
+          </div>
+        </header>
+
+        <h3 style={{ margin: '0', marginLeft: '5px', flexDirection: 'column', marginBottom: '10px' }}>{feedback.name}</h3>
+
+        <div style={{ marginLeft: '5px', marginBottom: '10px' }}>
+          {isEditing ? (
+            <EditFeedback feedback={feedback} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
+          ) : (
+            <p style={{ fontFamily: "initial", fontSize: '18px', overflow: 'hidden', wordWrap: 'break-word' }}>{feedback.body}</p>
           )}
-
-
         </div>
-      </header>
 
-      <h3 style={{ margin: '0', marginLeft: '5px', flexDirection: 'column' , marginBottom: '10px'}}>{feedback.name}</h3>
-
-      <div style={{ marginLeft: '5px', marginBottom: '10px' }}>
-        {isEditing ? (
-          <EditFeedback feedback={feedback} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
-        ) : (
-          <p style={{fontFamily: "initial", fontSize: '18px'}}>{feedback.body}</p>
-        )}
+        <time className="text-xs" dateTime={feedback.createdAt} style={{ marginLeft: '5px' }}>
+          <span style={{ opacity: 0.8, fontWeight: 300 }}>posted on</span> {formattedDate(feedback.createdAt)}
+        </time>
       </div>
 
-      <time className="text-xs" dateTime={feedback.createdAt} style={{ marginLeft: '5px' }}>
-        <span style={{ opacity: 0.8, fontWeight: 300 }}>posted on</span> {formattedDate(feedback.createdAt)}
-      </time>
-    </div>
-
-    <div style={{height: '30px'}}> </div>
+      <div style={{ height: '30px' }}> </div>
 
     </div>
 

@@ -5,7 +5,7 @@
 // https://www.prisma.io/docs/orm/prisma-migrate
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -18,19 +18,19 @@ generator client {
 // to create migrations for them and apply to your dev DB.
 // TODO: Please remove the following example:
 model User {
-  id                  Int       @id @default(autoincrement())
-  name                String?
-  email               String    @unique
-  hashedPassword      String
-  salt                String
-  resetToken          String?    @unique
-  resetTokenExpiresAt DateTime?
+  id                           Int       @id @default(autoincrement())
+  name                         String?
+  email                        String    @unique
+  hashedPassword               String
+  salt                         String
+  resetToken                   String?   @unique
+  resetTokenExpiresAt          DateTime?
   preferredProgrammingLanguage String?
-  preferredIDE String? 
+  preferredIDE                 String?
 
-  roles               String  @default("user")
-  webAuthnChallenge   String? @unique
-  credentials         UserCredential[]
+  roles             String           @default("user")
+  webAuthnChallenge String?          @unique
+  credentials       UserCredential[]
 }
 
 model UserCredential {

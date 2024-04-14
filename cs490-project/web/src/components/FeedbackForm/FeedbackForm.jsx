@@ -92,6 +92,7 @@ const FeedbackForm = () => {
     }
     return true;
   };
+  const currentUserFeedbackId = currentUser ? currentUser.feedbackId : null
 
   return (
     <>
@@ -102,7 +103,7 @@ const FeedbackForm = () => {
 
         <Toaster />
         {isAuthenticated ? (
-          <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', paddingTop: '100px', backgroundColor: '#3C3C44' }}>
+          <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', paddingTop: '50px', backgroundColor: '#3C3C44' }}>
 
             <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column', display: 'flex' }}>
               <Label name="name" className="name" style={{
@@ -179,8 +180,7 @@ const FeedbackForm = () => {
         <div style={{ height: '20px' }}>
 
         </div>
-
-        <FeedbacksCell></FeedbacksCell>
+        {isAuthenticated ? <FeedbacksCell userId={currentUser.id} /> :  <FeedbacksCell /> }
 
       </main>
 

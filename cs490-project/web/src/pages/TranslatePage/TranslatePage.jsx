@@ -14,6 +14,7 @@ import {
   FileUpload as FileUploadIcon,
   FileDownload as FileDownloadIcon,
   WidthFull,
+  Start,
 } from '@mui/icons-material'
 import { CheckCircle, HighlightOff } from '@material-ui/icons'
 import saveAs from 'file-saver'
@@ -354,7 +355,7 @@ const TranslatePage = () => {
             console.error('Error handling translation response:', error)
             reject(error)
           })
-          .finally(() => {})
+          .finally(() => { })
       } catch (error) {
         // Log the error
         console.error('Error in detecting Language: ', error)
@@ -527,6 +528,11 @@ const TranslatePage = () => {
     if (activeTranslations < 0) {
       setActiveTranslations(0)
     }
+
+    const feedbackF = document.getElementById('form');
+  if (feedbackF) {
+    feedbackF.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   }
 
   const [AutoDet, setAutoDet] = useState(false)
@@ -670,9 +676,8 @@ const TranslatePage = () => {
             <div className={classes.buttonContainer}>
               <Button
                 variant="contained"
-                className={`${classes.button} ${
-                  isDragOver ? classes.uploadButtonDragOver : ''
-                }`}
+                className={`${classes.button} ${isDragOver ? classes.uploadButtonDragOver : ''
+                  }`}
                 onClick={handleUploadClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -899,7 +904,14 @@ const TranslatePage = () => {
           setOutputLanguage={setOutputLanguage}
         />
       </div>
-      <FeedbackForm></FeedbackForm>
+
+      <p  id="form" style={{backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', paddingLeft: '550px', paddingTop: "90px", fontSize: '25px', color: 'white'}}>
+        Give us your feedback on this translation!
+      </p>
+
+      <div >
+      <FeedbackForm ></FeedbackForm>
+      </div>
     </>
   )
 }

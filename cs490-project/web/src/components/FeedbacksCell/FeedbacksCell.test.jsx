@@ -34,13 +34,26 @@ describe('FeedbacksCell', () => {
   // 2. Add test: expect(screen.getByText('Hello, world')).toBeInTheDocument()
 
   it('renders Success successfully', async () => {
-    const feedbacks = standard().feedbacks
-    render(<Success feedbacks={feedbacks} />)
+    const feedbacks = standard().feedbacks;
+    const userId = 5; // Replace 'yourUserId' with the actual user ID if needed
+    render(<Success feedbacks={feedbacks} userId={userId} />);
 
     feedbacks.forEach((feedback) => {
       const regex = new RegExp(`${feedback.body.trim()}`, 'i');
       expect(screen.getByText(regex)).toBeInTheDocument();
     });
 
-  })
+    const currentUserFeedbacks = feedbacks.filter(feedback => feedback.userId === userId);
+    currentUserFeedbacks.forEach((feedback) => {
+      const regex = new RegExp(`${feedback.body.trim()}`, 'i');
+      expect(screen.getByText(regex)).toBeInTheDocument();
+    });
+
+    const otherUserFeedbacks = feedbacks.filter(feedback => feedback.userId !== userId);
+    otherUserFeedbacks.forEach((feedback) => {
+      const regex = new RegExp(`${feedback.body.trim()}`, 'i');
+      expect(screen.getByText(regex)).toBeInTheDocument();
+    });
+  });
+
 })
