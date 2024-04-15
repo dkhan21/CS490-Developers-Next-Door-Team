@@ -223,6 +223,14 @@ const Navbar = () => {
                 Resources
               </MenuItem>
             </Link>
+            <Link to={'/release-notes'}>
+              <MenuItem
+                onClick={handleClose1}
+                style={{ color: 'black', padding: '8px' }}
+              >
+                Release Notes
+              </MenuItem>
+            </Link>
           </Menu>
 
           {!isAuthenticated && (
