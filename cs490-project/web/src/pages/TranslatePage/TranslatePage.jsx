@@ -338,6 +338,10 @@ const TranslatePage = () => {
             const lan = data.completion.toLowerCase()
             if (languages.includes(lan)) {
               console.log(lan + ' found')
+              if (outputLanguage === lan) {
+                setOutputLanguage(inputLanguage)
+              }
+              setInputLanguage(lan)
               setInputLanguage(lan)
               setLanfound(true)
               setDetected(false)
