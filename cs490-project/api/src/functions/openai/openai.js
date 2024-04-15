@@ -55,7 +55,7 @@ export const handler = async (event, context) => {
     }
 
     if(promptNumber === 2){
-      prompt = "Detect what programming language this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return only Java, Python, C++, C, Javascript, or Unrecognized.   " + code;
+      prompt = "Detect what programming language this text is in. If the code is more than 70% of one of the languages listed, Then return that language. Return ONLY the WORD,  Java  or  Python  or  C++(if C++ return cpp)  or C  or Javascript or Unrecognized  .  " + code;
     }
 
     const completion = await openai.chat.completions.create({

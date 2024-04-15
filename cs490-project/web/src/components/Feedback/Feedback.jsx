@@ -4,6 +4,7 @@ import { gql, useMutation } from '@redwoodjs/web';
 import EditFeedback from 'src/components/EditFeedback'; // Make sure to provide the correct path
 import { useAuth } from 'src/auth'
 import 'src/components/Feedback/Feedback.css'
+import FeedbacksCell from '../FeedbacksCell';
 //
 export const QUERY = gql`
   query FeedbacksQuery {
@@ -12,7 +13,10 @@ export const QUERY = gql`
       name
       body
       rating
+      inText
+      outText
       createdAt
+
     }
   }
 `
@@ -62,9 +66,6 @@ const Feedback = ({ feedback, onSave }) => {
   const [isEditing, setEditing] = useState(false);
   const [rating, setRating] = useState(feedback.rating || 0);
 
-  const handleStarClick = (clickedRating) => {
-    setRating(clickedRating);
-  };
 
   const formattedDate = (datetime) => {
     const parsedDate = new Date(datetime);
@@ -176,12 +177,33 @@ const Feedback = ({ feedback, onSave }) => {
         <h3 style={{ margin: '0', marginLeft: '5px', flexDirection: 'column', marginBottom: '10px' }}>{feedback.name}</h3>
 
         <div style={{ marginLeft: '5px', marginBottom: '10px' }}>
+
           {isEditing ? (
             <EditFeedback feedback={feedback} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
           ) : (
-            <p style={{ fontFamily: "initial", fontSize: '18px', overflow: 'hidden', wordWrap: 'break-word' }}>{feedback.body}</p>
+            <p style={{ fontFamily: "initial", fontSize: '18px', overflow: 'hidden', wordWrap: 'break-word', marginBottom: '20px' }}>{feedback.body}</p>
           )}
+
+          {feedback.inText && (
+            <div>
+              <p style={{ textDecoration: 'underline'}}><strong>In Text:</strong></p>
+              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
+              <p style={{ whiteSpace: 'pre-wrap', marginBottom: '10px' }}>{feedback.inText.substring(0, 100)}</p>
+              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
+            </div>
+          )}
+          {feedback.outText && (
+            <div>
+              <p style={{ marginTop: '20px', textDecoration: 'underline' }}><strong>Out Text:</strong></p>
+              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
+              <p style={{ whiteSpace: 'pre-wrap', marginBottom: '10px' }}>{feedback.outText.substring(0, 100)}</p>
+              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
+            </div>
+          )}
+
         </div>
+
+
 
         <time className="text-xs" dateTime={feedback.createdAt} style={{ marginLeft: '5px' }}>
           <span style={{ opacity: 0.8, fontWeight: 300 }}>posted on</span> {formattedDate(feedback.createdAt)}

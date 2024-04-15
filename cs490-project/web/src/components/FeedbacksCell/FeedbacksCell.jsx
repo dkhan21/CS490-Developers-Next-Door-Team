@@ -8,6 +8,8 @@ export const QUERY = gql`
       body
       rating
       createdAt
+      inText
+      outText
       userId
     }
   }

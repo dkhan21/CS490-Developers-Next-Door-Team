@@ -53,6 +53,8 @@ model Feedback {
   name      String
   rating    Int
   body      String
+  inText    String?
+  outText   String?
   createdAt DateTime @default(now())
   userId    Int      @default(-1)
 }

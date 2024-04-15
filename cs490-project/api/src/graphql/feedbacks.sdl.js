@@ -6,6 +6,8 @@ export const schema = gql`
     body: String!
     createdAt: DateTime!
     userId: Int!
+    inText: String!
+    outText: String!
   }
 
   type Query {
@@ -18,18 +20,21 @@ export const schema = gql`
     rating: Int!
     body: String!
     userId: Int!
+    inText: String
+    outText: String
   }
 
   input UpdateFeedbackInput {
     name: String!
     rating: Int!
     body: String!
+    inText: String
+    outText: String
   }
 
   type Mutation {
     createFeedback(input: CreateFeedbackInput!): Feedback! @skipAuth
-    updateFeedback(id: Int!, input: UpdateFeedbackInput!): Feedback!
-      @requireAuth
+    updateFeedback(id: Int!, input: UpdateFeedbackInput!): Feedback! @requireAuth
     deleteFeedback(id: Int!): Feedback! @requireAuth
   }
-`
+`;

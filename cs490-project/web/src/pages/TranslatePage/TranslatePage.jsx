@@ -336,6 +336,7 @@ const TranslatePage = () => {
             }
           })
           .then((data) => {
+            console.log(data.completion.toLowerCase())
             const lan = data.completion.toLowerCase()
             if (languages.includes(lan)) {
               console.log(lan + ' found')
@@ -910,7 +911,7 @@ const TranslatePage = () => {
       </p>
 
       <div >
-      <FeedbackForm ></FeedbackForm>
+      <FeedbackForm inputText={inputText} outputText={outputText}></FeedbackForm>
       </div>
     </>
   )

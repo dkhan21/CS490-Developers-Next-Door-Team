@@ -32,7 +32,7 @@ const CREATE = gql`
 `
 
 
-const FeedbackForm = () => {
+const FeedbackForm = ({ inputText, outputText }) => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
 
   const [rating, setRating] = useState(0);
@@ -81,7 +81,7 @@ const FeedbackForm = () => {
       console.log("No profanity found.");
     }
 
-    const input = { name, rating, body: body, userId: user };
+    const input = { name, rating, body: body, userId: user, inText: inputText, outText: outputText, };
     createFeedback({ variables: { input } });
   };
 
