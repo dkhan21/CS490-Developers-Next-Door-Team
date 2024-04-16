@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { gql, useMutation, useQuery } from '@redwoodjs/web';
 import { useAuth } from 'src/auth';
-import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box, Select, MenuItem  } from '@material-ui/core';
+import { IconButton, Card, CardContent, Typography, CardActions, makeStyles, TextField, Box, Select, MenuItem, Button } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Pagination from '@mui/material/Pagination';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Toaster, toast } from '@redwoodjs/web/toast';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import Modal from 'react-modal';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -66,6 +67,11 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: '#00f',
   },
+  deleteAllButton: {
+    backgroundColor: '#ff5555',
+    color: '#fff',
+    marginBottom: '20px',
+  },
 }));
 
 const GET_USER_HISTORY_QUERY = gql`
@@ -91,6 +97,14 @@ const DELETE_HISTORY_MUTATION = gql`
   }
 `;
 
+const DELETE_ALL_HISTORY_MUTATION = gql`
+  mutation DeleteAllHistory($userId: Int!) {
+    deleteAllHistory(userId: $userId) {
+      userId
+    }
+  }
+`;
+
 const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputLanguage }) => {
   const { currentUser } = useAuth();
   const [page, setPage] = useState(1);
@@ -105,6 +119,10 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   const [deleteHistory] = useMutation(DELETE_HISTORY_MUTATION, {
     refetchQueries: [{ query: GET_USER_HISTORY_QUERY }],
   });
+  const [deleteAllHistory] = useMutation(DELETE_ALL_HISTORY_MUTATION, {
+    refetchQueries: [{ query: GET_USER_HISTORY_QUERY }],
+  });
+  const [deleteAllConfirmationOpen, setDeleteAllConfirmationOpen] = useState(false);
 
   useEffect(() => { // For first entry
     if (data && data.histories && data.histories.length > 0) {
@@ -135,22 +153,12 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   };
 
   const handleStartDateChange = (date) => {
-    if (!endDate || new Date(date) <= new Date(endDate)) {
-      setStartDate(date);
-    } else {
-      setStartDate(endDate);
-      setEndDate(date);
-    }
+    setStartDate(date);
     setPage(1);
   };
 
   const handleEndDateChange = (date) => {
-    if (!startDate || new Date(date) >= new Date(startDate)) {
-      setEndDate(date);
-    } else {
-      setEndDate(startDate);
-      setStartDate(date);
-    }
+    setEndDate(date);
     setPage(1);
   };
 
@@ -164,6 +172,29 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     }
   };
 
+  const handleDeleteAllConfirmationOpen = () => {
+    setDeleteAllConfirmationOpen(true);
+  };
+  
+  const handleDeleteAllConfirmationClose = () => {
+    setDeleteAllConfirmationOpen(false);
+  };
+  
+  const handleDeleteAll = async () => {
+    handleDeleteAllConfirmationOpen();
+  };
+
+  const handleDeleteAllConfirmed = async () => {
+    try {
+      const count = data.histories.filter((historyItem) => historyItem.userId === currentUser.id).length;
+      await deleteAllHistory({ variables: { userId: currentUser.id } });
+      toast.success(`${count} history entries deleted successfully`);
+    } catch (error) {
+      console.log(error);
+      toast.error('An error occurred while deleting history entries');
+    }
+  };
+  
   const onPageChange = (event, newPage) => {
     setPage(newPage);
   };
@@ -175,13 +206,12 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       </Typography>
     );
   }
-
   let filteredHistory = [];
 
   if (data && data.histories) {
     filteredHistory = data.histories.filter((historyItem) => historyItem.userId === currentUser.id);
   }
-
+      
   if (inputLanguageFilter && inputLanguageFilter !== 'All') {
     filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage === inputLanguageFilter.toLowerCase());
   }
@@ -193,13 +223,15 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   if (startDate && endDate) {
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
+    
+    endDateObj.setDate(endDateObj.getDate() + 1);
   
     filteredHistory = filteredHistory.filter((historyItem) => {
       const historyDate = new Date(historyItem.createdAt);
-      return historyDate >= startDateObj && historyDate <= endDateObj;
+      return historyDate >= startDateObj && historyDate < endDateObj;
     });
   }
-
+  
   if (searchText) {
     const searchTextLowerCase = searchText.replace(/\n/g, '').toLowerCase();
     filteredHistory = filteredHistory.filter((historyItem) => {
@@ -235,8 +267,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     filteredHistory = filteredHistory.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
   }
   else if (sortBy === 'shortest') {
-    filteredHistory = filteredHistory
-    .sort((a, b) => a.inputText.length - b.inputText.length)
+    filteredHistory = filteredHistory.sort((a, b) => a.inputText.length - b.inputText.length)
   }
   else if (sortBy === 'longest') {
     filteredHistory = filteredHistory.sort((a, b) => b.inputText.length - a.inputText.length)
@@ -245,6 +276,8 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
 
   return (
     <div> {}
+      {}
+
       {/* Search elements */}
       <Box className={classes.searchContainer}>
       <div style={{ textAlign: 'center' }}>
@@ -252,9 +285,10 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           <Select
             className={classes.searchField}
             value={sortBy}
-            data-testid = 'sort-by-select'
             onChange={handleSortByChange}
             style={{ color: '#fff' }}
+            data-testid = 'sort-by-select'
+            aria-label = 'sort-by-select'
             MenuProps={{
               PaperProps: {
                 style: {
@@ -282,8 +316,9 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           <div style={{ color: 'white', marginRight: '25px', }}>Input Language</div>
             <Select
               className={classes.searchField}
+              label="Choose a thing"
+              data-testid = 'input-language-select'
               value={inputLanguageFilter}
-              data-testid="input-language-select"
               onChange={handleInputLanguageFilterChange}
               style={{ color: '#fff' }}
               MenuProps={{
@@ -312,8 +347,8 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           <div style={{ color: 'white', marginRight: '25px' }}>Output Language</div>
             <Select
               className={classes.searchField}
+              data-testid = 'output-language-select'
               value={outputLanguageFilter}
-              data-testid="output-language-select"
               onChange={handleOutputLanguageFilterChange}
               style={{ color: '#fff' }}
               MenuProps={{
@@ -342,7 +377,6 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           className={classes.searchField}
           label="Start Date"
           type="date"
-          data-testid="search-text-field"
           value={startDate}
           onChange={(e) => handleStartDateChange(e.target.value)}
           InputLabelProps={{
@@ -366,6 +400,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
         <TextField
           className={classes.searchField}
           label="Search"
+          data-testid = 'search-text-field'
           value={searchText}
           onChange={(e) => handleSearchTextChange(e.target.value)}
           InputLabelProps={{
@@ -374,7 +409,72 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           }}
           InputProps={{ style: { color: '#fff' } }}
         />
+        <Button variant="contained" onClick={handleDeleteAll} className={classes.deleteAllButton}>
+          Delete All History
+        </Button>
       </Box>
+      <Modal
+      ariaHideApp={false}
+      isOpen={deleteAllConfirmationOpen}
+      onRequestClose={handleDeleteAllConfirmationClose}
+      contentLabel="Confirm Delete"
+      style={{
+        overlay: {
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 1000,
+        },
+        content: {
+          backgroundColor: '#403c44',
+          border: 'none',
+          borderRadius: '8px',
+          maxWidth: '400px',
+          height: '200px',
+          margin: 'auto',
+          padding: '20px',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+          color: '#fff',
+        },
+      }}
+    >
+      <h2 style={{ marginBottom: '20px', textAlign: 'center' }}>Confirm Delete</h2>
+      <p style={{ marginBottom: '20px', textAlign: 'center' }}>Are you sure you want to delete all history entries? This is permanent!</p>      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px',
+            backgroundColor: '#44bba4',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '1.5rem',
+          }}
+          onClick={handleDeleteAllConfirmationClose}
+        >
+          Cancel
+        </button>
+        <button
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px',
+            backgroundColor: '#ff5454',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '1.5rem',
+
+          }}
+          onClick={() => {
+            handleDeleteAllConfirmationClose();
+            handleDeleteAllConfirmed();
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    </Modal>
+
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
         {filteredHistory.map((historyItem) => (
           <Card key={historyItem.id} className={classes.card} data-testid= 'history-card'>
@@ -418,7 +518,6 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       </div>
     </div>
   );
-  
 };
 
 export default HistoryForm;
