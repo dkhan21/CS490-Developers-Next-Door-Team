@@ -115,7 +115,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   const [searchText, setSearchText] = useState('');
   const classes = useStyles();
   const [sortBy, setSortBy] = useState('newest');
-  const { loading, error, data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
+  const { data, refetch } = useQuery(GET_USER_HISTORY_QUERY);
   const [deleteHistory] = useMutation(DELETE_HISTORY_MUTATION, {
     refetchQueries: [{ query: GET_USER_HISTORY_QUERY }],
   });
@@ -206,11 +206,12 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       </Typography>
     );
   }
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  let filteredHistory = [];
 
-  let filteredHistory = data.histories.filter((historyItem) => historyItem.userId === currentUser.id);
-    
+  if (data && data.histories) {
+    filteredHistory = data.histories.filter((historyItem) => historyItem.userId === currentUser.id);
+  }
+      
   if (inputLanguageFilter && inputLanguageFilter !== 'All') {
     filteredHistory = filteredHistory.filter((historyItem) => historyItem.inputLanguage === inputLanguageFilter.toLowerCase());
   }
@@ -315,6 +316,8 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           <div style={{ color: 'white', marginRight: '25px', }}>Input Language</div>
             <Select
               className={classes.searchField}
+              label="Choose a thing"
+              data-testid = 'input-language-select'
               value={inputLanguageFilter}
               onChange={handleInputLanguageFilterChange}
               style={{ color: '#fff' }}
@@ -344,6 +347,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           <div style={{ color: 'white', marginRight: '25px' }}>Output Language</div>
             <Select
               className={classes.searchField}
+              data-testid = 'output-language-select'
               value={outputLanguageFilter}
               onChange={handleOutputLanguageFilterChange}
               style={{ color: '#fff' }}
@@ -396,6 +400,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
         <TextField
           className={classes.searchField}
           label="Search"
+          data-testid = 'search-text-field'
           value={searchText}
           onChange={(e) => handleSearchTextChange(e.target.value)}
           InputLabelProps={{
