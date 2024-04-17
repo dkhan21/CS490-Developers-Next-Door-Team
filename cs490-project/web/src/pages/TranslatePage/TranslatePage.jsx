@@ -17,6 +17,8 @@ import {
   Start,
 } from '@mui/icons-material'
 import { CheckCircle, HighlightOff } from '@material-ui/icons'
+import FeedbacksCell from 'src/components/FeedbacksCell';
+
 import saveAs from 'file-saver'
 import MonacoEditor from '@monaco-editor/react'
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
@@ -209,6 +211,20 @@ const TranslatePage = () => {
   const [activeTranslations, setActiveTranslations] = useState(0)
   const [token, setToken] = useState(null)
 
+
+
+  //Feedback code to the Translate page
+  const handleCopyToEditors = (inText, outText, inLan, outLan) => {
+    setInputText(inText);
+    setOutputText(outText);
+    setInputLanguage(inLan);
+    setOutputLanguage(outLan);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  };
+
   const returnToken = async () => {
     try {
       const tokenVal = await getToken()
@@ -280,6 +296,8 @@ const TranslatePage = () => {
       )
     }
   }, [outputLanguage])
+
+
 
   const [isStatus500, setisStatus500] = useState(false)
 
@@ -531,9 +549,9 @@ const TranslatePage = () => {
     }
 
     const feedbackF = document.getElementById('form');
-  if (feedbackF) {
-    feedbackF.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+    if (feedbackF) {
+      feedbackF.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   const [AutoDet, setAutoDet] = useState(false)
@@ -906,12 +924,14 @@ const TranslatePage = () => {
         />
       </div>
 
-      <p  id="form" style={{backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', paddingLeft: '550px', paddingTop: "90px", fontSize: '25px', color: 'white'}}>
+      <p id="form" style={{ backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', paddingLeft: '550px', paddingTop: "90px", fontSize: '25px', color: 'white' }}>
         Give us your feedback on this translation!
       </p>
 
       <div >
-      <FeedbackForm inputText={inputText} outputText={outputText}></FeedbackForm>
+        <FeedbackForm inputText={inputText} outputText={outputText} inLan={inputLanguage} outLan={outputLanguage}></FeedbackForm>
+        {isAuthenticated ? <FeedbacksCell userId={currentUser.id}  onCopyToEditors={handleCopyToEditors} /> : <FeedbacksCell />}
+
       </div>
     </>
   )

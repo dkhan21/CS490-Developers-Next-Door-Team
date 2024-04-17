@@ -6,8 +6,10 @@ export const schema = gql`
     body: String!
     createdAt: DateTime!
     userId: Int!
-    inText: String!
-    outText: String!
+    inText: String
+    outText: String
+    inLanguage: String
+    outLanguage: String
   }
 
   type Query {
@@ -22,6 +24,8 @@ export const schema = gql`
     userId: Int!
     inText: String
     outText: String
+    inLanguage: String
+    outLanguage: String
   }
 
   input UpdateFeedbackInput {

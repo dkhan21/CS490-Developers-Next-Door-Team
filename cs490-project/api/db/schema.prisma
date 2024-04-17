@@ -49,14 +49,16 @@ model UserCredential {
 //}
 
 model Feedback {
-  id        Int      @id @default(autoincrement())
-  name      String
-  rating    Int
-  body      String
-  inText    String?
-  outText   String?
-  createdAt DateTime @default(now())
-  userId    Int      @default(-1)
+  id          Int      @id @default(autoincrement())
+  name        String
+  rating      Int
+  body        String
+  inLanguage  String?
+  outLanguage String?
+  inText      String?
+  outText     String?
+  createdAt   DateTime @default(now())
+  userId      Int      @default(-1)
 }
 
 model History {

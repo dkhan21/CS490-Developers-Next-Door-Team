@@ -10,11 +10,9 @@ import {
 } from '@redwoodjs/forms'
 import { useMutation } from '@redwoodjs/web'
 import { Toaster, toast } from '@redwoodjs/web/toast'
-import FeedbacksCell from 'src/components/FeedbacksCell';
 import { QUERY as FeedbacksQuery } from 'src/components/FeedbacksCell'
 import Example from 'src/components/FeedbackForm/EncryptButton';
 import Filter from 'bad-words';
-import { FaAngry } from 'react-icons/fa';
 
 
 
@@ -32,7 +30,7 @@ const CREATE = gql`
 `
 
 
-const FeedbackForm = ({ inputText, outputText }) => {
+const FeedbackForm = ({ inputText, outputText, inLan, outLan }) => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
 
   const [rating, setRating] = useState(0);
@@ -81,7 +79,7 @@ const FeedbackForm = ({ inputText, outputText }) => {
       console.log("No profanity found.");
     }
 
-    const input = { name, rating, body: body, userId: user, inText: inputText, outText: outputText, };
+    const input = { name, rating, body: body, userId: user, inText: inputText, outText: outputText, inLanguage: inLan, outLanguage: outLan };
     createFeedback({ variables: { input } });
   };
 
@@ -180,7 +178,6 @@ const FeedbackForm = ({ inputText, outputText }) => {
         <div style={{ height: '20px' }}>
 
         </div>
-        {isAuthenticated ? <FeedbacksCell userId={currentUser.id} /> :  <FeedbacksCell /> }
 
       </main>
 

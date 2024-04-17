@@ -13,6 +13,8 @@ export const QUERY = gql`
       name
       body
       rating
+      inLanguage
+      outLanguage
       inText
       outText
       createdAt
@@ -40,7 +42,7 @@ export const UPDATE_FEEDBACK_MUTATION = gql`
 `;
 
 //
-const Feedback = ({ feedback, onSave }) => {
+const Feedback = ({ feedback, onSave, onCopyToEditors }) => {
 
   const { isAuthenticated, currentUser, logOut } = useAuth()
   var UID = -2;
@@ -49,6 +51,11 @@ const Feedback = ({ feedback, onSave }) => {
     UID = currentUser.id;
     roles = currentUser.roles;
   }
+
+  const handleCopyToEditors = () => {
+    // Call the function passed from TranslatePage.jsx
+    onCopyToEditors(feedback.inText, feedback.outText, feedback.inLanguage, feedback.outLanguage);
+  };
 
   //
   const [deleteFeedback] = useMutation(DELETE_FEEDBACK_MUTATION, {
@@ -128,8 +135,14 @@ const Feedback = ({ feedback, onSave }) => {
     canEdit = false;
   }
 
+
+
+
+
   return (
-    <div >
+    <div style={{
+      backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)',
+    }} >
       <div style={{
         backgroundColor: 'white',
         border: '3px solid black', borderRadius: '20px',
@@ -186,20 +199,18 @@ const Feedback = ({ feedback, onSave }) => {
 
           {feedback.inText && (
             <div>
-              <p style={{ textDecoration: 'underline'}}><strong>In Text:</strong></p>
-              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
-              <p style={{ whiteSpace: 'pre-wrap', marginBottom: '10px' }}>{feedback.inText.substring(0, 100)}</p>
-              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
+
+              <p style={{ textDecoration: 'underline', marginBottom: '10px' }}>Code Languages Used</p>
+              <p style={{ marginBottom: '20px' }}>{feedback.inLanguage} ➨ {feedback.outLanguage}</p>
+
+              <div style={{flexDirection: 'row', display: 'flex'}}>
+                <p style={{ marginRight: '10px'}}>Click here to see Translation!</p>
+                <button style={{}} onClick={handleCopyToEditors}>Copy to Editors</button>
+              </div>
+
             </div>
           )}
-          {feedback.outText && (
-            <div>
-              <p style={{ marginTop: '20px', textDecoration: 'underline' }}><strong>Out Text:</strong></p>
-              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
-              <p style={{ whiteSpace: 'pre-wrap', marginBottom: '10px' }}>{feedback.outText.substring(0, 100)}</p>
-              <p style={{ marginBottom: '10px', fontWeight: "bold" }}>-</p>
-            </div>
-          )}
+
 
         </div>
 
