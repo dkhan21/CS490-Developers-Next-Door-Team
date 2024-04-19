@@ -293,7 +293,7 @@ const Navbar = () => {
                 }}
                 aria-label="UserEmail"
               >
-                {currentUser.email}
+                {currentUser?.email}
               </Button>
               <Menu
                 id="basic-menu"
