@@ -35,7 +35,7 @@ const ReleaseNotesPage = () => {
               <li style={{ marginBottom: '5px ' }}><strong>User Account Management:</strong></li>
               <p style={{ marginBottom: '10px ' }}>Provides users with the ability to manage their account settings, enhancing the overall user experiance.</p>
               <li style={{ marginBottom: '5px ' }}><strong>Translation History:</strong></li>
-              <p style={{ marginBottom: '10px ' }}>Users can now view their past translations, providing an eassy access and reference to previous work.</p>
+              <p style={{ marginBottom: '10px ' }}>Users can now view their past translations, providing an easy access and reference to previous work.</p>
               <li style={{ marginBottom: '5px ' }}><strong>Help Section Interface and Documentation</strong></li>
               <p style={{ marginBottom: '30px ' }}>We've added a comprehensive Help section and documentation to assist users in navigating and utilizing our platform.</p>
             </ul>
