@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent, within, getByRole, cleanup } from '@redwoodjs/testing';
+import { render, screen, waitFor, fireEvent, within, cleanup } from '@redwoodjs/testing';
 import userEvent from '@testing-library/user-event'; // Import userEvent correctly
 import HistoryForm from './HistoryForm';
 
@@ -184,4 +184,41 @@ describe('HistoryForm', () => {
       expect(screen.queryByText('Good morning')).not.toBeInTheDocument(); // "Good morning" should not be present
     });
   });
-});
+
+  it('delete history entry', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello World', outputText: 'Bonjour le monde', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+      ],
+    }));
+
+    render(<HistoryForm />);
+    await waitFor(() => {
+      expect(screen.queryByText('Hello World')).toBeInTheDocument();
+    });
+    const deleteButton = screen.getByTestId('delete-button');
+    fireEvent.click(deleteButton);
+    await waitFor(() => {
+      expect(screen.queryByTestId('Hello world')).not.toBeInTheDocument();
+    });
+  });
+  it('deletes all history entries', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello World', outputText: 'Bonjour le monde', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Good morning', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+
+    render(<HistoryForm />);
+    await waitFor(() => {
+      expect(screen.queryByText('Hello World')).toBeInTheDocument();
+      expect(screen.queryByText('Good morning')).toBeInTheDocument();
+    });
+    const deleteButton = screen.getByTestId('delete-all-button');
+    fireEvent.click(deleteButton);
+    await waitFor(() => {
+      expect(screen.queryByTestId('Hello world')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('Good morning')).not.toBeInTheDocument();
+    });
+  });});

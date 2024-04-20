@@ -409,7 +409,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           }}
           InputProps={{ style: { color: '#fff' } }}
         />
-        <Button variant="contained" onClick={handleDeleteAll} className={classes.deleteAllButton}>
+        <Button variant="contained" onClick={handleDeleteAll} className={classes.deleteAllButton} data-testid = 'delete-all-button'>
           Delete All History
         </Button>
       </Box>
@@ -499,7 +499,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
                 </Typography>
             </CardContent>
             <CardActions className={classes.cardActions}>
-              <IconButton onClick={() => handleDelete(historyItem.id)} className={classes.deleteButton}>
+              <IconButton onClick={() => handleDelete(historyItem.id)} className={classes.deleteButton} data-testid = 'delete-button'>
                 <DeleteIcon />
               </IconButton>
               <IconButton onClick={() => handleCopyHistory(historyItem)} className={classes.copyButton}>
