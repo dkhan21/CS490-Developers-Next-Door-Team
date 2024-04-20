@@ -6,14 +6,11 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import { styled } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import { IoClose, IoMenu } from 'react-icons/io5'
 
-import { Link, routes } from '@redwoodjs/router'
-
-import { useAuth } from 'src/auth'
+import { Link } from '@redwoodjs/router'
 
 const Navbar = () => {
   const [anchorEl1, setAnchorEl1] = React.useState(null)
