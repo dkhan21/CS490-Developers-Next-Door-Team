@@ -237,6 +237,15 @@ img {
 
 .menu-button-container {
   display: none; /* Hide the container by default */
+
+}
+.menu-icon {
+  color: #e7bb41; /* Initial color */
+  transition: color 0.3s ease; /* Add transition for color change */
+}
+
+.menu-icon:hover {
+  color: #44bba4; /* Hover color */
 }
 
 @media (max-width: 768px) {
@@ -245,79 +254,19 @@ img {
     align-items: flex-start;
     padding: 1rem;
     display: none; /* Hide the menu by default on smaller screens */
+
   }
 
   .nav__list.open {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-  }
 
-  .nav__list.open .nav__brand {
-    order: -1; /* Move the brand to the top */
-    margin-bottom: 1rem; /* Add some spacing between brand and links */
-  }
-
-  .nav__list a,
-  .nav__list button {
-    margin: 0.5rem 0;
   }
 
   .menu-button-container {
     display: block; /* Show the container on smaller screens */
     margin-left: auto; /* Push the container to the right */
   }
-}
 
-/*
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
-ul {
-  list-style-type: none;
-  margin: 1rem 0;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 1rem 0 0 ;
-}
-h1 > a {
-  text-decoration: none;
-  color: black;
-}
-button, input, label, textarea {
-  display: block;
-  outline: none;
-}
-label {
-  margin-top: 1rem;
-}
-.error {
-  color: red;
-}
-input.error, textarea.error {
-  border: 1px solid red;
-}
-.form-error {
-  color: red;
-  background-color: lavenderblush;
-  padding: 1rem;
-  display: inline-block;
-}
-.form-error ul {
-  list-style-type: disc;
-  margin: 1rem;
-  padding: 1rem;
-}
-.form-error li {
-  display: list-item;
-}
-.flex-between {
-  display: flex;
-  justify-content: space-between;
-}
-.flex-between button {
-  display: inline;
-}
-*/

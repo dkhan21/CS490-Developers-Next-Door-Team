@@ -1,16 +1,19 @@
 import * as React from 'react'
-import { Link, routes } from '@redwoodjs/router'
-import { styled } from '@mui/material/styles'
+
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
-import IconButton from '@mui/material/IconButton'
 import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
-import { useAuth } from 'src/auth'
 import MenuItem from '@mui/material/MenuItem'
+import { styled } from '@mui/material/styles'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
 import { IoClose, IoMenu } from 'react-icons/io5'
+
+import { Link, routes } from '@redwoodjs/router'
+
+import { useAuth } from 'src/auth'
 
 const Navbar = () => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
@@ -41,7 +44,7 @@ const Navbar = () => {
   }
   const handleButtonClick = () => {
     setIsMenuOpen(false)
-  };
+  }
   return (
     <Box style={{ flexGrow: 1 }}>
       <AppBar
@@ -136,7 +139,7 @@ const Navbar = () => {
                   <p>Instructions</p>
                 </Button>
               </Link>
-            </div >
+            </div>
             <div onClick={handleButtonClick}>
               <Link to={'/translate'}>
                 <Button
@@ -169,7 +172,7 @@ const Navbar = () => {
                   Get Started
                 </Button>
               </Link>
-            </div >
+            </div>
 
             <Button
               id="basic-button"
@@ -355,11 +358,13 @@ const Navbar = () => {
             )}
           </div>
           <div className="menu-button-container">
-
-              <IconButton onClick={toggleMenu} aria-label="Toggle menu">
-                {isMenuOpen ? <IoClose /> : <IoMenu />}
-              </IconButton>
-
+            <IconButton onClick={toggleMenu} aria-label="Toggle menu">
+              {isMenuOpen ? (
+                <IoClose className="menu-icon" />
+              ) : (
+                <IoMenu className="menu-icon" />
+              )}
+            </IconButton>
           </div>
         </Toolbar>
       </AppBar>
