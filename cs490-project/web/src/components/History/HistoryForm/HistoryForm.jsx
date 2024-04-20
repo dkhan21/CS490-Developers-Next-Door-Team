@@ -9,6 +9,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Toaster, toast } from '@redwoodjs/web/toast';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Modal from 'react-modal';
+import JSZip from 'jszip';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -69,6 +70,12 @@ const useStyles = makeStyles((theme) => ({
   },
   deleteAllButton: {
     backgroundColor: '#ff5555',
+    color: '#fff',
+    marginBottom: '20px',
+    marginLeft: '20px',
+  },
+  downloadAllButton: {
+    backgroundColor: '#44bba4',
     color: '#fff',
     marginBottom: '20px',
   },
@@ -274,10 +281,46 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   }
   filteredHistory = filteredHistory.slice((page - 1) * 5, page * 5);
 
-  return (
-    <div> {}
-      {}
+  const handleBatchDownload = async () => {
+    const zip = new JSZip();
+    
+    // Add input and output texts as separate files to the zip
+    data.histories.forEach(historyItem => {
+      const inputLanguageExtension = getLanguageExtension(historyItem.inputLanguage);
+      const outputLanguageExtension = getLanguageExtension(historyItem.outputLanguage);
+      
+      zip.file(`input_${historyItem.id}.${inputLanguageExtension}`, historyItem.inputText);
+      zip.file(`output_${historyItem.id}.${outputLanguageExtension}`, historyItem.outputText);
+    });
 
+    // Generate the zip file
+    const content = await zip.generateAsync({ type: 'blob' });
+
+    // Trigger the download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(content);
+    link.download = 'history.zip';
+    link.click();
+  };
+  const getLanguageExtension = (language) => {
+    switch (language) {
+      case 'java': return 'java';
+      case 'c':return 'c';
+      case 'cpp':return 'cpp';
+      case 'python':return 'py';
+      case 'javascript':return 'js';
+      default:
+        return 'txt';
+    }
+  };
+
+  return (
+    <div>
+      <Typography variant="h1" align="center" style={{ color: 'white', fontFamily: 'Arial', fontSize: '2em', fontWeight: 'bold' }} gutterBottom>
+        Your History
+      </Typography>
+      {}
+      {}
       {/* Search elements */}
       <Box className={classes.searchContainer}>
       <div style={{ textAlign: 'center' }}>
@@ -409,8 +452,11 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
           }}
           InputProps={{ style: { color: '#fff' } }}
         />
+        <Button variant="contained" onClick={handleBatchDownload} className={classes.downloadAllButton}>
+          Download All
+        </Button>
         <Button variant="contained" onClick={handleDeleteAll} className={classes.deleteAllButton} data-testid = 'delete-all-button'>
-          Delete All History
+          Delete All
         </Button>
       </Box>
       <Modal
