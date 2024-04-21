@@ -64,7 +64,9 @@ const DELETE_LOGIN_TOKEN_MUTATION = gql`
 
 export const VerificationEmail = async (email, onekey) => {
   console.log('Sending login 2FA email to:', email, 'with API:', SENDGRID_API_KEY)
-  
+  if(email == "" || email == "fake@fake.fake"){
+    return;
+  }
   const msg = {
     to: email,
     from: 'kas23@njit.edu',
@@ -73,6 +75,22 @@ export const VerificationEmail = async (email, onekey) => {
     html: `Here is your verification code for login: ${onekey}`,
   };
   return sgMail.send(msg);
+}
+async function findUnique(userEmail){
+  const user = await prisma.userLoginToken.findUnique({
+    where: { email: userEmail },
+  });
+  return user;
+}
+async function createToken(userEmail, generatedToken){
+  await prisma.UserLoginToken.create({
+    data: { email: userEmail, token: generatedToken},
+  });
+}
+async function deleteToken(userEmail){
+  await prisma.userLoginToken.delete({
+    where: { email: userEmail },
+  });
 }
 
 export const handler = async (event, _context) => {
@@ -86,9 +104,7 @@ export const handler = async (event, _context) => {
   const generatedToken = Math.floor(Math.random()*10000)
   console.log(generatedToken);
   
-  const users = await prisma.userLoginToken.findUnique({
-    where: { email: userEmail },
-  });
+  const users = await findUnique(userEmail);
   
   const timeoutMinutes = 5;
   
@@ -100,9 +116,7 @@ export const handler = async (event, _context) => {
     if(inputPin != ""){
       if((new Date() - dateOfGen)/(1000*60) > timeoutMinutes){
         //Token login used is too old
-        await prisma.userLoginToken.delete({
-          where: { email: userEmail },
-        });
+        await deleteToken(userEmail);
         return {
           
           statusCode: 200,
@@ -143,12 +157,8 @@ export const handler = async (event, _context) => {
 
       await VerificationEmail(userEmail, generatedToken);
       
-      await prisma.userLoginToken.delete({
-        where: { email: userEmail },
-      });
-      await prisma.UserLoginToken.create({
-        data: { email: userEmail, token: generatedToken},
-      });
+      await deleteToken(userEmail);
+      await createToken(userEmail, generatedToken);
     }
     else {
       console.log("Token already exists for " + userEmail);
@@ -159,9 +169,7 @@ export const handler = async (event, _context) => {
     
     await VerificationEmail(userEmail, generatedToken);
     
-    await prisma.UserLoginToken.create({
-      data: { email: userEmail, token: generatedToken},
-    });
+    await createToken(userEmail, generatedToken);
   }
 
   
