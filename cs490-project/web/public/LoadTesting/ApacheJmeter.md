@@ -10,6 +10,14 @@ Load testing is a crucial aspect of software development and deployment, aimed a
   - Java version 8+
   - Windows/Mac/Linux Operating System
 
+## Reason For Using Apacher Jmeter
+
+  - Free
+  - Customizable Configuration
+  - Recording and Playback
+  - Performance Testing
+
+
 ## Setting Up Apache JMeter Guide:
 
   - Make sure to have Java Version 8+ Installed
@@ -90,7 +98,7 @@ Load testing is a crucial aspect of software development and deployment, aimed a
 
 ## Conclusion:
 The purpose of the Load testing is to test and evaluate the performance capacity of my Redwood Application **AI Code Translator**. We have the opportunity to observe the results through Apache Jmeter Software.
-The guide shown above offers clear and concise instructions, expediting the setup of Apache JMeter and enabling developers to swiftly initiate comprehensive load testing. By crafting thread groups, HTTP requests, and listeners, developers can ensure thorough testing coverage and be presented their applciation preformance measurements. In addition to that, developers can indentify any bottlenecks that can occur:
+The guide shown above offers clear and concise instructions, expediting the setup of Apache JMeter and enabling developers to swiftly initiate comprehensive load testing. By crafting thread groups, HTTP requests, and listeners, developers can ensure thorough testing coverage and be presented their applciation performance measurements. In addition to that, developers can indentify any bottlenecks that can occur:
 
 This is done by by analyzing:
 
