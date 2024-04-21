@@ -8,28 +8,34 @@ Load testing is a crucial aspect of software development and deployment, aimed a
   - HTTP Request Sampler
   - Listeners (e.g., View Results Tree, Summary Report, Aggregate Report)
 
-## Setting Up Apache JMeter Guide
-  - Provide instructions on downloading and installing Apache JMeter.
+## Setting Up Apache JMeter Guide:
+   - #### Make sure to have Java Version 8+ Installed
   - Download Apache JMeter from the official website
-  - https://jmeter.apache.org/download_jmeter.cgi
-  - Extract the file using Linux Terminal below:
-  ```bash
-    wget https://dlcdn.apache.org//jmeter/binaries/apache-jmeter-5.6.3.tgz
-
-    tar -xvf apache-jmeter-5.6.3.tgz
-  ```
-## Creating a Test:
+    - https://jmeter.apache.org/download_jmeter.cgi
+    - Download the binary zip folder
+    - Extract the folder
+    * Change directory into the bin folder
+    ```Windows Commandline
+       cd Downloads/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin
+    ```
+    * Run the application
+     ```Windows Commandline
+       jmeter.bat
+    ```
+    - Or Double click on the jmeter.bat file (Windows Batch File) in File Explorer to start
+      
+## Test Creation Tutorial:
   1) In this test plan, we will create a Thread Group. In the Thread Group, we will create a HTTP Request for each page we want to test. We will also create a Listener to get the results
   - Here is format below:
-    - Test
-      - Thread Group
-        - Home page
-        - Translate page
-        - FAQ page
-        - Resources page
-        - Realease Notes page
-        - Homepage
-        - Listener
+    - Test ----------------------------------| Main Test
+      - Thread Group ----------------------------- ( Holds the HTTP Request and results )
+        - Home page ------------------|
+        - Translate page ---------------|
+        - FAQ page --------------------|---------( We are testing these All of these pages )
+        - Resources page --------------|
+        - Realease Notes page --------|
+        - Homepage -------------------|
+        - Listener -----------------------------| Results are stored here
   2) Configuring Load Test:
      - Default test plan in created. Rename it to "LoadTesting"
      - Right Click on it. Select -> Add -> Threads(User) -> Thread Groups  (We create a Thread Group)
@@ -54,8 +60,32 @@ Load testing is a crucial aspect of software development and deployment, aimed a
   - Check results in Listener
 
 ## Unit Tests Integration:
-  Explain the process of analyzing load testing results and identifying bottlenecks.
-  Describe how to optimize the application based on identified issues.
-  Provide guidance on verifying optimizations through subsequent load tests.
+ 
+- Analyzing Load Testing Results and Identifying Bottlenecks:
+
+  - Review Metrics: Check response times, errors, and resource usage.
+  - Spot Issues: Identify slowdowns or resource saturation.
+  - Monitor Systems: Use tools for real-time insights.
+  - Match Scenarios: Correlate issues with test scenarios.
+
+- Optimizing the Application:
+
+  - Prioritize Fixes: Address critical bottlenecks first.
+  - Code Optimization: Improve algorithms and queries.
+  - Infrastructure Scaling: Increase server capacity if needed.
+  - Test Changes: Validate optimizations through load tests.
 ## Conclusion:
-  Summarize the importance of load testing and the benefits of following the steps outlined in the guide.
+The purpose of the Load testing is to test and evaluate the performance capacity of my Redwood Application **AI Code Translator**. We have the opportunity to observe the results through Apache Jmeter Software.
+The guide shown above offers clear and concise instructions, expediting the setup of Apache JMeter and enabling developers to swiftly initiate comprehensive load testing. By crafting thread groups, HTTP requests, and listeners, developers can ensure thorough testing coverage and be presented their applciation preformance measurements. In addition to that, developers can indentify any bottlenecks that can occur:
+This is done by by analyzing the:
+  - Response Times
+  - Throughput
+  - Error Rates
+
+Examples of Bottlenecks that can occur:
+  - Memory bottlenecks -> Memory is exhausted or is being used pasted its capacity
+  - Database bottlenecks -> Inefficient Database Queries
+  - Network bottlenecks -> High Latency or Limited Network Bandwidth
+
+
+
