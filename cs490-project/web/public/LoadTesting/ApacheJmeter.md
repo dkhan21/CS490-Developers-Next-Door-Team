@@ -10,7 +10,7 @@ Load testing is a crucial aspect of software development and deployment, aimed a
   - Java version 8+
   - Windows/Mac/Linux Operating System
 
-## Reason For Using Apacher Jmeter
+## Reasons For Using Apache Jmeter
 
   - Free
   - Customizable Configuration
