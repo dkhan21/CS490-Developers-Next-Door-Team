@@ -9,8 +9,10 @@ Load testing is a crucial aspect of software development and deployment, aimed a
   - Windows/Mac/Linux Operating System
 
 ## Setting Up Apache JMeter Guide:
+
   - Make sure to have Java Version 8+ Installed
   - Download Apache JMeter from the official website
+    
     - https://jmeter.apache.org/download_jmeter.cgi
     - Download the binary zip folder
     - Extract the folder
@@ -89,11 +91,13 @@ The purpose of the Load testing is to test and evaluate the performance capacity
 The guide shown above offers clear and concise instructions, expediting the setup of Apache JMeter and enabling developers to swiftly initiate comprehensive load testing. By crafting thread groups, HTTP requests, and listeners, developers can ensure thorough testing coverage and be presented their applciation preformance measurements. In addition to that, developers can indentify any bottlenecks that can occur:
 
 This is done by by analyzing:
+
   - Response Times
   - Throughput
   - Error Rates
 
 Examples of Bottlenecks that can occur:
+
   - Memory bottlenecks -> Memory is exhausted or is being used pasted its capacity
   - Database bottlenecks -> Inefficient Database Queries
   - Network bottlenecks -> High Latency or Limited Network Bandwidth
