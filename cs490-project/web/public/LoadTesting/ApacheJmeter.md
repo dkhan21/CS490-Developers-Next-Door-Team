@@ -9,18 +9,19 @@ Load testing is a crucial aspect of software development and deployment, aimed a
   - Listeners (e.g., View Results Tree, Summary Report, Aggregate Report)
 
 ## Setting Up Apache JMeter Guide:
-   - #### Make sure to have Java Version 8+ Installed
+  - Make sure to have Java Version 8+ Installed
   - Download Apache JMeter from the official website
     - https://jmeter.apache.org/download_jmeter.cgi
     - Download the binary zip folder
     - Extract the folder
     * Change directory into the bin folder
-    ```Windows Commandline
-       cd Downloads/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin
+      
+    ```
+           cd Downloads/apache-jmeter-5.6.3/apache-jmeter-5.6.3/bin
     ```
     * Run the application
-     ```Windows Commandline
-       jmeter.bat
+     ```
+     jmeter.bat
     ```
     - Or Double click on the jmeter.bat file (Windows Batch File) in File Explorer to start
       
@@ -61,23 +62,25 @@ Load testing is a crucial aspect of software development and deployment, aimed a
 
 ## Unit Tests Integration:
  
-- Analyzing Load Testing Results and Identifying Bottlenecks:
+  - Analyzing Load Testing Results and Identifying Bottlenecks:
+  
+    - Review Metrics: Check response times, errors, and resource usage.
+    - Spot Issues: Identify slowdowns or resource saturation.
+    - Monitor Systems: Use tools for real-time insights.
+    - Match Scenarios: Correlate issues with test scenarios.
+  
+  - Optimizing the Application:
+  
+    - Prioritize Fixes: Address critical bottlenecks first.
+    - Code Optimization: Improve algorithms and queries.
+    - Infrastructure Scaling: Increase server capacity if needed.
+    - Test Changes: Validate optimizations through load tests.
 
-  - Review Metrics: Check response times, errors, and resource usage.
-  - Spot Issues: Identify slowdowns or resource saturation.
-  - Monitor Systems: Use tools for real-time insights.
-  - Match Scenarios: Correlate issues with test scenarios.
-
-- Optimizing the Application:
-
-  - Prioritize Fixes: Address critical bottlenecks first.
-  - Code Optimization: Improve algorithms and queries.
-  - Infrastructure Scaling: Increase server capacity if needed.
-  - Test Changes: Validate optimizations through load tests.
 ## Conclusion:
 The purpose of the Load testing is to test and evaluate the performance capacity of my Redwood Application **AI Code Translator**. We have the opportunity to observe the results through Apache Jmeter Software.
 The guide shown above offers clear and concise instructions, expediting the setup of Apache JMeter and enabling developers to swiftly initiate comprehensive load testing. By crafting thread groups, HTTP requests, and listeners, developers can ensure thorough testing coverage and be presented their applciation preformance measurements. In addition to that, developers can indentify any bottlenecks that can occur:
-This is done by by analyzing the:
+
+This is done by by analyzing:
   - Response Times
   - Throughput
   - Error Rates
