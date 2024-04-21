@@ -201,11 +201,27 @@ const Feedback = ({ feedback, onSave, onCopyToEditors }) => {
             <div>
 
               <p style={{ textDecoration: 'underline', marginBottom: '10px' }}>Code Languages Used</p>
-              <p style={{ marginBottom: '20px' }}>{feedback.inLanguage} ➨ {feedback.outLanguage}</p>
+              <p >{feedback.inLanguage} ➨ {feedback.outLanguage}</p>
 
-              <div style={{flexDirection: 'row', display: 'flex'}}>
-                <p style={{ marginRight: '10px'}}>Click here to see Translation!</p>
-                <button style={{}} onClick={handleCopyToEditors}>Copy to Editors</button>
+              <div style={{ flexDirection: 'row', display: 'flex', paddingTop: '20px' }}>
+                <p style={{ marginRight: '10px', paddingTop: '5px' }}>Click here to see Translation!</p>
+                <button style={{
+                  width: '100px',
+                  cursor: 'pointer',
+                  border: '2px solid black',
+                  backgroundColor: 'white',
+                  color: 'black',  // Set default text color
+                  borderRadius: '5px',
+                  height: '30px',
+                  transition: 'background-color 0.3s, color 0.3s',
+                }} onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = 'black';
+                  e.currentTarget.style.color = 'white';
+                }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = 'white';
+                    e.currentTarget.style.color = 'black';
+                  }} onClick={handleCopyToEditors}>Copy to Editors</button>
               </div>
 
             </div>

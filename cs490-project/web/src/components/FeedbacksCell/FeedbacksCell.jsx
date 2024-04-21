@@ -49,10 +49,6 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
   const percentageZeroStarFeedbacks = (zeroStarCount / totalFeedbacksCount) * 100;
 
 
-
-
-
-
   // Filter feedbacks for the current user
   const currentUserFeedbacks = feedbacks.filter(feedback => feedback.userId === userId);
 
@@ -61,7 +57,7 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
 
   return (
     <>
-      {/* Display feedbacks for the current email below here  */}
+      {/* Aggreagated feedback display */}
       <div style={{ flexDirection: 'row', backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', display: 'flex', paddingTop: '20px' }}>
         <p style={{ fontSize: '100px', paddingLeft: '30px' }}>⭐</p>
         <div style={{ flexDirection: 'column', display: 'flex' }}>
@@ -74,8 +70,8 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
           <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '20px',  height: '25px' }}>
             <p style={{ margin: '0', paddingRight: '-3px', color: 'white', fontSize: '18px' }}>5</p>
             <p style={{ margin: '0', paddingRight: '10px', paddingBottom: '5px', color: 'white', }}>⭐:</p>
-            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }}>{fiveStarCount}</p>
-            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }}>
+            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px',  }} aria-label="fiveCount">{fiveStarCount}</p>
+            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }} aria-label="fiveCountPercent">
               <progress style={{ height: '35px' }} value={percentageFiveStarFeedbacks} max="100"></progress>
               <span style={{ position: 'absolute', left: '42.5%', top: '50%', transform: 'translate(-50%, -50%)', color: 'black' }}>{percentageFiveStarFeedbacks.toFixed(2)}%</span>
             </div>
@@ -84,8 +80,8 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
           <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '20px', height: '25px' }}>
             <p style={{ margin: '0', paddingRight: '-3px', color: 'white', fontSize: '18px' }}>4</p>
             <p style={{ margin: '0', paddingRight: '10px', paddingBottom: '5px', color: 'white', }}>⭐:</p>
-            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }}>{fourStarCount}</p>
-            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }}>
+            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }} aria-label="fourCount">{fourStarCount}</p>
+            <div style={{ position: 'relative', width: '200px', paddingRight: '10px',  }} aria-label="fourCountPercent" >
               <progress style={{ height: '35px' }} value={percentageFourStarFeedbacks} max="100"></progress>
               <span style={{ position: 'absolute', left: '42.5%', top: '50%', transform: 'translate(-50%, -50%)', color: 'black' }}>{percentageFourStarFeedbacks.toFixed(2)}%</span>
             </div>
@@ -94,9 +90,9 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
           <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '20px',  height: '25px' }}>
             <p style={{ margin: '0', paddingRight: '-3px', color: 'white', fontSize: '18px' }}>3</p>
             <p style={{ margin: '0', paddingRight: '10px', paddingBottom: '5px', color: 'white', }}>⭐:</p>
-            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }}>{threeStarCount}</p>
-            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }}>
-              <progress style={{ height: '35px' }} value={percentageThreeStarFeedbacks} max="100"></progress>
+            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }} aria-label="threeCount">{threeStarCount}</p>
+            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }} aria-label="threeCountPercent">
+              <progress style={{ height: '35px' }} value={percentageThreeStarFeedbacks} max="100" ></progress>
               <span style={{ position: 'absolute', left: '42.5%', top: '50%', transform: 'translate(-50%, -50%)', color: 'black' }}>{percentageThreeStarFeedbacks.toFixed(2)}%</span>
             </div>
           </div>
@@ -104,8 +100,8 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
           <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '20px',  height: '25px' }}>
             <p style={{ margin: '0', paddingRight: '-3px', color: 'white', fontSize: '18px' }}>2</p>
             <p style={{ margin: '0', paddingRight: '10px', paddingBottom: '5px', color: 'white', }}>⭐:</p>
-            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }}>{twoStarCount}</p>
-            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }}>
+            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }} aria-label="twoCount">{twoStarCount}</p>
+            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }} aria-label="twoCountPercent">
               <progress style={{ height: '35px' }} value={percentageTwoStarFeedbacks} max="100"></progress>
               <span style={{ position: 'absolute', left: '42.5%', top: '50%', transform: 'translate(-50%, -50%)', color: 'black' }}>{percentageTwoStarFeedbacks.toFixed(2)}%</span>
             </div>
@@ -114,9 +110,9 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
           <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '20px',  height: '25px' }}>
             <p style={{ margin: '0', paddingRight: '-3px', color: 'white', fontSize: '18px' }}>1</p>
             <p style={{ margin: '0', paddingRight: '10px', paddingBottom: '5px', color: 'white', }}>⭐:</p>
-            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }}>{oneStarCount}</p>
-            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }}>
-              <progress style={{ height: '35px' }} value={percentageOneStarFeedbacks} max="100"></progress>
+            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }} aria-label="oneCount">{oneStarCount}</p>
+            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }} aria-label="oneCountPercent">
+              <progress style={{ height: '35px' }} value={percentageOneStarFeedbacks} max="100" ></progress>
               <span style={{ position: 'absolute', left: '42.5%', top: '50%', transform: 'translate(-50%, -50%)', color: 'black' }}>{percentageOneStarFeedbacks.toFixed(2)}%</span>
             </div>
           </div>
@@ -124,8 +120,8 @@ export const Success = ({ feedbacks, userId, onCopyToEditors }) => {
           <div style={{ display: 'flex', alignItems: 'center', paddingLeft: '20px',  height: '25px' }}>
             <p style={{ margin: '0', paddingRight: '-3px', color: 'white', fontSize: '18px' }}>0</p>
             <p style={{ margin: '0', paddingRight: '10px', paddingBottom: '5px', color: 'white', }}>⭐:</p>
-            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }}>{zeroStarCount}</p>
-            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }}>
+            <p style={{ margin: '0', paddingRight: '20px', color: 'white', fontSize: '18px' }} aria-label="zeroCount">{zeroStarCount}</p>
+            <div style={{ position: 'relative', width: '200px', paddingRight: '10px' }} aria-label="zeroCountPercent">
               <progress style={{ height: '35px' }} value={percentageZeroStarFeedbacks} max="100"></progress>
               <span style={{ position: 'absolute', left: '42.5%', top: '50%', transform: 'translate(-50%, -50%)', color: 'black' }}>{percentageZeroStarFeedbacks.toFixed(2)}%</span>
             </div>
