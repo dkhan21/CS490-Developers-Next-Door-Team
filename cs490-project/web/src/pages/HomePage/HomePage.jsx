@@ -1,34 +1,38 @@
 import React from 'react'
 import { useEffect } from 'react'
 
+import { useApolloClient } from '@apollo/client' // Import useApolloClient hook
+
 import { Link, routes } from '@redwoodjs/router'
 import { Metadata } from '@redwoodjs/web'
 
+import { QUERY as FEEDBACKS_QUERY } from 'src/components/FeedbacksCell'
+import { GET_USER_HISTORY_QUERY as HistoryQuery } from 'src/components/History/HistoryForm'
 import Navbar from 'src/components/Navbar/Navbar'
-import { useApolloClient } from '@apollo/client'; // Import useApolloClient hook
-import { QUERY as FEEDBACKS_QUERY } from 'src/components/FeedbacksCell';
-import {GET_USER_HISTORY_QUERY as HistoryQuery} from 'src/components/History/HistoryForm'
 
 const HomePage = () => {
-
-  const client = useApolloClient(); // Initialize Apollo Client
+  const client = useApolloClient() // Initialize Apollo Client
 
   // Prefetch feedback data when hovering over the "Get Started" button
   const prefetchFeedbackData = () => {
-    client.query({
-      query: FEEDBACKS_QUERY,
-    }).catch(error => {
-      console.error('Error prefetching feedback data:', error);
-    });
+    client
+      .query({
+        query: FEEDBACKS_QUERY,
+      })
+      .catch((error) => {
+        console.error('Error prefetching feedback data:', error)
+      })
 
-    client.query({
-      query: HistoryQuery,
-    }).catch(error => {
-      console.error('Error prefetching history data:', error);
-    });
-  };
+    client
+      .query({
+        query: HistoryQuery,
+      })
+      .catch((error) => {
+        console.error('Error prefetching history data:', error)
+      })
+  }
 
-  prefetchFeedbackData();
+  prefetchFeedbackData()
 
   useEffect(() => {
     const hash = window.location.hash
@@ -50,7 +54,7 @@ const HomePage = () => {
         <Navbar />
       </header>
       <div id="welcome">
-        <div id="welcome-text">
+        <div id="welcome-text" aria-label="welcome">
           <h1>Welcome To Code Harbor!</h1>
           <h3>The Place To Convert Your Code, </h3>
           <h3>Into Other Programming Languages!</h3>
@@ -60,7 +64,7 @@ const HomePage = () => {
         </Link>
       </div>
       <div className="container" id="section-about">
-        <div id="about">
+        <div id="about" aria-label="about">
           <h2>
             <u>About</u>
           </h2>
@@ -86,7 +90,7 @@ const HomePage = () => {
           src="pages/images/peopleOnComp.jpg"
           alt="Code on computer"
         />
-        <div id="workings">
+        <div id="workings" aria-label="instructions">
           <h2>
             <u>Instructions</u>
           </h2>
