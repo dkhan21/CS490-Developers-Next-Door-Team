@@ -126,6 +126,14 @@ describe('FeedbacksCell', () => {
     //Average rating message not displayed. Use querybytext to check that it is not displayed.
     expect(queryByText("Average Rating:")).toBeNull();
     expect(getByText('No Reviews yet!')).toBeInTheDocument();
+
+    expect(queryByText("5⭐:")).toBeNull();
+    expect(queryByText("4⭐:")).toBeNull();
+    expect(queryByText("3⭐:")).toBeNull();
+    expect(queryByText("2⭐:")).toBeNull();
+    expect(queryByText("1⭐:")).toBeNull();
+    expect(queryByText("0⭐:")).toBeNull();
+
   })
 
 })

@@ -924,10 +924,6 @@ const TranslatePage = () => {
         />
       </div>
 
-      <p id="form" style={{ backgroundImage: 'linear-gradient(to right, #403c44, #3C3C44)', paddingLeft: '550px', paddingTop: "90px", fontSize: '25px', color: 'white' }}>
-        Give us your feedback on this translation!
-      </p>
-
       <div >
         <FeedbackForm inputText={inputText} outputText={outputText} inLan={inputLanguage} outLan={outputLanguage}></FeedbackForm>
         {isAuthenticated ? <FeedbacksCell userId={currentUser.id}  onCopyToEditors={handleCopyToEditors} /> : <FeedbacksCell />}
