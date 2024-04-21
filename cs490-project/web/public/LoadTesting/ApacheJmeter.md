@@ -1,5 +1,7 @@
 # Conducting Load Testing on AI Code Translator Application: A Step-by-Step Guide
 
+*Created by Daniyal Khan*
+
 ## Introduction
 Load testing is a crucial aspect of software development and deployment, aimed at evaluating how a system performs under normal and peak usage conditions. It involves simulating real-world user activity to assess an application's ability to handle concurrent user interactions, data processing, transaction volumes, and response times.
 
