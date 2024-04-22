@@ -54,6 +54,7 @@ Load testing is a crucial aspect of software development and deployment, aimed a
   2) Configuring Load Test:
      
      - Default test plan in created. Rename it to "LoadTesting"
+     - Check the = Run Teardown Thread Group after shutdown of main threads
      - Right Click on it. Select -> Add -> Threads(User) -> Thread Groups  (We create a Thread Group)
        
        - Edit the Thread Properties Sections:
