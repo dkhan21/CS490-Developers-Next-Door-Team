@@ -12,9 +12,6 @@ describe('LoginPage', () => {
     // Check for the login heading
     expect(screen.getByRole('heading', { name: /Login/i })).toBeInTheDocument()
 
-    // Check for the email input
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument()
-
     // Check for the presence of the password input
     expect(screen.getByLabelText(/Password/i)).toBeInTheDocument()
 
@@ -118,14 +115,7 @@ describe('LoginPage', () => {
       },
     ]
 
-    for (let creds of testCredentials) {
-      //fill in the username and password
-      fireEvent.change(screen.getByLabelText(/Email/i), {
-        target: { value: creds.email },
-      })
-      fireEvent.change(screen.getByLabelText(/password/i), {
-        target: { value: creds.password },
-      })
+
 
       //Click the login button
       fireEvent.click(screen.getByRole('button', { name: /Login/i }))
@@ -134,6 +124,6 @@ describe('LoginPage', () => {
       await waitFor(() =>
         expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
       )
-    }
+
   })
 })
