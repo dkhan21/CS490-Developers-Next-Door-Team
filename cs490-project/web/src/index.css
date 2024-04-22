@@ -218,7 +218,7 @@ img {
     align-items: center;
     text-align: center;
   }
- 
+
   .sidemenu{
     color: red;
   }
@@ -235,7 +235,7 @@ img {
 
 }
 .menu-icon {
-  color: #e7bb41; /* Initial color */
+  color: #e7bb41; 
   transition: color 0.3s ease; /* Add transition for color change */
 }
 
