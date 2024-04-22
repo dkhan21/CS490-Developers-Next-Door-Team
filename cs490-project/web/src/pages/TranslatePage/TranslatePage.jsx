@@ -626,10 +626,6 @@ const TranslatePage = () => {
   }
 
   const [isGreen, setIsGreen] = useState(true)
-  const handleToggleColor = () => {
-    setIsGreen((prevState) => !prevState)
-  }
-
   const [isDragOver, setIsDragOver] = useState(false)
 
   const handleDragOver = (e) => {
@@ -790,7 +786,7 @@ const TranslatePage = () => {
               }}
             >
               GPT-3 Status
-              <IconButton onClick={handleToggleColor}>
+              <IconButton>
                 {isGreen ? (
                   <CheckCircle style={{ color: 'green' }} />
                 ) : (

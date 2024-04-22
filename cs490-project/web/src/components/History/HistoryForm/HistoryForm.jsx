@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#ff5555',
   },
   copyButton: {
-    color: '#0066cc',
+    color: '#44bba4',
     fontSize: 'smaller',
     backgroundColor: 'transparent',
   },
@@ -188,6 +188,11 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   };
   
   const handleDeleteAll = async () => {
+    const count = data.histories.filter((historyItem) => historyItem.userId === currentUser.id).length;
+    if (count === 0) {
+      toast.error('No history entries to delete');
+      return;
+    }
     handleDeleteAllConfirmationOpen();
   };
 
@@ -284,7 +289,6 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   const handleBatchDownload = async () => {
     const zip = new JSZip();
     
-    // Add input and output texts as separate files to the zip
     data.histories.forEach(historyItem => {
       const inputLanguageExtension = getLanguageExtension(historyItem.inputLanguage);
       const outputLanguageExtension = getLanguageExtension(historyItem.outputLanguage);
@@ -293,10 +297,8 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       zip.file(`output_${historyItem.id}.${outputLanguageExtension}`, historyItem.outputText);
     });
 
-    // Generate the zip file
     const content = await zip.generateAsync({ type: 'blob' });
 
-    // Trigger the download
     const link = document.createElement('a');
     link.href = URL.createObjectURL(content);
     link.download = 'history.zip';
