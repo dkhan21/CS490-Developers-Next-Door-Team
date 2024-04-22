@@ -71,3 +71,9 @@ model History {
   createdAt      DateTime @default(now())
   userId         Int      @default(-1)
 }
+
+model UserLoginToken {
+  email   String  @id @unique
+  token   Int
+  createdAt DateTime  @default(now())
+}
