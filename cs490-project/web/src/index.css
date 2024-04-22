@@ -218,66 +218,50 @@ img {
     align-items: center;
     text-align: center;
   }
-  /* This adjusts navBar page */
-  /* .navbar-whole {
-    display: block;
-    flex-direction: column;
-  } */
 
   .sidemenu{
     color: red;
   }
 }
 
-/*
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-}
-ul {
-  list-style-type: none;
-  margin: 1rem 0;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 1rem 0 0 ;
-}
-h1 > a {
-  text-decoration: none;
-  color: black;
-}
-button, input, label, textarea {
-  display: block;
-  outline: none;
-}
-label {
-  margin-top: 1rem;
-}
-.error {
-  color: red;
-}
-input.error, textarea.error {
-  border: 1px solid red;
-}
-.form-error {
-  color: red;
-  background-color: lavenderblush;
-  padding: 1rem;
-  display: inline-block;
-}
-.form-error ul {
-  list-style-type: disc;
-  margin: 1rem;
-  padding: 1rem;
-}
-.form-error li {
-  display: list-item;
-}
-.flex-between {
+.nav__list {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  align-items: center;
 }
-.flex-between button {
-  display: inline;
+
+.menu-button-container {
+  display: none; /* Hide the container by default */
+
 }
-*/
+.menu-icon {
+  color: #e7bb41; 
+  transition: color 0.3s ease; /* Add transition for color change */
+}
+
+.menu-icon:hover {
+  color: #44bba4; /* Hover color */
+}
+
+@media (max-width: 768px) {
+  .nav__list {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+    display: none; /* Hide the menu by default on smaller screens */
+
+  }
+
+  .nav__list.open {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+  }
+
+  .menu-button-container {
+    display: block;
+    margin-left: auto;
+  }
+
+}

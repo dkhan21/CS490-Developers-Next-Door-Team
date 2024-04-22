@@ -14,8 +14,11 @@ import {
   FileUpload as FileUploadIcon,
   FileDownload as FileDownloadIcon,
   WidthFull,
+  Start,
 } from '@mui/icons-material'
 import { CheckCircle, HighlightOff } from '@material-ui/icons'
+import FeedbacksCell from 'src/components/FeedbacksCell';
+
 import saveAs from 'file-saver'
 import MonacoEditor from '@monaco-editor/react'
 //import detectLang from 'lang-detector'; If we want to add an auto-detect language feature
@@ -208,6 +211,20 @@ const TranslatePage = () => {
   const [activeTranslations, setActiveTranslations] = useState(0)
   const [token, setToken] = useState(null)
 
+
+
+  //Feedback code to the Translate page
+  const handleCopyToEditors = (inText, outText, inLan, outLan) => {
+    setInputText(inText);
+    setOutputText(outText);
+    setInputLanguage(inLan);
+    setOutputLanguage(outLan);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  };
+
   const returnToken = async () => {
     try {
       const tokenVal = await getToken()
@@ -280,6 +297,8 @@ const TranslatePage = () => {
     }
   }, [outputLanguage])
 
+
+
   const [isStatus500, setisStatus500] = useState(false)
 
   const [isStatus401, setisStatus401] = useState(false)
@@ -335,6 +354,7 @@ const TranslatePage = () => {
             }
           })
           .then((data) => {
+            console.log(data.completion.toLowerCase())
             const lan = data.completion.toLowerCase()
             if (languages.includes(lan)) {
               console.log(lan + ' found')
@@ -358,7 +378,7 @@ const TranslatePage = () => {
             console.error('Error handling translation response:', error)
             reject(error)
           })
-          .finally(() => {})
+          .finally(() => { })
       } catch (error) {
         // Log the error
         console.error('Error in detecting Language: ', error)
@@ -531,6 +551,11 @@ const TranslatePage = () => {
     if (activeTranslations < 0) {
       setActiveTranslations(0)
     }
+
+    const feedbackF = document.getElementById('form');
+    if (feedbackF) {
+      feedbackF.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   const [AutoDet, setAutoDet] = useState(false)
@@ -670,9 +695,8 @@ const TranslatePage = () => {
             <div className={classes.buttonContainer}>
               <Button
                 variant="contained"
-                className={`${classes.button} ${
-                  isDragOver ? classes.uploadButtonDragOver : ''
-                }`}
+                className={`${classes.button} ${isDragOver ? classes.uploadButtonDragOver : ''
+                  }`}
                 onClick={handleUploadClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -899,7 +923,12 @@ const TranslatePage = () => {
           setOutputLanguage={setOutputLanguage}
         />
       </div>
-      <FeedbackForm></FeedbackForm>
+
+      <div >
+        <FeedbackForm inputText={inputText} outputText={outputText} inLan={inputLanguage} outLan={outputLanguage}></FeedbackForm>
+        {isAuthenticated ? <FeedbacksCell userId={currentUser.id}  onCopyToEditors={handleCopyToEditors} /> : <FeedbacksCell />}
+
+      </div>
     </>
   )
 }

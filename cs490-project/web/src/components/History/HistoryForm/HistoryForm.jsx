@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '10px',
   },
   signInMessage: {
+    paddingTop: '50px',
     textAlign: 'center',
     fontSize: '24px',
     fontWeight: 'bold',
@@ -81,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GET_USER_HISTORY_QUERY = gql`
+export const GET_USER_HISTORY_QUERY = gql`
   query GetUserHistory {
     histories {
       id
@@ -141,17 +142,17 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
     setSortBy(e.target.value);
     setPage(1);
   };
-  
+
   const handleInputLanguageFilterChange = (e) => {
     const inputValue = e.target.value;
     setInputLanguageFilter(inputValue === 'C++' ? 'cpp' : inputValue);
     setPage(1);
   };
-  
+
   const handleOutputLanguageFilterChange = (e) => {
     const outputValue = e.target.value;
     setOutputLanguageFilter(outputValue === 'C++' ? 'cpp' : outputValue);
-    setPage(1); 
+    setPage(1);
   };
 
   const handleSearchTextChange = (text) => {
@@ -213,12 +214,13 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
 
   if (!currentUser) {
     return (
-      <Typography variant="h1" className={classes.signInMessage}>
+      <Typography  variant="h1" className={classes.signInMessage}>
         You need to sign in to access your history.
       </Typography>
     );
   }
   let filteredHistory = [];
+
 
   if (data && data.histories) {
     filteredHistory = data.histories.filter((historyItem) => historyItem.userId === currentUser.id);
@@ -235,7 +237,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
   if (startDate && endDate) {
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
-    
+
     endDateObj.setDate(endDateObj.getDate() + 1);
   
     filteredHistory = filteredHistory.filter((historyItem) => {
@@ -271,7 +273,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       behavior: 'smooth'
     });
   };
-  
+
   if (sortBy === 'newest') {
     filteredHistory = filteredHistory.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   }
@@ -352,7 +354,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <span>Oldest</span>
               </div>
-            </MenuItem>  
+            </MenuItem>
             <MenuItem value="shortest">Shortest</MenuItem>
             <MenuItem value="longest">Longest</MenuItem>
           </Select>
@@ -566,6 +568,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
       </div>
     </div>
   );
+
 };
 
 export default HistoryForm;

@@ -46,7 +46,6 @@ describe('Navbar', () => {
   });
 })
 
-//-----------other links------------should fail for noww
 describe('Navbar', () => {
   it('navigates to respective pages when links are clicked', () => {
     render(<Navbar />)
