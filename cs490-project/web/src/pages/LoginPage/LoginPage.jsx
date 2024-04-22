@@ -16,9 +16,11 @@ import { toast, Toaster } from '@redwoodjs/web/toast'
 
 import { useAuth } from 'src/auth'
 import Nav2 from 'src/components/Nav2/nav2'
+import { Button } from '@material-ui/core'
+
 
 const LoginPage = () => {
-  const { isAuthenticated, logIn } = useAuth()
+  const { isAuthenticated, logIn, logOut } = useAuth()
   const [rememberMe, setRememberMe] = useState(false)
   useEffect(() => {
     if (localStorage.getItem('rememberMe') === 'true') {
@@ -39,11 +41,53 @@ const LoginPage = () => {
     usernameRef.current?.focus()
   }, [])
 
-  const onSubmit = async (data) => {
+  const onPinClick = async() => {
+     //Generate a token
+     console.log(usernameRef.current.value);
+     const email = usernameRef.current.value;
+     if( email == ""){
+        toast.error("Please enter an email");
+        return;
+     }
+     
+     const dataPayload = {
+      messages: [
+        {
+          userEmail: email,
+          pin: "",
+        },
+      ],
+    }
+    await fetch('http://localhost:8910/.redwood/functions/genOneTimeKey', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataPayload),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        toast.error("Unable to generate PIN. Check that your email is valid.");
+      }
+      else {
+        toast("Sent One-Time PIN to " + email);
+      }
+    })
+    .catch((error) => {
+      console.error('Error generating token. Please try again later.', error)
+      toast.error("Unable to generate PIN. Please try again.");
+      reject(error)
+    })
+    
+  }
+
+  const handleLogin = async (user, pass, rememberMe) => {
     const expires = rememberMe ? 60 * 60 * 24 * 30 * 3 : 60 * 60 * 24
+    
     const response = await logIn({
-      username: data.username,
-      password: data.password,
+      username: user,
+      password: pass,
       rememberMe,
       expires,
     })
@@ -51,6 +95,7 @@ const LoginPage = () => {
     // Check if the response is defined
     if (response) {
       if (!response.error) {
+
         if (rememberMe) {
           localStorage.setItem('rememberMe', 'true')
           localStorage.setItem('username', data.username)
@@ -71,6 +116,57 @@ const LoginPage = () => {
       // Handle the case where the response is undefined
       toast.error('An error occurred during login.')
     }
+  }
+
+  const onSubmit = async (data) => {
+    const username = data.username;
+    const password = data.password;
+    const rememberMe = data.rememberMe;
+    const responsePayload = {
+      messages: [
+        {
+          userEmail: data.username,
+          pin: data.pin,
+        },
+      ],
+    }
+    await fetch('http://localhost:8910/.redwood/functions/genOneTimeKey', {
+      mode: 'cors',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(responsePayload),
+    })
+    .then((response) => {
+      if (!response.ok) {
+        toast.error('An error occurred during login.');
+        
+      }
+      else {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      
+      if(!data["valid"]){
+          toast.error("Invalid PIN");
+          return;
+        }
+      else {
+          handleLogin(username, password, rememberMe);
+      }
+      
+    })
+    .catch((error) => {
+      //console.error('Error validating token. Please try again later.', error)
+      toast.error('An error occurred validating PIN. Please try again later.');
+      //reject(error)
+      return;
+    })
+
+
+    
   }
 
   return (
@@ -130,8 +226,36 @@ const LoginPage = () => {
                         message: 'Password is required',
                       },
                     }}
+                    
                   />
-
+                  <Label
+                    name="pin"
+                    className="rw-label"
+                    errorClassName="rw-label rw-label-error"
+                  >
+                    One-Time Pin
+                  </Label>
+                  <TextField
+                    name="pin"
+                    className="rw-input"
+                    errorClassName="rw-input rw-input-error"
+                    validation={{
+                      required: {
+                        value: true,
+                        message: 'PIN is required',
+                      },
+                    }}
+                  />
+                  <div className="rw-label">
+                    <Button
+                    variant='contained'
+                    onClick={onPinClick}
+                    >
+                    Send Pin to Email
+                    </Button>
+                    
+                  </div>
+                  
                   <div className="rw-forgot-link">
                     <Link
                       to={routes.forgotPassword()}

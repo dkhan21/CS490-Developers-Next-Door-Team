@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '10px',
   },
   signInMessage: {
+    paddingTop: '50px',
     textAlign: 'center',
     fontSize: '24px',
     fontWeight: 'bold',
@@ -170,7 +171,7 @@ const HistoryForm = ({ setInputText, setOutputText, setInputLanguage, setOutputL
 
   if (!currentUser) {
     return (
-      <Typography variant="h1" className={classes.signInMessage}>
+      <Typography  variant="h1" className={classes.signInMessage}>
         You need to sign in to access your history.
       </Typography>
     );

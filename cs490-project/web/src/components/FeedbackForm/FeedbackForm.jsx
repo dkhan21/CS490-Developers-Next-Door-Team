@@ -10,11 +10,9 @@ import {
 } from '@redwoodjs/forms'
 import { useMutation } from '@redwoodjs/web'
 import { Toaster, toast } from '@redwoodjs/web/toast'
-import FeedbacksCell from 'src/components/FeedbacksCell';
 import { QUERY as FeedbacksQuery } from 'src/components/FeedbacksCell'
 import Example from 'src/components/FeedbackForm/EncryptButton';
 import Filter from 'bad-words';
-import { FaAngry } from 'react-icons/fa';
 
 
 
@@ -32,7 +30,7 @@ const CREATE = gql`
 `
 
 
-const FeedbackForm = () => {
+const FeedbackForm = ({ inputText, outputText, inLan, outLan }) => {
   const { isAuthenticated, currentUser, logOut } = useAuth()
 
   const [rating, setRating] = useState(0);
@@ -81,7 +79,7 @@ const FeedbackForm = () => {
       console.log("No profanity found.");
     }
 
-    const input = { name, rating, body: body, userId: user };
+    const input = { name, rating, body: body, userId: user, inText: inputText, outText: outputText, inLanguage: inLan, outLanguage: outLan };
     createFeedback({ variables: { input } });
   };
 
@@ -92,6 +90,7 @@ const FeedbackForm = () => {
     }
     return true;
   };
+  const currentUserFeedbackId = currentUser ? currentUser.feedbackId : null
 
   return (
     <>
@@ -102,7 +101,7 @@ const FeedbackForm = () => {
 
         <Toaster />
         {isAuthenticated ? (
-          <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', paddingTop: '100px', backgroundColor: '#3C3C44' }}>
+          <Form onSubmit={onSubmit} formMethods={formMethods} className="mt-4 w-full" style={{ display: 'flex', flexDirection: 'row', paddingTop: '50px', backgroundColor: '#3C3C44' }}>
 
             <div style={{ marginLeft: '400px', marginRight: '20px', flexDirection: 'column', display: 'flex' }}>
               <Label name="name" className="name" style={{
@@ -179,8 +178,6 @@ const FeedbackForm = () => {
         <div style={{ height: '20px' }}>
 
         </div>
-
-        <FeedbacksCell></FeedbacksCell>
 
       </main>
 
