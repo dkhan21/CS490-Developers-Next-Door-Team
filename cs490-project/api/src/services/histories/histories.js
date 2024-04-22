@@ -42,3 +42,10 @@ export const deleteHistory = ({ id }) => {
     where: { id },
   })
 }
+
+export const deleteAllHistory = async ({ userId }) => {
+  const { count } = await db.history.deleteMany({
+    where: { userId },
+  });
+  return { userId, count };
+};

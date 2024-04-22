@@ -1,51 +1,224 @@
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import { gql, useMutation, useQuery } from '@redwoodjs/web';
-import { mockCurrentUser } from '@redwoodjs/testing';
+import { render, screen, waitFor, fireEvent, within, cleanup } from '@redwoodjs/testing';
+import userEvent from '@testing-library/user-event'; // Import userEvent correctly
 import HistoryForm from './HistoryForm';
 
-const GET_USER_HISTORY_QUERY = gql`
-  query GetUserHistory {
-    histories {
-      id
-      inputLanguage
-      outputLanguage
-      inputText
-      outputText
-      userId
-      createdAt
-      status
-    }
-  }
-`;
-
-jest.mock('@redwoodjs/web', () => ({
-  gql: jest.fn(),
-  useQuery: jest.fn(),
-  useMutation: jest.fn(),
+jest.mock('src/auth', () => ({
+  useAuth: () => ({
+    currentUser: { id: 1 },
+  }),
 }));
 
-// Mock a signed-in user
-mockCurrentUser({
-  email: 'test@example.com',
-  name: 'Test User',
-});
-
 describe('HistoryForm', () => {
-  it('renders successfully', async () => {
-    const mockData = {
-      histories: [
-        { id: 1, inputLanguage: 'cpp', outputLanguage: 'java', inputText: 'Hello', outputText: 'Hola', createdAt: '2022-01-01T12:00:00Z', status: 'completed', userId: 1 },
-        { id: 2, inputLanguage: 'java', outputLanguage: 'python', inputText: 'Hello', outputText: 'Hola', createdAt: '2022-01-02T12:00:00Z', status: 'completed', userId: 1 },
-        { id: 3, inputLanguage: 'python', outputLanguage: 'cpp', inputText: 'Hello', outputText: 'Hola', createdAt: '2022-01-03T12:00:00Z', status: 'completed', userId: 1 },
-      ],
-    };
-
-    // Mocking useQuery to return mock data
-    useQuery.mockReturnValue({ loading: false, error: null, data: mockData });
-    useMutation.mockReturnValue([{}, { refetchQueries: [{ query: GET_USER_HISTORY_QUERY }] }]);
-
-    expect(() => {
-      render(<HistoryForm />)
-    }).not.toThrow()
+  afterEach(() => {
+    cleanup();
   });
-});
+  it('renders history successfully', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        // Different user ID:
+        {id: 123, inputLanguage: 'English', outputLanguage: 'Spanish', inputText: 'Hello', outputText: 'Hola',userId: 1, createdAt: new Date().toISOString(), status: 'Completed'}
+      ],
+    }));
+
+    render(<HistoryForm />);
+    await waitFor(() => expect(screen.getByText("Hola")).toBeInTheDocument());
+  });
+
+  it('only gets histories for correct user', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        // Different user ID:
+        {id: 123, inputLanguage: 'English', outputLanguage: 'Spanish', inputText: 'Hello', outputText: 'Hola', userId: 2, createdAt: new Date().toISOString(), status: 'Completed'}
+      ],
+    }));
+
+    render(<HistoryForm />);
+    expect(screen.queryByText("Hola")).not.toBeInTheDocument();
+  });
+
+  it('filters history entries correctly by input language', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Hola', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+
+    render(<HistoryForm />);
+
+    const wrapperNode = await screen.findByTestId('input-language-select');
+    const selectNode = within(wrapperNode).getByRole('button');
+    userEvent.click(selectNode);
+    const option = await screen.findByText('JavaScript');
+    userEvent.click(option);
+
+    // Check that only histories with JavaScript input language are shown
+    await waitFor(() => {
+      expect(screen.queryByText("Hello")).not.toBeInTheDocument();
+    });
+  });
+
+  it('filters history entries correctly by output language', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Bonjour', outputText: 'Hello', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Bonjour', outputText: 'Hola', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+
+    render(<HistoryForm />);  
+    const wrapperNode = await screen.getByTestId('output-language-select');
+    const selectNode = within(wrapperNode).getByRole('button');
+    userEvent.click(selectNode);
+    const option = await screen.findByText('JavaScript');
+    userEvent.click(option);
+
+    await waitFor(() => {
+      expect(screen.queryByText("Hello")).not.toBeInTheDocument();
+    });
+  });
+  it('sorts by newest', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Bonjour', outputText: 'Hello', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Bonjour', outputText: 'Hola', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+  
+    render(<HistoryForm />);
+    
+    // Wait for the component to finish rendering
+    await waitFor(() => {
+      // Find the elements with the output text
+      const outputTextElements = screen.getAllByText(/Hola|Hello/);
+      // Assert that "Hola" appears before "Hello"
+      const holaIndex = outputTextElements.findIndex(element => element.textContent === 'Hola')-1;
+      const helloIndex = outputTextElements.findIndex(element => element.textContent === 'Hello');
+      expect(holaIndex).toBeLessThan(helloIndex);
+    });
+  });
+  it('sorts by oldest', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Bonjour', outputText: 'Hello', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Bonjour', outputText: 'Hola', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+  
+    render(<HistoryForm />);
+    const wrapperNode = await screen.getByTestId('sort-by-select');
+    const selectNode = within(wrapperNode).getByRole('button');
+    userEvent.click(selectNode);
+    const option = await screen.findByText('Oldest');
+    userEvent.click(option);
+
+    // Wait for the component to finish rendering
+    await waitFor(() => {
+      // Find the elements with the output text
+      const outputTextElements = screen.getAllByText(/Hola|Hello/);
+      // Assert that "Hola" appears before "Hello"
+      const holaIndex = outputTextElements.findIndex(element => element.textContent === 'Hola');
+      const helloIndex = outputTextElements.findIndex(element => element.textContent === 'Hello')-1;
+      expect(holaIndex).toBeGreaterThan(helloIndex);
+    });
+  });
+  it('sorts by shortest', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Hola', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+  
+    render(<HistoryForm />);
+    const wrapperNode = await screen.getByTestId('sort-by-select');
+    const selectNode = within(wrapperNode).getByRole('button');
+    userEvent.click(selectNode);
+    const option = await screen.findByText('Shortest');
+    userEvent.click(option);
+
+    await waitFor(() => {
+      const outputTextElements = screen.getAllByText(/Hola|Hello/);
+      const holaIndex = outputTextElements.findIndex(element => element.textContent === 'Hola')-1;
+      const helloIndex = outputTextElements.findIndex(element => element.textContent === 'Hello');
+      expect(holaIndex).toBeLessThan(helloIndex);
+    });
+  });
+  it('sorts by longest', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Hola', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+    
+    render(<HistoryForm />);
+    const wrapperNode = await screen.getByTestId('sort-by-select');
+    const selectNode = within(wrapperNode).getByRole('button');
+    userEvent.click(selectNode);
+    const option = await screen.findByText('Longest');
+    userEvent.click(option);
+  
+    await waitFor(() => {
+      const outputTextElements = screen.getAllByText(/Hola|Hello/);
+      const holaIndex = outputTextElements.findIndex(element => element.textContent === 'Hola')-1;
+      const helloIndex = outputTextElements.findIndex(element => element.textContent === 'Hello');
+      expect(holaIndex).toBeLessThan(helloIndex);
+    });
+  });
+  it('searches text correctly', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello World', outputText: 'Bonjour le monde', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Good morning', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+  
+    render(<HistoryForm />);
+  
+    const searchField = screen.getByTestId('search-text-field');
+    await waitFor(() => {
+    userEvent.type(searchField, 'Hello');
+    });
+    await waitFor(() => {
+      expect(screen.queryByText('Good morning')).not.toBeInTheDocument(); // "Good morning" should not be present
+    });
+  });
+
+  it('delete history entry', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello World', outputText: 'Bonjour le monde', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+      ],
+    }));
+
+    render(<HistoryForm />);
+    await waitFor(() => {
+      expect(screen.queryByText('Hello World')).toBeInTheDocument();
+    });
+    const deleteButton = screen.getByTestId('delete-button');
+    fireEvent.click(deleteButton);
+    await waitFor(() => {
+      expect(screen.queryByTestId('Hello world')).not.toBeInTheDocument();
+    });
+  });
+  it('deletes all history entries', async () => {
+    mockGraphQLQuery('GetUserHistory', () => ({
+      histories: [
+        { id: 1, inputLanguage: 'Java', outputLanguage: 'Python', inputText: 'Hello World', outputText: 'Bonjour le monde', userId: 1, createdAt: '2022-01-01T12:00:00.000Z', status: 'Completed' },
+        { id: 2, inputLanguage: 'JavaScript', outputLanguage: 'Python', inputText: 'Good morning', outputText: 'Bonjour', userId: 1, createdAt: '2022-01-02T12:00:00.000Z', status: 'Completed' }
+      ],
+    }));
+
+    render(<HistoryForm />);
+    await waitFor(() => {
+      expect(screen.queryByText('Hello World')).toBeInTheDocument();
+      expect(screen.queryByText('Good morning')).toBeInTheDocument();
+    });
+    const deleteButton = screen.getByTestId('delete-all-button');
+    fireEvent.click(deleteButton);
+    await waitFor(() => {
+      expect(screen.queryByTestId('Hello world')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('Good morning')).not.toBeInTheDocument();
+    });
+  });});

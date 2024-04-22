@@ -37,5 +37,6 @@ export const schema = gql`
     createHistory(input: CreateHistoryInput!): History! @requireAuth
     updateHistory(id: Int!, input: UpdateHistoryInput!): History! @requireAuth
     deleteHistory(id: Int!): History! @requireAuth
+    deleteAllHistory(userId: Int!): History @requireAuth
   }
 `
