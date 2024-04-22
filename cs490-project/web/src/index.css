@@ -218,12 +218,7 @@ img {
     align-items: center;
     text-align: center;
   }
-  /* This adjusts navBar page */
-  /* .navbar-whole {
-    display: block;
-    flex-direction: column;
-  } */
-
+ 
   .sidemenu{
     color: red;
   }
@@ -265,8 +260,8 @@ img {
   }
 
   .menu-button-container {
-    display: block; /* Show the container on smaller screens */
-    margin-left: auto; /* Push the container to the right */
+    display: block;
+    margin-left: auto;
   }
 
 }
