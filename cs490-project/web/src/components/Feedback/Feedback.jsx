@@ -94,6 +94,14 @@ const Feedback = ({ feedback, onSave, onCopyToEditors }) => {
   });
 
 
+  const languageMap = {
+    java: 'Java',
+    python: 'Python',
+    cpp: 'C++',
+    c: 'C',
+    javascript: 'JavaScript'
+  };
+
   const handleSaveEdit = async (editedFeedback) => {
     try {
       console.log('Saving feedback:', feedback.id);
@@ -201,7 +209,7 @@ const Feedback = ({ feedback, onSave, onCopyToEditors }) => {
             <div>
 
               <p style={{ textDecoration: 'underline', marginBottom: '10px' }}>Code Languages Used</p>
-              <p >{feedback.inLanguage} ➨ {feedback.outLanguage}</p>
+              <p >{languageMap[feedback.inLanguage]} ➨ {languageMap[feedback.outLanguage]}</p>
 
               <div style={{ flexDirection: 'row', display: 'flex', paddingTop: '20px' }}>
                 <p style={{ marginRight: '10px', paddingTop: '5px' }}>Click here to see Translation!</p>

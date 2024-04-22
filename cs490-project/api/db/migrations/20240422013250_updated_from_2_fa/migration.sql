@@ -1,8 +1,10 @@
 -- CreateTable
 CREATE TABLE "UserLoginToken" (
-    "email" TEXT NOT NULL PRIMARY KEY,
+    "email" TEXT NOT NULL,
     "token" INTEGER NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserLoginToken_pkey" PRIMARY KEY ("email")
 );
 
 -- CreateIndex
