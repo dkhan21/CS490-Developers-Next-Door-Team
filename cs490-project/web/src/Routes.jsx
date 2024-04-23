@@ -37,10 +37,7 @@ const Routes = () => {
       <Route path="/change-password" page={ChangePasswordPage} name="changePassword" />
 
       <Set wrap={ScaffoldLayout} title="Histories" titleTo="histories" buttonLabel="New History" buttonTo="newHistory">
-        <Route path="/histories/new" page={HistoryNewHistoryPage} name="newHistory" />
-        <Route path="/histories/{id:Int}/edit" page={HistoryEditHistoryPage} name="editHistory" />
-        <Route path="/histories/{id:Int}" page={HistoryHistoryPage} name="history" />
-        <Route path="/histories" page={HistoryHistoriesPage} name="histories" />
+
       </Set>
       <Route path="/get-started" page={GetStartedPage} name="getStarted" />
       <Route path="/translate" page={TranslatePage} name="translate" />

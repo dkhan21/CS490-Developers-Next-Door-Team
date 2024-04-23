@@ -32,6 +32,10 @@ CREATE TABLE "Feedback" (
     "name" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
     "body" TEXT NOT NULL,
+    "inLanguage" TEXT,
+    "outLanguage" TEXT,
+    "inText" TEXT,
+    "outText" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER NOT NULL DEFAULT -1,
 
@@ -52,6 +56,15 @@ CREATE TABLE "History" (
     CONSTRAINT "History_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "UserLoginToken" (
+    "email" TEXT NOT NULL,
+    "token" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserLoginToken_pkey" PRIMARY KEY ("email")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -60,6 +73,9 @@ CREATE UNIQUE INDEX "User_resetToken_key" ON "User"("resetToken");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_webAuthnChallenge_key" ON "User"("webAuthnChallenge");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserLoginToken_email_key" ON "UserLoginToken"("email");
 
 -- AddForeignKey
 ALTER TABLE "UserCredential" ADD CONSTRAINT "UserCredential_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
