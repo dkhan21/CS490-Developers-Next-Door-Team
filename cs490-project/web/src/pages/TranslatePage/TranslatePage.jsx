@@ -29,6 +29,8 @@ import HistoryForm from 'src/components/History/HistoryForm'
 import { useAuth } from 'src/auth'
 import { gql, useMutation, useQuery } from '@redwoodjs/web'
 import hljs from 'highlight.js'
+import * as monaco from 'monaco-editor';
+
 
 const apikey = process.env.OPENAI_API_KEY
 //import { cookieName } from 'src/lib/auth';
@@ -205,8 +207,8 @@ const TranslatePage = () => {
   const [outputLanguage, setOutputLanguage] = useState('python')
   const [loading, setLoading] = useState(false) // State to control loading visibility
   const inputFile = useRef(null)
-  const inputEditor = useRef(null)
-  const outputEditor = useRef(null)
+  const inputEditor = useRef("paste")
+  const outputEditor = useRef("paste")
   const { isAuthenticated, currentUser, getToken } = useAuth()
 
   const [activeTranslations, setActiveTranslations] = useState(0)
@@ -281,14 +283,12 @@ const TranslatePage = () => {
   */
   
   useEffect(() => {
-  if (inputEditor.current && outputEditor.current) {
     // Perform actions that depend on the editors being available
     console.log('Both editors are mounted and available for use.');
 
     // Example: Setting the language model when the language state changes
     monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
     monaco.editor.setModelLanguage(outputEditor.current.getModel(), outputLanguage.toLowerCase());
-  }
 
   // Optional: Cleanup logic if needed when the component unmounts
   return () => {
