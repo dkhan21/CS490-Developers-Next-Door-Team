@@ -347,26 +347,32 @@ const TranslatePage = () => {
         }
         return response.json();
       })
-      .then(data => {
-        console.log(data.completion.toLowerCase());
-        const lan = data.completion.toLowerCase();
-        if (languages.includes(lan)) {
-          console.log(lan + ' found');
-          if (outputLanguage === lan) {
-            setOutputLanguage(inputLanguage);
-          }
-          setInputLanguage(lan);
-          setLanfound(true);
-          setDetected(false);
-          setAutoDet(false);
-          resetErrorState();
-          resolve(true);
-        } else {
-          setDetected(true);
-          setLanfound(false);
-          resolve(false);
-        }
-      })
+      .then((data) => {
+            if (data && data.completion) {
+                const lan = data.completion.toLowerCase()
+                if (languages.includes(lan)) {
+                    console.log(lan + ' found')
+                    if (outputLanguage === lan) {
+                        setOutputLanguage(inputLanguage)
+                    }
+                    setInputLanguage(lan)
+                    setInputLanguage(lan) // This line seems redundant
+                    setLanfound(true)
+                    setDetected(false)
+                    resetErrorState()
+                    resolve(true)
+                } else {
+                    setDetected(true)
+                    setLanfound(false)
+                    resolve(false)
+                }
+            } else {
+                // Handle the case where data or data.completion is undefined
+                console.error('Data or data.completion is undefined')
+                // You might want to set default values or handle the error in a different way
+                resolve(false) // Assuming false indicates failure in your context
+            }
+        })        
       .catch(error => {
         console.error('Error handling translation response:', error);
         addError(error.message || 'Failed to fetch');
