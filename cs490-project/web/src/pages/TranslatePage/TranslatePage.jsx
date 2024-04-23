@@ -502,7 +502,9 @@ const TranslatePage = () => {
           resetErrorState()
           clearTimeout(timeoutId)
           setOutputText(data.completion)
-          stat = 'Successfully Translated'
+          if (data.completion?.length > 0) {
+            stat = 'Successfully Translated'
+          }
           createHistory({
             variables: {
               input: {
