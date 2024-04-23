@@ -334,7 +334,7 @@ const TranslatePage = () => {
         }],
       };
 
-      fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
+      fetch('https://codeharbordnd.netlify.app/.netlify/functions/openai', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -454,13 +454,12 @@ const TranslatePage = () => {
       }
 
       fetch('https://codeharbordnd.netlify.app/.netlify/functions/openai', {
-        mode: 'no-cors',
+
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
           'auth-provider': 'dbAuth',
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify(dataPayload),
       })
@@ -503,9 +502,7 @@ const TranslatePage = () => {
           resetErrorState()
           clearTimeout(timeoutId)
           setOutputText(data.completion)
-          if (data.completion.length > 0) {
-            stat = 'Successfully Translated'
-          }
+          stat = 'Successfully Translated'
           createHistory({
             variables: {
               input: {
