@@ -505,32 +505,39 @@ const TranslatePage = () => {
           }
         })
         .then((data) => {
-          resetErrorState()
-          clearTimeout(timeoutId)
-          setOutputText(data.completion)
-          if (data.completion?.length > 0) {
-            stat = 'Successfully Translated'
-          }
-          createHistory({
-            variables: {
-              input: {
-                inputLanguage,
-                outputLanguage,
-                inputText,
-                outputText: data.completion,
-                userId: currentUser.id,
-                status: stat,
-              },
-            },
-          })
-            .then(() => {
-              refetch()
-              hRecount()
-            })
-            .catch((error) => {
-              console.error('Error creating history:', error)
-            })
+    // Check if data is defined before accessing its properties
+    if (data &&  data.completion) {
+      resetErrorState()
+      clearTimeout(timeoutId)
+      setOutputText(data.completion)
+      if (data.completion?.length > 0) {
+        stat = 'Successfully Translated'
+      }
+      createHistory({
+        variables: {
+          input: {
+            inputLanguage,
+            outputLanguage,
+            inputText,
+            outputText: data.completion,
+            userId: currentUser.id,
+            status: stat,
+          },
+        },
+      })
+        .then(() => {
+          refetch()
+          hRecount()
         })
+        .catch((error) => {
+          console.error('Error creating history:', error)
+        })
+    } else {
+      console.error('Data is undefined')
+      // Handle the case where data is undefined
+      // You might want to set default values or handle the error in a different way
+    }
+  })
         .finally(() => {
           setLoading(false)
         })
