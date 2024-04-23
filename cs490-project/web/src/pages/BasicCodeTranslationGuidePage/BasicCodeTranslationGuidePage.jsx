@@ -28,7 +28,7 @@ const BasicTranslationGuidePage = () => (
       Click the "Convert" button to translate your code. CodeHarbor will process your code and display the translated version.
     </p>
 
-    <p style={{ marginBottom: '30px' }}> 
+    <p style={{ marginBottom: '30px' }}>
       If you have any issues during this process, please refer to our Troubleshooting guide or contact our support team.
     </p>
   </PageLayout>
