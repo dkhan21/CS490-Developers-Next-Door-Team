@@ -281,8 +281,8 @@ const TranslatePage = () => {
   */
   
   useEffect(() => {
-      console.log("Editor current: ", outputEditor.current);
-    if (inputEditor.current) {
+      console.log("Editor current: ", inputEditor.current);
+    if (inputEditor.current && inputEditor.current.getModel()) {
       monaco.editor.setModelLanguage(
         inputEditor.current.getModel(),
         inputLanguage.toLowerCase()
@@ -292,7 +292,7 @@ const TranslatePage = () => {
 
   useEffect(() => {
       console.log("Editor current: ", outputEditor.current);
-    if (outputEditor.current) {
+    if (outputEditor.current && outputEditor.current.getModel()) {
       monaco.editor.setModelLanguage(
         outputEditor.current.getModel(),
         outputLanguage.toLowerCase()
