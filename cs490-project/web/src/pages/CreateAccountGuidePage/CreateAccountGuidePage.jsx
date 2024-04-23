@@ -30,6 +30,13 @@ const CreateAccountGuidePage = () => {
     <p style={{ marginBottom: '30px' }}>
       If you have any issues during this process, please refer to our Troubleshooting guide or contact our support team.
     </p>
+    <div style={{ marginTop: '10px' }}>
+      <img 
+        src="/images/screenshot-creating-account.jpg"
+        alt="Screenshot showing the account creation page"
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
+    </div>
   </PageLayout>
   )
 }
