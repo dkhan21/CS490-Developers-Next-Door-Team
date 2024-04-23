@@ -58,7 +58,7 @@ const LoginPage = () => {
         },
       ],
     }
-    await fetch('https://codeharbordnd.netlify.app/.netlify/functions/genOneTimeKey', {
+    await fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
       mode: 'cors',
       method: 'POST',
       headers: {
@@ -130,7 +130,7 @@ const LoginPage = () => {
         },
       ],
     }
-    await fetch('https://codeharbordnd.netlify.app/.netlify/functions/genOneTimeKey', {
+    await fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
       mode: 'cors',
       method: 'POST',
       headers: {
