@@ -21,9 +21,7 @@ import { validateCookie } from './validate';
 
 const apiKey = process.env.OPENAI_API_KEY;
 
-const openai = new OpenAI({
-  apiKey: apiKey
-});
+const openai = new OpenAI();
 
 export const handler = async (event, context) => {
   //logger.info(`${event.httpMethod} ${event.path}: openai function`)
@@ -63,7 +61,8 @@ export const handler = async (event, context) => {
 
     const completion = await openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
-      model: "gpt-3.5-turbo"
+      model: "gpt-3.5-turbo",
+      api_key: apiKey
     });
 
     return {
