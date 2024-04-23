@@ -30,9 +30,6 @@ export const handler = async (event, context) => {
 
   try {
 
-    const val = await validateCookie(event, context);
-
-
     if(val == -1){
       console.log("Invalid session")
       return {
