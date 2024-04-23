@@ -336,7 +336,7 @@ const TranslatePage = () => {
         }
 
         fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
-          mode: 'cors',
+          mode: 'no-cors',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -462,7 +462,7 @@ const TranslatePage = () => {
       }
 
       fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
-        mode: 'cors',
+        mode: 'no-cors',
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
