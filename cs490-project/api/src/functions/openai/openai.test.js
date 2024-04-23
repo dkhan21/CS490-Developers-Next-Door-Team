@@ -98,7 +98,7 @@ describe('openai function', () => {
       json: async () => ({ error: 'Internal Server Error' }),
     });
     // Call the function under test
-    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    const response = await fetch('https://codeharbordnd.netlify.app/.netlify/.redwood/functions/openai');
     // Verify that the response is an error
     expect(response.status).toBe(429);
   })
@@ -110,7 +110,7 @@ describe('openai function', () => {
       json: async () => ({ error: 'Internal Server Error' }),
     });
     // Call the function under test
-    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    const response = await fetch('https://codeharbordnd.netlify.app/.netlify/.redwood/functions/openai');
     // Verify that the response is an error
     expect(response.status).toBe(403);
   })
@@ -122,7 +122,7 @@ describe('openai function', () => {
       json: async () => ({ error: 'Internal Server Error' }),
     });
     // Call the function under test
-    const response = await fetch('http://localhost:8910/.redwood/functions/openai');
+    const response = await fetch('https://codeharbordnd.netlify.app/.netlify/.redwood/functions/openai');
     // Verify that the response is an error
     expect(response.status).toBe(401);
   })
