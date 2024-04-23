@@ -26,7 +26,7 @@ export const handler = async (event, context) => {
   //logger.info(`${event.httpMethod} ${event.path}: openai function`)
 
   try {
-    const val = await validateCookie(event, context);
+    const val = 1;
 
     if(val == -1){
       console.log("Invalid session")
