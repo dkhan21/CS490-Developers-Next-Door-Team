@@ -283,11 +283,11 @@ const TranslatePage = () => {
 
    useEffect(() => {
     // Update the language property of the MonacoEditor when inputLanguage changes
-    inputEditor.current?.editor?.getModel()?.updateOptions({ language: inputLanguage });
+    inputEditor?.current?.editor?.getModel()?.updateOptions({ language: inputLanguage });
   }, [inputLanguage]);
   
   useEffect(() => {
-    outputEditor.current?.editor?.getModel()?.updateOptions({ language: outputLanguage });
+    outputEditor?.current?.editor?.getModel()?.updateOptions({ language: outputLanguage });
   }, [outputLanguage]);
 
   const [isStatus500, setisStatus500] = useState(false)
