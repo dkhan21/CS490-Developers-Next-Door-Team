@@ -58,7 +58,7 @@ const LoginPage = () => {
         },
       ],
     }
-    await fetch('/.netlify/.redwood/functions/genOneTimeKey', {
+    await fetch('https://codeharbordnd.netlify.app/.netlify/functions/openai', {
       mode: 'cors',
       method: 'POST',
       headers: {
@@ -130,7 +130,7 @@ const LoginPage = () => {
         },
       ],
     }
-    await fetch('/.netlify/.redwood/functions/genOneTimeKey', {
+    await fetch('https://codeharbordnd.netlify.app/.netlify/functions/openai', {
       mode: 'cors',
       method: 'POST',
       headers: {
