@@ -49,7 +49,7 @@ const LoginPage = () => {
         toast.error("Please enter an email");
         return;
      }
-     
+
      const dataPayload = {
       messages: [
         {
@@ -79,12 +79,12 @@ const LoginPage = () => {
       toast.error("Unable to generate PIN. Please try again.");
       reject(error)
     })
-    
+
   }
 
   const handleLogin = async (user, pass, rememberMe) => {
     const expires = rememberMe ? 60 * 60 * 24 * 30 * 3 : 60 * 60 * 24
-    
+
     const response = await logIn({
       username: user,
       password: pass,
@@ -141,14 +141,14 @@ const LoginPage = () => {
     .then((response) => {
       if (!response.ok) {
         toast.error('An error occurred during login.');
-        
+
       }
       else {
         return response.json();
       }
     })
     .then((data) => {
-      
+
       if(!data["valid"]){
           toast.error("Invalid PIN");
           return;
@@ -156,7 +156,7 @@ const LoginPage = () => {
       else {
           handleLogin(username, password, rememberMe);
       }
-      
+
     })
     .catch((error) => {
       //console.error('Error validating token. Please try again later.', error)
@@ -166,7 +166,7 @@ const LoginPage = () => {
     })
 
 
-    
+
   }
 
   return (
@@ -226,7 +226,7 @@ const LoginPage = () => {
                         message: 'Password is required',
                       },
                     }}
-                    
+
                   />
                   <Label
                     name="pin"
@@ -253,9 +253,9 @@ const LoginPage = () => {
                     >
                     Send Pin to Email
                     </Button>
-                    
+
                   </div>
-                  
+
                   <div className="rw-forgot-link">
                     <Link
                       to={routes.forgotPassword()}
