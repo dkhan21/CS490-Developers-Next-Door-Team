@@ -29,7 +29,6 @@ import HistoryForm from 'src/components/History/HistoryForm'
 import { useAuth } from 'src/auth'
 import { gql, useMutation, useQuery } from '@redwoodjs/web'
 import hljs from 'highlight.js'
-import * as monaco from 'monaco-editor';
 
 
 const apikey = process.env.OPENAI_API_KEY
@@ -284,6 +283,7 @@ const TranslatePage = () => {
   
   useEffect(() => {
     // Perform actions that depend on the editors being available
+    
     console.log('Both editors are mounted and available for use.');
 
     // Example: Setting the language model when the language state changes
