@@ -58,7 +58,7 @@ const LoginPage = () => {
         },
       ],
     }
-    await fetch('https://codeharbordnd.netlify.app/.netlify/functions/genOneTimeKey', {
+    await fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/genOneTimeKey', {
       mode: 'cors',
       method: 'POST',
       headers: {
