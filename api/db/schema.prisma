@@ -1,0 +1,79 @@
+// Don't forget to tell Prisma about your edits to this file using
+// `yarn rw prisma migrate dev` or `yarn rw prisma db push`.
+// `migrate` is like committing while `push` is for prototyping.
+// Read more about both here:
+// https://www.prisma.io/docs/orm/prisma-migrate
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = "native"
+}
+
+// Define your own datamodels here and run `yarn redwood prisma migrate dev`
+// to create migrations for them and apply to your dev DB.
+// TODO: Please remove the following example:
+model User {
+  id                           Int       @id @default(autoincrement())
+  name                         String?
+  email                        String    @unique
+  hashedPassword               String
+  salt                         String
+  resetToken                   String?   @unique
+  resetTokenExpiresAt          DateTime?
+  preferredProgrammingLanguage String?
+  preferredIDE                 String?
+
+  roles             String           @default("user")
+  webAuthnChallenge String?          @unique
+  credentials       UserCredential[]
+}
+
+model UserCredential {
+  id         String  @id
+  userId     Int
+  user       User    @relation(fields: [userId], references: [id])
+  publicKey  Bytes
+  transports String?
+  counter    BigInt
+}
+
+//model UserExample {
+//id    Int     @id @default(autoincrement())
+//email String  @unique
+//name  String?
+//}
+
+model Feedback {
+  id          Int      @id @default(autoincrement())
+  name        String
+  rating      Int
+  body        String
+  inLanguage  String?
+  outLanguage String?
+  inText      String?
+  outText     String?
+  createdAt   DateTime @default(now())
+  userId      Int      @default(-1)
+}
+
+model History {
+  id             Int      @id @default(autoincrement())
+  inputLanguage  String
+  outputLanguage String
+  inputText      String
+  outputText     String
+  status         String
+  createdAt      DateTime @default(now())
+  userId         Int      @default(-1)
+}
+
+model UserLoginToken {
+  email   String  @id @unique
+  token   Int
+  createdAt DateTime  @default(now())
+}
