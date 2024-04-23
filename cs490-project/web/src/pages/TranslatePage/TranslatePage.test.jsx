@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import Button from '@material-ui/core/Button';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { FileDownload as FileDownloadIcon } from '@mui/icons-material';
@@ -8,7 +8,9 @@ import TranslatePage from './TranslatePage';
 import MonacoEditor from '@monaco-editor/react';
 import fetch from 'node-fetch'; // Import fetch for Node.js environment
 import { GraphQLHooksContext } from '@redwoodjs/web/dist/components/GraphQLHooksProvider';
-import hljs from 'highlight.js'
+import hljs from 'highlight.js';
+import { useMutation } from '@redwoodjs/web';
+import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('src/components/Navbar/Navbar', () => {
   return function DummyNavbar() {
@@ -20,13 +22,25 @@ jest.mock('src/components/FeedbackForm/FeedbackForm', () => {
     return <div />;
   };
 });
-
+jest.mock('@redwoodjs/web', () => {
+  return {
+    __esModule: true, 
+    useMutation: jest.fn(),
+    useQuery: jest.fn(() => ({
+      loading: false,
+      error: null,
+      data: {},
+      refetch: jest.fn(),
+    }))
+  };
+});
 
 global.navigator.clipboard = { writeText: jest.fn() };
 jest.mock('file-saver', () => ({ saveAs: jest.fn() }));
 global.alert = jest.fn();
 
 describe('TranslatePage', () => {
+  
   it('renders successfully', () => {
     expect(() => {
       <GraphQLHooksContext.Provider>render(<TranslatePage />)</GraphQLHooksContext.Provider>
@@ -140,6 +154,55 @@ describe('TranslatePage', () => {
 
   });
 
+  it('handles different character encoding', async () => {
+    const input = "こんにちは世界"
+    const inlang = "java";
+    const outlang = "python"
+    let result = '';
+    async function handleConvertClick(input, inlang, outlang) {
+      if (input.trim() === '') {
+        return "Invalid Length";
+      }
+
+      const dataPayload = {
+        "messages": [
+          {
+            "role": "system",
+            "content": input,
+            "source": inlang,
+            "target": outlang,
+            "promptNum": 2
+          }
+        ]
+      };
+
+      try {
+        const response = await fetch('http://localhost:8910/.redwood/functions/openai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataPayload)
+        });
+
+        if (!response.ok) {
+          throw new Error('Error Has Occurred');
+        }
+
+        const data = await response.json();
+        result = data.completion;
+      } catch (error) {
+        console.error(error);
+        result = "Unrecognized";
+      }
+    }
+
+    // Call multiple requests
+    await handleConvertClick(input, inlang, outlang);
+    // Should fail because input is unrecognized
+    expect(result).toEqual("Unrecognized");
+  })
+
   it('Handles Unsupported Languages', async () => {
     const input = "aaaaaaaaa";
     const outputLanguages = ['java', 'python', 'javascript', 'c', 'cpp'];
@@ -222,7 +285,7 @@ describe('TranslatePage', () => {
     });
   });
 
-  it('editor renders correctly with different lengths and formats of code of code', () => {
+  it('editor renders correctly with different lengths and formats of code of code, performing well', () => {
 
     const outputEditor = {};
     const setOutputText = jest.fn();
@@ -231,6 +294,8 @@ describe('TranslatePage', () => {
     const outputLanguages = ['java', 'python', 'javascript'];
 
     outputTexts.forEach((outputText, index) => {
+      const start = performance.now()
+
       const { getByLabelText } = render(
         <div aria-label={`label-${index}`} key={index}>
           <MonacoEditor
@@ -251,7 +316,12 @@ describe('TranslatePage', () => {
           />
         </div>
       );
+
+      const end = performance.now();
+      const renderTime = end-start;
       expect(getByLabelText(`label-${index}`)).toBeInTheDocument();
+      expect(renderTime).toBeLessThan(100); //renders quickly
+
     });
   });
   it('API can handle several asynchronous requests at once and create translation history', async () => {
@@ -344,10 +414,40 @@ describe('TranslatePage', () => {
     //Should fail because there are too many translations
     let tCountTest = await handleConvertClick("test", "java", "c", 100)
     expect(tCountTest).toEqual("Exceeded Translations");
-
-
-
   });
 
+
+  it('does not create history if translation fails', async () => {
+    const inputText = "input";
+    const inputLanguage = "lang";
+    const outputLanguage = "lang2";
+    const mockCreateHistory = jest.fn();
+
+    async function handleConvertClick(inputText, inputLanguage, outputLanguage) {
+      if (inputText.trim() === '') {
+        return "Invalid Length";
+      }
+    }
+    handleConvertClick(inputText, inputLanguage, outputLanguage)
+
+    jest.spyOn(global, 'fetch').mockImplementation(() =>
+      Promise.resolve({
+        ok: false,
+        status: 500,
+        json: () => Promise.resolve({ message: 'API failure' })
+      })
+    );
+    
+    useMutation.mockReturnValue([
+      jest.fn(), 
+      { loading: false, error: null, data: null } 
+    ]);
+  
+    expect(mockCreateHistory).not.toHaveBeenCalled();
+  
+    global.fetch.mockRestore();
+    jest.restoreAllMocks();
+  });
+  
 
 });

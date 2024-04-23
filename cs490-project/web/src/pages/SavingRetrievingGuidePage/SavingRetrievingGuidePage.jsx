@@ -21,6 +21,14 @@ const SavingRetrievingGuidePage = () => (
     <p style={{ marginBottom: '20px' }}>
       If you have any issues during this process, please refer to our Troubleshooting guide or contact our support team.
     </p>
+    <div style={{ marginTop: '10px' }}>
+      <img 
+        src="/images/retrieving-translations.gif"
+        alt="GIF retrieving translations"
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
+    </div>
+    
   </PageLayout>
 );
 

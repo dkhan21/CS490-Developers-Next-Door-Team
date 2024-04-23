@@ -10,7 +10,7 @@ const BasicTranslationGuidePage = () => (
 
     <h3 style={{ marginBottom: '10px' }}>Step 1: Navigate to the Code Translation Page</h3>
     <p style={{ marginBottom: '20px' }}>
-      From the homepage, click on the link to the code translation page. This is where you'll enter the code you want to translate.
+      From the homepage, click on 'Get Started' to get to the code translation page. This is where you'll enter the code you want to translate.
     </p>
 
     <h3 style={{ marginBottom: '10px' }}>Step 2: Enter Your Code</h3>
@@ -31,6 +31,15 @@ const BasicTranslationGuidePage = () => (
     <p style={{ marginBottom: '30px' }}>
       If you have any issues during this process, please refer to our Troubleshooting guide or contact our support team.
     </p>
+    <div style={{ marginTop: '10px' }}>
+      <img 
+        src="/images/basic-translation.gif"
+        alt="GIF showing a basic translation"
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
+    </div>
+
+
   </PageLayout>
 );
 
