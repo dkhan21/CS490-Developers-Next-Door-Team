@@ -205,8 +205,8 @@ const TranslatePage = () => {
   const [outputLanguage, setOutputLanguage] = useState('python')
   const [loading, setLoading] = useState(false) // State to control loading visibility
   const inputFile = useRef(null)
-  const inputEditor = useRef("paste code here")
-  const outputEditor = useRef("paste code here")
+  const inputEditor = useRef(null)
+  const outputEditor = useRef(null)
   const { isAuthenticated, currentUser, getToken } = useAuth()
 
   const [activeTranslations, setActiveTranslations] = useState(0)
@@ -281,25 +281,20 @@ const TranslatePage = () => {
   */
   
   useEffect(() => {
-      console.log("Editor current: ", inputEditor.current);
-    if (inputEditor.current) {
-      monaco.editor.setModelLanguage(
-        inputEditor.current.getModel(),
-        inputLanguage.toLowerCase()
-      )
-    }
-  }, [inputLanguage])
+  if (inputEditor.current && outputEditor.current) {
+    // Perform actions that depend on the editors being available
+    console.log('Both editors are mounted and available for use.');
 
-  useEffect(() => {
-      console.log("Editor current: ", outputEditor.current);
-    if (outputEditor.current) {
-      monaco.editor.setModelLanguage(
-        outputEditor.current.getModel(),
-        outputLanguage.toLowerCase()
-      )
-    }
-  }, [outputLanguage])
+    // Example: Setting the language model when the language state changes
+    monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
+    monaco.editor.setModelLanguage(outputEditor.current.getModel(), outputLanguage.toLowerCase());
+  }
 
+  // Optional: Cleanup logic if needed when the component unmounts
+  return () => {
+    // Cleanup tasks, if any
+  };
+}, [inputLanguage, outputLanguage]);  // Dependencies on language states if they affect editor setup
 
 
   const [isStatus500, setisStatus500] = useState(false)
