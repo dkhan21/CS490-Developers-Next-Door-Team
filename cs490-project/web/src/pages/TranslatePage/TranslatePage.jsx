@@ -279,7 +279,7 @@ const TranslatePage = () => {
     console.log("Translation count: " + counts["historyCount"])
   }
   */
-
+  /*
   useEffect(() => {
     if (inputEditor.current) {
       monaco.editor.setModelLanguage(
@@ -298,7 +298,7 @@ const TranslatePage = () => {
     }
   }, [outputLanguage])
 
-
+*/
 
   const [isStatus500, setisStatus500] = useState(false)
 
