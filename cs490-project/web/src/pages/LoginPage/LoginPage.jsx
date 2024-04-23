@@ -58,7 +58,7 @@ const LoginPage = () => {
         },
       ],
     }
-    await fetch('http://localhost:8910/.redwood/functions/genOneTimeKey', {
+    await fetch('/.redwood/functions/genOneTimeKey', {
       mode: 'cors',
       method: 'POST',
       headers: {
@@ -130,7 +130,7 @@ const LoginPage = () => {
         },
       ],
     }
-    await fetch('http://localhost:8910/.redwood/functions/genOneTimeKey', {
+    await fetch('/.redwood/functions/genOneTimeKey', {
       mode: 'cors',
       method: 'POST',
       headers: {
