@@ -311,83 +311,74 @@ const TranslatePage = () => {
   const [detect, setDetected] = useState(false)
 
   const handleDetect = () => {
-    return new Promise((resolve, reject) => {
-      if (activeTranslations >= 3) {
-        addError('- Too many requests')
-        reject(new Error('Too many requests'))
-        return
-      }
-      if (inputText.trim() === '') {
-        addError('- No input text to convert')
-        reject(new Error('No input text to convert'))
-        return
-      }
+  return new Promise((resolve, reject) => {
+    if (activeTranslations >= 3) {
+      addError('- Too many requests');
+      reject(new Error('Too many requests'));
+      return;
+    }
+    if (inputText.trim() === '') {
+      addError('- No input text to convert');
+      reject(new Error('No input text to convert'));
+      return;
+    }
 
-      try {
-        const dataPayload2 = {
-          messages: [
-            {
-              role: 'system',
-              content: inputText,
-              source: inputLanguage,
-              target: outputLanguage,
-              promptNum: 2,
-            },
-          ],
+    try {
+      const dataPayload2 = {
+        messages: [{
+          role: 'system',
+          content: inputText,
+          source: inputLanguage,
+          target: outputLanguage,
+          promptNum: 2,
+        }],
+      };
+
+      fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataPayload2),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
         }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data.completion.toLowerCase());
+        const lan = data.completion.toLowerCase();
+        if (languages.includes(lan)) {
+          console.log(lan + ' found');
+          if (outputLanguage === lan) {
+            setOutputLanguage(inputLanguage);
+          }
+          setInputLanguage(lan);
+          setLanfound(true);
+          setDetected(false);
+          setAutoDet(false);
+          resetErrorState();
+          resolve(true);
+        } else {
+          setDetected(true);
+          setLanfound(false);
+          resolve(false);
+        }
+      })
+      .catch(error => {
+        console.error('Error handling translation response:', error);
+        addError(error.message || 'Failed to fetch');
+        reject(error);
+      });
+    } catch (error) {
+      console.error('Error in detecting Language: ', error);
+      reject(error);
+    }
+  });
+};
 
-        fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
-          mode: 'no-cors',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(dataPayload2),
-        })
-          .then((response) => {
-            if (response.ok) {
-              setIsGreen(true)
-              return response.json()
-            } else {
-              console.log(response)
-              addError(response.statusText)
-              throw new Error('Failed to fetch')
-            }
-          })
-          .then((data) => {
-            console.log(data.completion.toLowerCase())
-            const lan = data.completion.toLowerCase()
-            if (languages.includes(lan)) {
-              console.log(lan + ' found')
-              if (outputLanguage === lan) {
-                setOutputLanguage(inputLanguage)
-              }
-              setInputLanguage(lan)
-              setInputLanguage(lan)
-              setLanfound(true)
-              setDetected(false)
-              setAutoDet(false)
-              resetErrorState()
-              resolve(true)
-            } else {
-              setDetected(true)
-              setLanfound(false)
-              resolve(false)
-            }
-          })
-          .catch((error) => {
-            console.error('Error handling translation response:', error)
-            reject(error)
-          })
-          .finally(() => { })
-      } catch (error) {
-        // Log the error
-        console.error('Error in detecting Language: ', error)
-        // Rethrow the error for further handling in application code
-        reject(error)
-      }
-    })
-  }
 
   const handleConvertClick = async () => {
     setActiveTranslations(activeTranslations + 1)
