@@ -205,8 +205,8 @@ const TranslatePage = () => {
   const [outputLanguage, setOutputLanguage] = useState('python')
   const [loading, setLoading] = useState(false) // State to control loading visibility
   const inputFile = useRef(null)
-  const inputEditor = useRef(null)
-  const outputEditor = useRef(null)
+  const inputEditor = useRef("paste code here")
+  const outputEditor = useRef("paste code here")
   const { isAuthenticated, currentUser, getToken } = useAuth()
 
   const [activeTranslations, setActiveTranslations] = useState(0)
