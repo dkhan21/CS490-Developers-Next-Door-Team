@@ -20,7 +20,7 @@ import { validateCookie } from './validate';
  */
 
 
-const openai = new OpenAI(process.env.OPENAI_API_KEY);
+const openai = new OpenAI();
 
 export const handler = async (event, context) => {
   //logger.info(`${event.httpMethod} ${event.path}: openai function`)
