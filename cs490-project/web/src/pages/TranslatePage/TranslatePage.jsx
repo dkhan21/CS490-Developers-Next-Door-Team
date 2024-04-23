@@ -280,22 +280,15 @@ const TranslatePage = () => {
     console.log("Translation count: " + counts["historyCount"])
   }
   */
+
+   useEffect(() => {
+    // Update the language property of the MonacoEditor when inputLanguage changes
+    inputEditor.current?.editor?.getModel()?.updateOptions({ language: inputLanguage });
+  }, [inputLanguage]);
   
   useEffect(() => {
-    // Perform actions that depend on the editors being available
-    
-    console.log('Both editors are mounted and available for use.');
-
-    // Example: Setting the language model when the language state changes
-    monaco.editor.setModelLanguage(inputEditor.current.getModel(), inputLanguage.toLowerCase());
-    monaco.editor.setModelLanguage(outputEditor.current.getModel(), outputLanguage.toLowerCase());
-
-  // Optional: Cleanup logic if needed when the component unmounts
-  return () => {
-    // Cleanup tasks, if any
-  };
-}, [inputLanguage, outputLanguage]);  // Dependencies on language states if they affect editor setup
-
+    outputEditor.current?.editor?.getModel()?.updateOptions({ language: outputLanguage });
+  }, [outputLanguage]);
 
   const [isStatus500, setisStatus500] = useState(false)
 
