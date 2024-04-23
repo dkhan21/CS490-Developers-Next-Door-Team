@@ -1,8 +1,7 @@
 [build]
-  command = "cs490-project/yarn rw deploy netlify"
-  publish = "cs490-project/web/dist"
-  functions = "cs490-project/api/dist/functions"
-  base = "cs490-project"
+  command = "yarn rw deploy netlify"
+  publish = "web/dist"
+  functions = "api/dist/functions"
 
 [dev]
   # To use [Netlify Dev](https://www.netlify.com/products/dev/),
