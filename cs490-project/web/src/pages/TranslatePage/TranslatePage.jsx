@@ -30,6 +30,7 @@ import { useAuth } from 'src/auth'
 import { gql, useMutation, useQuery } from '@redwoodjs/web'
 import hljs from 'highlight.js'
 
+const apikey = process.env.OPENAI_API_KEY
 //import { cookieName } from 'src/lib/auth';
 
 const CREATE_HISTORY_MUTATION = gql`
@@ -339,7 +340,7 @@ const TranslatePage = () => {
           mode: 'no-cors',
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(dataPayload2),
         })
@@ -461,13 +462,14 @@ const TranslatePage = () => {
         ],
       }
 
-      fetch('https://main--codeharbordnd.netlify.app/.netlify/functions/openai', {
+      fetch('https://codeharbordnd.netlify.app/.netlify/functions/openai', {
         mode: 'no-cors',
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
           'auth-provider': 'dbAuth',
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify(dataPayload),
       })
