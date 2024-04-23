@@ -335,7 +335,7 @@ const TranslatePage = () => {
           ],
         }
 
-        fetch('https://main--codeharbordnd.netlify.app/.netlify/.redwood/functions/openai', {
+        fetch('https://codeharbordnd.netlify.app/.netlify/.redwood/functions/openai', {
           mode: 'cors',
           method: 'POST',
           headers: {
@@ -461,7 +461,7 @@ const TranslatePage = () => {
         ],
       }
 
-      fetch('https://main--codeharbordnd.netlify.app/.netlify/.redwood/functions/openai', {
+      fetch('https://codeharbordnd.netlify.app/.netlify/.redwood/functions/openai', {
         mode: 'cors',
         method: 'POST',
         headers: {
